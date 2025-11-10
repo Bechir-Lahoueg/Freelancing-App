@@ -9,45 +9,48 @@ import TaskHistory from './pages/TaskHistory'
 import Profile from './pages/Profile'
 import AuthSuccess from './pages/AuthSuccess'
 import PrivateRoute from './components/PrivateRoute'
+import ErrorBoundary from './components/ErrorBoundary'
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        {/* Routes publiques */}
-        <Route path="/" element={<NewHome />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/auth/success" element={<AuthSuccess />} />
+    <ErrorBoundary>
+      <Router>
+        <Routes>
+          {/* Routes publiques */}
+          <Route path="/" element={<NewHome />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/auth/success" element={<AuthSuccess />} />
 
-        {/* Routes privées */}
-        <Route path="/dashboard" element={
-          <PrivateRoute>
-            <Dashboard />
-          </PrivateRoute>
-        } />
-        <Route path="/admin/dashboard" element={
-          <PrivateRoute>
-            <AdminDashboard />
-          </PrivateRoute>
-        } />
-        <Route path="/new-task" element={
-          <PrivateRoute>
-            <NewTask />
-          </PrivateRoute>
-        } />
-        <Route path="/history" element={
-          <PrivateRoute>
-            <TaskHistory />
-          </PrivateRoute>
-        } />
-        <Route path="/profile" element={
-          <PrivateRoute>
-            <Profile />
-          </PrivateRoute>
-        } />
-      </Routes>
-    </Router>
+          {/* Routes privées */}
+          <Route path="/dashboard" element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          } />
+          <Route path="/admin/dashboard" element={
+            <PrivateRoute>
+              <AdminDashboard />
+            </PrivateRoute>
+          } />
+          <Route path="/new-task" element={
+            <PrivateRoute>
+              <NewTask />
+            </PrivateRoute>
+          } />
+          <Route path="/history" element={
+            <PrivateRoute>
+              <TaskHistory />
+            </PrivateRoute>
+          } />
+          <Route path="/profile" element={
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>
+          } />
+        </Routes>
+      </Router>
+    </ErrorBoundary>
   )
 }
 

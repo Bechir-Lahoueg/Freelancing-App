@@ -2,12 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import { motion } from 'framer-motion';
+import { AlertCircle } from 'lucide-react';
+
+// Default stats structure
+const DEFAULT_STATS = {
+  users: { total: 0, admins: 0, superAdmins: 0 },
+  tasks: { total: 0, pending: 0, completed: 0 },
+  invoices: { total: 0, paid: 0, pending: 0 },
+  revenue: { total: 0, paid: 0, pending: 0 }
+};
 
 const AdminDashboard = () => {
   const { user } = useAuth();
-  const [stats, setStats] = useState(null);
+  const [stats, setStats] = useState(DEFAULT_STATS);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [statsError, setStatsError] = useState(null);
   const [activeTab, setActiveTab] = useState('stats'); // stats, users, profile
   const [editMode, setEditMode] = useState(false);
   const [editData, setEditData] = useState({
@@ -27,13 +37,26 @@ const AdminDashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await axios.get('/api/admin/stats', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      setStatsError(null);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setStatsError('Token non trouvé. Veuillez vous reconnecter.');
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.get('http://localhost:5000/api/admin/stats', {
+        headers: { Authorization: `Bearer ${token}` }
       });
-      setStats(response.data);
+      
+      console.log('📊 Stats reçues:', response.data);
+      setStats(response.data || DEFAULT_STATS);
       setLoading(false);
     } catch (error) {
-      console.error('Erreur lors du chargement des stats:', error);
+      console.error('❌ Erreur lors du chargement des stats:', error);
+      const errorMessage = error.response?.data?.message || error.message || 'Erreur lors du chargement des statistiques';
+      setStatsError(errorMessage);
+      setStats(DEFAULT_STATS);
       setLoading(false);
     }
   };
@@ -130,6 +153,21 @@ const AdminDashboard = () => {
           </motion.div>
         )}
 
+        {/* Stats Error Alert */}
+        {statsError && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="mb-6 p-4 rounded-lg bg-yellow-500/20 border border-yellow-500 text-yellow-200 flex gap-3"
+          >
+            <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-semibold">Attention</p>
+              <p className="text-sm">{statsError}</p>
+            </div>
+          </motion.div>
+        )}
+
         {/* Tabs */}
         <div className="flex gap-4 mb-8">
           {['stats', 'users', 'profile'].map((tab) => (
@@ -152,7 +190,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Content */}
-        {activeTab === 'stats' && stats && (
+        {activeTab === 'stats' && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -161,30 +199,30 @@ const AdminDashboard = () => {
             {/* Users Card */}
             <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
               <h3 className="text-slate-300 text-sm font-semibold mb-2">UTILISATEURS</h3>
-              <p className="text-4xl font-bold text-white mb-4">{stats.users.total}</p>
+              <p className="text-4xl font-bold text-white mb-4">{stats?.users?.total || 0}</p>
               <div className="space-y-2 text-sm text-slate-400">
-                <p>Admins: <span className="text-purple-400">{stats.users.admins}</span></p>
-                <p>Super Admins: <span className="text-purple-400">{stats.users.superAdmins}</span></p>
+                <p>Admins: <span className="text-purple-400">{stats?.users?.admins || 0}</span></p>
+                <p>Super Admins: <span className="text-purple-400">{stats?.users?.superAdmins || 0}</span></p>
               </div>
             </div>
 
             {/* Tasks Card */}
             <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
               <h3 className="text-slate-300 text-sm font-semibold mb-2">TÂCHES</h3>
-              <p className="text-4xl font-bold text-white mb-4">{stats.tasks.total}</p>
+              <p className="text-4xl font-bold text-white mb-4">{stats?.tasks?.total || 0}</p>
               <div className="space-y-2 text-sm text-slate-400">
-                <p>En attente: <span className="text-yellow-400">{stats.tasks.pending}</span></p>
-                <p>Complétées: <span className="text-green-400">{stats.tasks.completed}</span></p>
+                <p>En attente: <span className="text-yellow-400">{stats?.tasks?.pending || 0}</span></p>
+                <p>Complétées: <span className="text-green-400">{stats?.tasks?.completed || 0}</span></p>
               </div>
             </div>
 
             {/* Invoices Card */}
             <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
               <h3 className="text-slate-300 text-sm font-semibold mb-2">FACTURES</h3>
-              <p className="text-4xl font-bold text-white mb-4">{stats.invoices.total}</p>
+              <p className="text-4xl font-bold text-white mb-4">{stats?.invoices?.total || 0}</p>
               <div className="space-y-2 text-sm text-slate-400">
-                <p>Payées: <span className="text-green-400">{stats.invoices.paid}</span></p>
-                <p>En attente: <span className="text-yellow-400">{stats.invoices.pending}</span></p>
+                <p>Payées: <span className="text-green-400">{stats?.invoices?.paid || 0}</span></p>
+                <p>En attente: <span className="text-yellow-400">{stats?.invoices?.pending || 0}</span></p>
               </div>
             </div>
 
@@ -195,19 +233,19 @@ const AdminDashboard = () => {
                 <div>
                   <p className="text-slate-400 text-sm mb-1">Total</p>
                   <p className="text-3xl font-bold text-purple-300">
-                    {Math.round(stats.revenue.total).toLocaleString()} DT
+                    {Math.round(stats?.revenue?.total || 0).toLocaleString()} DT
                   </p>
                 </div>
                 <div>
                   <p className="text-slate-400 text-sm mb-1">Payés</p>
                   <p className="text-3xl font-bold text-green-400">
-                    {Math.round(stats.revenue.paid).toLocaleString()} DT
+                    {Math.round(stats?.revenue?.paid || 0).toLocaleString()} DT
                   </p>
                 </div>
                 <div>
                   <p className="text-slate-400 text-sm mb-1">En attente</p>
                   <p className="text-3xl font-bold text-yellow-400">
-                    {Math.round(stats.revenue.pending).toLocaleString()} DT
+                    {Math.round(stats?.revenue?.pending || 0).toLocaleString()} DT
                   </p>
                 </div>
               </div>

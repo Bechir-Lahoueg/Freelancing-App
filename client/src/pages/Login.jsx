@@ -24,7 +24,10 @@ const Login = () => {
     setLoading(true);
 
     try {
+      console.log('📝 Tentative de login avec:', formData.email);
       const { data } = await axios.post('http://localhost:5000/api/users/login', formData);
+      console.log('✅ Réponse du serveur:', data);
+      
       login(data, data.token);
       
       // Redirection basée sur le rôle
@@ -34,7 +37,9 @@ const Login = () => {
         navigate('/dashboard');
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Erreur de connexion');
+      console.error('❌ Erreur login:', err);
+      const errorMessage = err.response?.data?.message || err.message || 'Erreur de connexion';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

@@ -23,12 +23,15 @@ export const protect = async (req, res, next) => {
 
       next();
     } catch (error) {
-      console.error('Erreur d\'authentification:', error);
+      console.error('Erreur d\'authentification:', error.message);
+      
+      if (error.name === 'TokenExpiredError') {
+        return res.status(401).json({ message: 'Token expiré' });
+      }
+      
       return res.status(401).json({ message: 'Non autorisé, token invalide' });
     }
-  }
-
-  if (!token) {
+  } else {
     return res.status(401).json({ message: 'Non autorisé, aucun token fourni' });
   }
 };

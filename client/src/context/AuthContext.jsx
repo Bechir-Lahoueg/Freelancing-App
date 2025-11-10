@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
       const { data } = await axios.get('http://localhost:5000/api/users/profile');
       setUser(data);
     } catch (error) {
-      console.error('Erreur lors de la récupération du profil:', error);
+      console.error('Erreur lors de la récupération du profil:', error.message);
       logout();
     } finally {
       setLoading(false);
@@ -42,13 +42,19 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = (userData, userToken) => {
+    console.log('✅ Login successful:', userData);
     setUser(userData);
     setToken(userToken);
+    localStorage.setItem('token', userToken);
+    axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
   };
 
   const register = (userData, userToken) => {
+    console.log('✅ Register successful:', userData);
     setUser(userData);
     setToken(userToken);
+    localStorage.setItem('token', userToken);
+    axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
   };
 
   const logout = () => {

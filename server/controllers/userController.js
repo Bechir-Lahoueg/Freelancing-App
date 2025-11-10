@@ -58,7 +58,7 @@ export const loginUser = async (req, res) => {
     // Valider les données
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ message: 'Erreur de validation', errors: errors.array() });
     }
 
     const { email, password } = req.body;
@@ -66,24 +66,38 @@ export const loginUser = async (req, res) => {
     // Trouver l'utilisateur
     const user = await User.findOne({ email });
 
-    if (user && user.authType === 'local' && (await user.comparePassword(password))) {
-      const token = generateToken(user._id, user.role);
-      const refreshToken = generateRefreshToken(user._id);
-
-      res.json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        universityYear: user.universityYear,
-        authType: user.authType,
-        role: user.role,
-        token,
-        refreshToken
-      });
-    } else {
-      res.status(401).json({ message: 'Email ou mot de passe incorrect' });
+    if (!user) {
+      return res.status(401).json({ message: 'Email ou mot de passe incorrect' });
     }
+
+    // Vérifier le type d'authentification et le mot de passe
+    if (user.authType !== 'local') {
+      return res.status(401).json({ message: 'Cet email est associé à une authentification OAuth. Utilisez votre authentification ' + user.authType });
+    }
+
+    // Comparer les mots de passe
+    const isPasswordMatch = await user.comparePassword(password);
+    
+    if (!isPasswordMatch) {
+      return res.status(401).json({ message: 'Email ou mot de passe incorrect' });
+    }
+
+    // Générer les tokens
+    const token = generateToken(user._id, user.role);
+    const refreshToken = generateRefreshToken(user._id);
+
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      universityYear: user.universityYear,
+      authType: user.authType,
+      role: user.role,
+      token,
+      refreshToken
+    });
   } catch (error) {
+    console.error('Erreur login:', error);
     res.status(500).json({ message: error.message });
   }
 };

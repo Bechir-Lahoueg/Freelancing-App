@@ -13,7 +13,7 @@ export const generateToken = (userId, role) => {
 export const generateRefreshToken = (userId) => {
   return jwt.sign(
     { id: userId },
-    process.env.JWT_SECRET || 'votre_secret_jwt_super_secure',
+    process.env.JWT_REFRESH_SECRET || 'votre_refresh_secret_super_secure',
     { expiresIn: '30d' }
   );
 };
@@ -35,7 +35,7 @@ export const verifyRefreshToken = (token) => {
   try {
     return jwt.verify(
       token,
-      process.env.JWT_SECRET || 'votre_secret_jwt_super_secure'
+      process.env.JWT_REFRESH_SECRET || 'votre_refresh_secret_super_secure'
     );
   } catch (error) {
     throw new Error('Refresh token invalide ou expiré');

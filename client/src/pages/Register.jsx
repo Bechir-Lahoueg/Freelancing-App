@@ -38,13 +38,16 @@ const Register = () => {
     setLoading(true);
 
     try {
-      const { data } = await axios.post('http://localhost:5000/api/users/register', {
+      const response = await axios.post('http://localhost:5000/api/users/register', {
         name: formData.name,
         email: formData.email,
         password: formData.password,
         universityYear: formData.universityYear
       });
-      registerUser(data, data.token);
+      const { token, ...userData } = response.data;
+      
+      console.log('✅ Register Success:', response.data);
+      registerUser(userData, token);
       navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Erreur lors de l\'inscription');

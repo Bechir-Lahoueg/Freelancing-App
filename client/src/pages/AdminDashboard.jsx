@@ -1,434 +1,584 @@
-import React, { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import Navbar from '../components/Navbar';
+import CommentsModeration from '../components/CommentsModeration';
 import axios from 'axios';
-import { motion } from 'framer-motion';
-import { AlertCircle } from 'lucide-react';
-
-// Default stats structure
-const DEFAULT_STATS = {
-  users: { total: 0, admins: 0, superAdmins: 0 },
-  tasks: { total: 0, pending: 0, completed: 0 },
-  invoices: { total: 0, paid: 0, pending: 0 },
-  revenue: { total: 0, paid: 0, pending: 0 }
-};
+import { Menu, X, LayoutGrid, Users, Settings, BarChart3, LogOut, Upload, MessageSquare } from 'lucide-react';
 
 const AdminDashboard = () => {
-  const { user } = useAuth();
-  const [stats, setStats] = useState(DEFAULT_STATS);
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [statsError, setStatsError] = useState(null);
-  const [activeTab, setActiveTab] = useState('stats'); // stats, users, profile
-  const [editMode, setEditMode] = useState(false);
-  const [editData, setEditData] = useState({
-    name: user?.name || '',
-    email: user?.email || '',
-    newPassword: '',
-    confirmPassword: ''
+  const { user, logout } = useAuth();
+  const [activeTab, setActiveTab] = useState('categories');
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [categories, setCategories] = useState([]);
+  const [superAdmins, setSuperAdmins] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [showCategoryForm, setShowCategoryForm] = useState(false);
+  const [showSuperAdminForm, setShowSuperAdminForm] = useState(false);
+  const [editingCategoryId, setEditingCategoryId] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [categoryForm, setCategoryForm] = useState({
+    name: '',
+    description: '',
+    icon: '',
+    color: '#3B82F6',
+    image: null
   });
-  const [message, setMessage] = useState('');
+  const [superAdminForm, setSuperAdminForm] = useState({
+    name: '',
+    email: '',
+    password: ''
+  });
+
+  const API_URL = 'http://localhost:5000/api';
+  const token = localStorage.getItem('token');
+  const headers = { Authorization: 'Bearer ' + token };
+
+  const menuItems = [
+    { id: 'categories', label: 'Catégories', icon: LayoutGrid },
+    { id: 'superadmins', label: 'Super Admins', icon: Users, adminOnly: true },
+    { id: 'comments', label: 'Commentaires', icon: MessageSquare, adminOnly: true },
+    { id: 'settings', label: 'Paramètres', icon: Settings },
+    { id: 'stats', label: 'Statistiques', icon: BarChart3 }
+  ];
 
   useEffect(() => {
-    fetchStats();
-    if (activeTab === 'users') {
-      fetchUsers();
+    if (activeTab === 'categories') {
+      fetchCategories();
+    } else if (activeTab === 'superadmins' && user?.role === 'superadmin') {
+      fetchSuperAdmins();
     }
   }, [activeTab]);
 
-  const fetchStats = async () => {
+  const fetchCategories = async () => {
+    setLoading(true);
     try {
-      setStatsError(null);
-      const token = localStorage.getItem('token');
-      if (!token) {
-        setStatsError('Token non trouvé. Veuillez vous reconnecter.');
-        setLoading(false);
-        return;
-      }
-
-      const response = await axios.get('http://localhost:5000/api/admin/stats', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      
-      console.log('📊 Stats reçues:', response.data);
-      setStats(response.data || DEFAULT_STATS);
-      setLoading(false);
+      const response = await axios.get(API_URL + '/admin/categories', { headers });
+      setCategories(response.data);
     } catch (error) {
-      console.error('❌ Erreur lors du chargement des stats:', error);
-      const errorMessage = error.response?.data?.message || error.message || 'Erreur lors du chargement des statistiques';
-      setStatsError(errorMessage);
-      setStats(DEFAULT_STATS);
+      console.error('Erreur:', error);
+    } finally {
       setLoading(false);
     }
   };
 
-  const fetchUsers = async () => {
-    try {
-      const response = await axios.get('/api/admin/users', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
-      setUsers(response.data);
-    } catch (error) {
-      console.error('Erreur lors du chargement des utilisateurs:', error);
-    }
-  };
-
-  const handleUpdateProfile = async (e) => {
-    e.preventDefault();
-    try {
-      const updateData = {
-        name: editData.name,
-        email: editData.email
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Créer un aperçu de l'image
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
       };
+      reader.readAsDataURL(file);
+      setCategoryForm({...categoryForm, image: file});
+    }
+  };
 
-      if (editData.newPassword) {
-        if (editData.newPassword !== editData.confirmPassword) {
-          setMessage('Les mots de passe ne correspondent pas');
-          return;
-        }
-        updateData.password = editData.newPassword;
+  const clearImagePreview = () => {
+    setImagePreview(null);
+    setCategoryForm({...categoryForm, image: null});
+  };
+
+  const handleCategorySubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append('name', categoryForm.name);
+      formData.append('description', categoryForm.description);
+      formData.append('icon', categoryForm.icon);
+      formData.append('color', categoryForm.color);
+      if (categoryForm.image) {
+        formData.append('image', categoryForm.image);
       }
 
-      await axios.put(`/api/users/${user._id}`, updateData, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      console.log('📤 Sending FormData with file:', categoryForm.image);
+
+      const response = await axios.post(API_URL + '/admin/categories', formData, {
+        headers: { 
+          Authorization: 'Bearer ' + token
+          // Don't set Content-Type, let axios set it automatically with boundary
+        }
       });
 
-      setMessage('Profil mis à jour avec succès');
-      setEditMode(false);
-      setTimeout(() => setMessage(''), 3000);
+      console.log('✅ Response:', response.data);
+
+      setCategoryForm({ name: '', description: '', icon: '', color: '#3B82F6', image: null });
+      setImagePreview(null);
+      setShowCategoryForm(false);
+      fetchCategories();
+      alert('Catégorie créée avec succès!');
     } catch (error) {
-      setMessage(error.response?.data?.message || 'Erreur lors de la mise à jour');
+      console.error('Erreur:', error);
+      alert('Erreur lors de la création: ' + (error.response?.data?.message || error.message));
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleDeleteUser = async (userId) => {
-    if (window.confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
-      try {
-        await axios.delete(`/api/admin/users/${userId}`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        });
-        setMessage('Utilisateur supprimé avec succès');
-        fetchUsers();
-        setTimeout(() => setMessage(''), 3000);
-      } catch (error) {
-        setMessage(error.response?.data?.message || 'Erreur lors de la suppression');
+  const handleDeleteCategory = async (id) => {
+    if (!window.confirm('Êtes-vous sûr?')) return;
+    setLoading(true);
+    try {
+      await axios.delete(API_URL + '/admin/categories/' + id, { headers });
+      fetchCategories();
+    } catch (error) {
+      console.error('Erreur:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEditCategory = (category) => {
+    setEditingCategoryId(category._id);
+    setCategoryForm({
+      name: category.name,
+      description: category.description,
+      icon: category.icon,
+      color: category.color,
+      image: null
+    });
+    // Afficher l'image existante en aperçu
+    if (category.image) {
+      setImagePreview(category.image);
+    }
+    setShowCategoryForm(true);
+  };
+
+  const handleCategoryUpdate = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append('name', categoryForm.name);
+      formData.append('description', categoryForm.description);
+      formData.append('icon', categoryForm.icon);
+      formData.append('color', categoryForm.color);
+      if (categoryForm.image) {
+        formData.append('image', categoryForm.image);
       }
+
+      const response = await axios.put(API_URL + '/admin/categories/' + editingCategoryId, formData, {
+        headers: { 
+          Authorization: 'Bearer ' + token
+          // Don't set Content-Type, let axios set it automatically
+        }
+      });
+
+      console.log('✅ Updated:', response.data);
+
+      setCategoryForm({ name: '', description: '', icon: '', color: '#3B82F6', image: null });
+      setShowCategoryForm(false);
+      setEditingCategoryId(null);
+      setImagePreview(null);
+      fetchCategories();
+      alert('Catégorie mise à jour avec succès!');
+    } catch (error) {
+      console.error('Erreur:', error);
+      alert('Erreur lors de la mise à jour: ' + (error.response?.data?.message || error.message));
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
-        <div className="text-white text-xl">Chargement...</div>
-      </div>
-    );
-  }
+  const handleCancelEdit = () => {
+    setEditingCategoryId(null);
+    setCategoryForm({ name: '', description: '', icon: '', color: '#3B82F6', image: null });
+    setImagePreview(null);
+    setShowCategoryForm(false);
+  };
+
+  const fetchSuperAdmins = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(API_URL + '/admin/superadmins', { headers });
+      setSuperAdmins(response.data);
+    } catch (error) {
+      console.error('Erreur:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSuperAdminSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await axios.post(API_URL + '/admin/superadmins', superAdminForm, { headers });
+      setSuperAdminForm({ name: '', email: '', password: '' });
+      setShowSuperAdminForm(false);
+      fetchSuperAdmins();
+      alert('Super admin créé avec succès!');
+    } catch (error) {
+      console.error('Erreur:', error);
+      alert('Erreur: ' + (error.response?.data?.message || ''));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteSuperAdmin = async (id) => {
+    if (!window.confirm('Êtes-vous sûr?')) return;
+    setLoading(true);
+    try {
+      await axios.delete(API_URL + '/admin/superadmins/' + id, { headers });
+      fetchSuperAdmins();
+    } catch (error) {
+      console.error('Erreur:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <h1 className="text-4xl font-bold text-white mb-2">
-            Tableau de Bord Admin
-          </h1>
-          <p className="text-purple-200">Bienvenue {user?.name}</p>
-        </motion.div>
-
-        {/* Message Alert */}
-        {message && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className={`mb-6 p-4 rounded-lg ${
-              message.includes('succès')
-                ? 'bg-green-500/20 border border-green-500 text-green-200'
-                : 'bg-red-500/20 border border-red-500 text-red-200'
-            }`}
-          >
-            {message}
-          </motion.div>
-        )}
-
-        {/* Stats Error Alert */}
-        {statsError && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="mb-6 p-4 rounded-lg bg-yellow-500/20 border border-yellow-500 text-yellow-200 flex gap-3"
-          >
-            <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-            <div>
-              <p className="font-semibold">Attention</p>
-              <p className="text-sm">{statsError}</p>
-            </div>
-          </motion.div>
-        )}
-
-        {/* Tabs */}
-        <div className="flex gap-4 mb-8">
-          {['stats', 'users', 'profile'].map((tab) => (
+    <div className='min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white pt-20'>
+      <Navbar />
+      
+      <div className='flex h-[calc(100vh-80px)]'>
+        {/* Sidebar */}
+        <div className={`${sidebarOpen ? 'w-64' : 'w-20'} bg-slate-800 border-r border-slate-700 transition-all duration-300 flex flex-col`}>
+          {/* Sidebar Header */}
+          <div className='p-4 border-b border-slate-700 flex items-center justify-between'>
+            {sidebarOpen && <h2 className='font-bold text-lg'>Admin Panel</h2>}
             <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-6 py-2 rounded-lg font-semibold transition-all ${
-                activeTab === tab
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-slate-700 text-slate-200 hover:bg-slate-600'
-              }`}
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className='p-1 hover:bg-slate-700 rounded-lg transition'
             >
-              {tab === 'stats'
-                ? '📊 Statistiques'
-                : tab === 'users'
-                ? '👥 Utilisateurs'
-                : '⚙️ Mon Profil'}
+              {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
-          ))}
+          </div>
+
+          {/* Menu Items */}
+          <nav className='flex-1 p-4 space-y-2'>
+            {menuItems.map((item) => {
+              if (item.adminOnly && user?.role !== 'superadmin') return null;
+              const IconComponent = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveTab(item.id)}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
+                    activeTab === item.id
+                      ? 'bg-blue-600 text-white'
+                      : 'text-slate-300 hover:bg-slate-700'
+                  }`}
+                  title={item.label}
+                >
+                  <IconComponent size={20} />
+                  {sidebarOpen && <span>{item.label}</span>}
+                </button>
+              );
+            })}
+          </nav>
+
+          {/* User Profile */}
+          <div className='p-4 border-t border-slate-700'>
+            {sidebarOpen ? (
+              <div className='mb-4 p-3 bg-slate-700 rounded-lg'>
+                <p className='text-sm font-semibold'>{user?.name}</p>
+                <p className='text-xs text-slate-400'>{user?.email}</p>
+                <p className='text-xs text-blue-400 mt-1'>{user?.role}</p>
+              </div>
+            ) : (
+              <div className='mb-4 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center mx-auto'>
+                <span className='text-sm font-bold'>{user?.name?.charAt(0)}</span>
+              </div>
+            )}
+            <button
+              onClick={logout}
+              className='w-full flex items-center gap-3 px-4 py-2 rounded-lg text-red-400 hover:bg-red-500/10 transition'
+            >
+              <LogOut size={20} />
+              {sidebarOpen && <span>Déconnexion</span>}
+            </button>
+          </div>
         </div>
 
-        {/* Content */}
-        {activeTab === 'stats' && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
-            {/* Users Card */}
-            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
-              <h3 className="text-slate-300 text-sm font-semibold mb-2">UTILISATEURS</h3>
-              <p className="text-4xl font-bold text-white mb-4">{stats?.users?.total || 0}</p>
-              <div className="space-y-2 text-sm text-slate-400">
-                <p>Admins: <span className="text-purple-400">{stats?.users?.admins || 0}</span></p>
-                <p>Super Admins: <span className="text-purple-400">{stats?.users?.superAdmins || 0}</span></p>
-              </div>
+        {/* Main Content */}
+        <div className='flex-1 overflow-auto'>
+          <div className='p-8'>
+            {/* Content Header */}
+            <div className='mb-8'>
+              {activeTab === 'categories' && (
+                <>
+                  <h1 className='text-4xl font-bold mb-2'>Catégories</h1>
+                  <p className='text-slate-400'>Gestion des catégories de services</p>
+                </>
+              )}
+              {activeTab === 'superadmins' && (
+                <>
+                  <h1 className='text-4xl font-bold mb-2'>Super Admins</h1>
+                  <p className='text-slate-400'>Gestion des administrateurs</p>
+                </>
+              )}
+              {activeTab === 'settings' && (
+                <>
+                  <h1 className='text-4xl font-bold mb-2'>Paramètres</h1>
+                  <p className='text-slate-400'>Configuration générale</p>
+                </>
+              )}
+              {activeTab === 'stats' && (
+                <>
+                  <h1 className='text-4xl font-bold mb-2'>Statistiques</h1>
+                  <p className='text-slate-400'>Aperçu des performances</p>
+                </>
+              )}
             </div>
 
-            {/* Tasks Card */}
-            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
-              <h3 className="text-slate-300 text-sm font-semibold mb-2">TÂCHES</h3>
-              <p className="text-4xl font-bold text-white mb-4">{stats?.tasks?.total || 0}</p>
-              <div className="space-y-2 text-sm text-slate-400">
-                <p>En attente: <span className="text-yellow-400">{stats?.tasks?.pending || 0}</span></p>
-                <p>Complétées: <span className="text-green-400">{stats?.tasks?.completed || 0}</span></p>
-              </div>
-            </div>
+            {/* Categories Tab */}
+            {activeTab === 'categories' && (
+              <div>
+                <button
+                  onClick={() => setShowCategoryForm(!showCategoryForm)}
+                  className='mb-6 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition'
+                >
+                  {showCategoryForm ? '✕ Annuler' : '+ Nouvelle Catégorie'}
+                </button>
 
-            {/* Invoices Card */}
-            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
-              <h3 className="text-slate-300 text-sm font-semibold mb-2">FACTURES</h3>
-              <p className="text-4xl font-bold text-white mb-4">{stats?.invoices?.total || 0}</p>
-              <div className="space-y-2 text-sm text-slate-400">
-                <p>Payées: <span className="text-green-400">{stats?.invoices?.paid || 0}</span></p>
-                <p>En attente: <span className="text-yellow-400">{stats?.invoices?.pending || 0}</span></p>
-              </div>
-            </div>
+                {showCategoryForm && (
+                  <form onSubmit={editingCategoryId ? handleCategoryUpdate : handleCategorySubmit} className='bg-slate-700 p-6 rounded-lg mb-6 border border-slate-600 space-y-4 max-w-2xl'>
+                    <div>
+                      <label className='block text-sm font-semibold mb-2'>Nom de la catégorie</label>
+                      <input
+                        type='text'
+                        required
+                        value={categoryForm.name}
+                        onChange={(e) => setCategoryForm({...categoryForm, name: e.target.value})}
+                        className='w-full px-4 py-2 bg-slate-600 border border-slate-500 rounded-lg text-white placeholder-slate-400'
+                        placeholder='Ex: Ménage'
+                      />
+                    </div>
 
-            {/* Revenue Card - Full Width */}
-            <div className="md:col-span-2 lg:col-span-3 bg-gradient-to-r from-purple-600/20 to-pink-600/20 backdrop-blur-sm border border-purple-500/30 rounded-lg p-6">
-              <h3 className="text-slate-300 text-sm font-semibold mb-4">REVENUS</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div>
-                  <p className="text-slate-400 text-sm mb-1">Total</p>
-                  <p className="text-3xl font-bold text-purple-300">
-                    {Math.round(stats?.revenue?.total || 0).toLocaleString()} DT
-                  </p>
-                </div>
-                <div>
-                  <p className="text-slate-400 text-sm mb-1">Payés</p>
-                  <p className="text-3xl font-bold text-green-400">
-                    {Math.round(stats?.revenue?.paid || 0).toLocaleString()} DT
-                  </p>
-                </div>
-                <div>
-                  <p className="text-slate-400 text-sm mb-1">En attente</p>
-                  <p className="text-3xl font-bold text-yellow-400">
-                    {Math.round(stats?.revenue?.pending || 0).toLocaleString()} DT
-                  </p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
+                    <div>
+                      <label className='block text-sm font-semibold mb-2'>Description</label>
+                      <textarea
+                        required
+                        value={categoryForm.description}
+                        onChange={(e) => setCategoryForm({...categoryForm, description: e.target.value})}
+                        className='w-full px-4 py-2 bg-slate-600 border border-slate-500 rounded-lg text-white placeholder-slate-400'
+                        rows='3'
+                        placeholder='Description détaillée...'
+                      />
+                    </div>
 
-        {activeTab === 'users' && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg overflow-hidden"
-          >
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-slate-700/50 border-b border-slate-600">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-slate-200">
-                      Nom
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-slate-200">
-                      Email
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-slate-200">
-                      Rôle
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-slate-200">
-                      Date d'inscription
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-slate-200">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-700">
-                  {users.map((u) => (
-                    <tr
-                      key={u._id}
-                      className="hover:bg-slate-700/50 transition-colors"
-                    >
-                      <td className="px-6 py-4 text-sm text-white">{u.name}</td>
-                      <td className="px-6 py-4 text-sm text-slate-300">{u.email}</td>
-                      <td className="px-6 py-4 text-sm">
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                            u.role === 'superadmin'
-                              ? 'bg-red-500/20 text-red-200'
-                              : u.role === 'admin'
-                              ? 'bg-purple-500/20 text-purple-200'
-                              : 'bg-blue-500/20 text-blue-200'
-                          }`}
-                        >
-                          {u.role}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-slate-400">
-                        {new Date(u.createdAt).toLocaleDateString('fr-FR')}
-                      </td>
-                      <td className="px-6 py-4 text-sm">
-                        {u.role !== 'superadmin' && (
+                    <div className='grid grid-cols-3 gap-4'>
+                      <div>
+                        <label className='block text-sm font-semibold mb-2'>Icône</label>
+                        <input
+                          type='text'
+                          value={categoryForm.icon}
+                          onChange={(e) => setCategoryForm({...categoryForm, icon: e.target.value})}
+                          className='w-full px-4 py-2 bg-slate-600 border border-slate-500 rounded-lg text-white text-2xl text-center'
+                          placeholder='🏠'
+                        />
+                      </div>
+                      <div>
+                        <label className='block text-sm font-semibold mb-2'>Couleur</label>
+                        <input
+                          type='color'
+                          value={categoryForm.color}
+                          onChange={(e) => setCategoryForm({...categoryForm, color: e.target.value})}
+                          className='w-full px-4 py-2 bg-slate-600 border border-slate-500 rounded-lg cursor-pointer'
+                        />
+                      </div>
+                    </div>
+
+                    {/* Image Upload Section */}
+                    <div className='border-2 border-dashed border-slate-500 rounded-lg p-6 text-center'>
+                      {imagePreview ? (
+                        <div className='space-y-4'>
+                          <div className='relative'>
+                            <img src={imagePreview} alt='Preview' className='w-full h-48 object-cover rounded-lg' />
+                            <div className='absolute inset-0 bg-green-500/20 rounded-lg flex items-center justify-center'>
+                              <div className='text-center'>
+                                <p className='text-white font-semibold text-lg'>✓ Image Sélectionnée</p>
+                              </div>
+                            </div>
+                          </div>
+                          <div className='flex gap-2'>
+                            <label className='flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold cursor-pointer transition'>
+                              Changer l'image
+                              <input
+                                type='file'
+                                accept='image/*'
+                                onChange={handleImageChange}
+                                className='hidden'
+                              />
+                            </label>
+                            <button
+                              type='button'
+                              onClick={clearImagePreview}
+                              className='px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition'
+                            >
+                              Supprimer
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <label className='flex flex-col items-center justify-center cursor-pointer py-6'>
+                          <Upload size={40} className='text-slate-400 mb-2' />
+                          <p className='text-white font-semibold mb-1'>Cliquez ou glissez une image</p>
+                          <p className='text-slate-400 text-sm'>PNG, JPG, GIF jusqu'à 5MB</p>
+                          <input
+                            type='file'
+                            accept='image/*'
+                            onChange={handleImageChange}
+                            className='hidden'
+                          />
+                        </label>
+                      )}
+                    </div>
+
+                    <div className='flex gap-3'>
+                      <button type='submit' disabled={loading} className='flex-1 px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition disabled:opacity-50'>
+                        {loading ? 'En cours...' : editingCategoryId ? 'Mettre à jour' : 'Créer la Catégorie'}
+                      </button>
+                      {editingCategoryId && (
+                        <button type='button' onClick={handleCancelEdit} className='px-6 py-3 bg-slate-600 hover:bg-slate-700 text-white rounded-lg font-semibold transition'>
+                          Annuler
+                        </button>
+                      )}
+                    </div>
+                  </form>
+                )}
+
+                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+                  {categories.map((cat) => (
+                    <div key={cat._id} className='bg-slate-700 border border-slate-600 rounded-lg overflow-hidden hover:border-blue-500 transition'>
+                      {cat.image && (
+                        <img src={cat.image} alt={cat.name} className='w-full h-40 object-cover' />
+                      )}
+                      <div className='p-4'>
+                        <h3 className='font-bold text-lg mb-2'>{cat.icon} {cat.name}</h3>
+                        <p className='text-sm text-slate-400 mb-4 line-clamp-2'>{cat.description}</p>
+                        <div className='flex gap-2'>
                           <button
-                            onClick={() => handleDeleteUser(u._id)}
-                            className="px-3 py-1 bg-red-600/20 text-red-300 rounded hover:bg-red-600/40 transition-colors text-xs font-semibold"
+                            onClick={() => handleEditCategory(cat)}
+                            className='flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm font-semibold transition'
+                          >
+                            Modifier
+                          </button>
+                          <button
+                            onClick={() => handleDeleteCategory(cat._id)}
+                            className='flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded text-sm font-semibold transition'
                           >
                             Supprimer
                           </button>
-                        )}
-                      </td>
-                    </tr>
+                        </div>
+                      </div>
+                    </div>
                   ))}
-                </tbody>
-              </table>
-            </div>
-          </motion.div>
-        )}
-
-        {activeTab === 'profile' && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="max-w-2xl bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-8"
-          >
-            {!editMode ? (
-              <div className="space-y-6">
-                <div>
-                  <p className="text-slate-400 text-sm mb-1">Nom</p>
-                  <p className="text-white text-lg font-semibold">{user?.name}</p>
                 </div>
-                <div>
-                  <p className="text-slate-400 text-sm mb-1">Email</p>
-                  <p className="text-white text-lg font-semibold">{user?.email}</p>
-                </div>
-                <div>
-                  <p className="text-slate-400 text-sm mb-1">Rôle</p>
-                  <p className="text-purple-300 text-lg font-semibold">{user?.role}</p>
-                </div>
-                <button
-                  onClick={() => setEditMode(true)}
-                  className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
-                >
-                  Modifier le profil
-                </button>
               </div>
-            ) : (
-              <form onSubmit={handleUpdateProfile} className="space-y-6">
-                <div>
-                  <label className="block text-slate-300 text-sm font-semibold mb-2">
-                    Nom
-                  </label>
-                  <input
-                    type="text"
-                    value={editData.name}
-                    onChange={(e) =>
-                      setEditData({ ...editData, name: e.target.value })
-                    }
-                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-purple-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-slate-300 text-sm font-semibold mb-2">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    value={editData.email}
-                    onChange={(e) =>
-                      setEditData({ ...editData, email: e.target.value })
-                    }
-                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-purple-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-slate-300 text-sm font-semibold mb-2">
-                    Nouveau mot de passe (optionnel)
-                  </label>
-                  <input
-                    type="password"
-                    value={editData.newPassword}
-                    onChange={(e) =>
-                      setEditData({ ...editData, newPassword: e.target.value })
-                    }
-                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-purple-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-slate-300 text-sm font-semibold mb-2">
-                    Confirmer le mot de passe
-                  </label>
-                  <input
-                    type="password"
-                    value={editData.confirmPassword}
-                    onChange={(e) =>
-                      setEditData({
-                        ...editData,
-                        confirmPassword: e.target.value
-                      })
-                    }
-                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-purple-500"
-                  />
-                </div>
-
-                <div className="flex gap-4">
-                  <button
-                    type="submit"
-                    className="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
-                  >
-                    Enregistrer
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setEditMode(false)}
-                    className="flex-1 bg-slate-600 hover:bg-slate-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
-                  >
-                    Annuler
-                  </button>
-                </div>
-              </form>
             )}
-          </motion.div>
-        )}
+
+            {/* Super Admins Tab */}
+            {activeTab === 'superadmins' && user?.role === 'superadmin' && (
+              <div>
+                <button
+                  onClick={() => setShowSuperAdminForm(!showSuperAdminForm)}
+                  className='mb-6 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition'
+                >
+                  {showSuperAdminForm ? '✕ Annuler' : '+ Nouveau Super Admin'}
+                </button>
+
+                {showSuperAdminForm && (
+                  <form onSubmit={handleSuperAdminSubmit} className='bg-slate-700 p-6 rounded-lg mb-6 border border-slate-600 space-y-4 max-w-md'>
+                    <input
+                      type='text'
+                      required
+                      value={superAdminForm.name}
+                      onChange={(e) => setSuperAdminForm({...superAdminForm, name: e.target.value})}
+                      className='w-full px-4 py-2 bg-slate-600 border border-slate-500 rounded-lg text-white placeholder-slate-400'
+                      placeholder='Nom'
+                    />
+                    <input
+                      type='email'
+                      required
+                      value={superAdminForm.email}
+                      onChange={(e) => setSuperAdminForm({...superAdminForm, email: e.target.value})}
+                      className='w-full px-4 py-2 bg-slate-600 border border-slate-500 rounded-lg text-white placeholder-slate-400'
+                      placeholder='Email'
+                    />
+                    <input
+                      type='password'
+                      required
+                      minLength='6'
+                      value={superAdminForm.password}
+                      onChange={(e) => setSuperAdminForm({...superAdminForm, password: e.target.value})}
+                      className='w-full px-4 py-2 bg-slate-600 border border-slate-500 rounded-lg text-white placeholder-slate-400'
+                      placeholder='Mot de passe (min 6 caractères)'
+                    />
+                    <button type='submit' disabled={loading} className='w-full px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition disabled:opacity-50'>
+                      {loading ? 'Création en cours...' : 'Créer Super Admin'}
+                    </button>
+                  </form>
+                )}
+
+                <div className='overflow-x-auto'>
+                  <table className='w-full'>
+                    <thead>
+                      <tr className='bg-slate-700 border-b border-slate-600'>
+                        <th className='px-6 py-3 text-left'>Nom</th>
+                        <th className='px-6 py-3 text-left'>Email</th>
+                        <th className='px-6 py-3 text-left'>Date de création</th>
+                        <th className='px-6 py-3 text-center'>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {superAdmins.map((admin) => (
+                        <tr key={admin._id} className='bg-slate-750 border-b border-slate-600 hover:bg-slate-700 transition'>
+                          <td className='px-6 py-3'>{admin.name}</td>
+                          <td className='px-6 py-3'>{admin.email}</td>
+                          <td className='px-6 py-3'>{new Date(admin.createdAt).toLocaleDateString('fr-FR')}</td>
+                          <td className='px-6 py-3 text-center'>
+                            <button
+                              onClick={() => handleDeleteSuperAdmin(admin._id)}
+                              className='px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded text-sm font-semibold transition'
+                            >
+                              Supprimer
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {/* Settings Tab */}
+            {activeTab === 'settings' && (
+              <div className='bg-slate-700 p-6 rounded-lg border border-slate-600'>
+                <h2 className='text-2xl font-semibold mb-4'>Configuration Générale</h2>
+                <p className='text-slate-400'>Les paramètres seront disponibles prochainement...</p>
+              </div>
+            )}
+
+            {/* Comments Tab */}
+            {activeTab === 'comments' && (
+              <CommentsModeration />
+            )}
+
+            {/* Stats Tab */}
+            {activeTab === 'stats' && (
+              <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+                <div className='bg-slate-700 p-6 rounded-lg border border-slate-600'>
+                  <p className='text-slate-400 text-sm'>Total Catégories</p>
+                  <p className='text-4xl font-bold text-blue-400'>{categories.length}</p>
+                </div>
+                <div className='bg-slate-700 p-6 rounded-lg border border-slate-600'>
+                  <p className='text-slate-400 text-sm'>Total Super Admins</p>
+                  <p className='text-4xl font-bold text-green-400'>{superAdmins.length}</p>
+                </div>
+                <div className='bg-slate-700 p-6 rounded-lg border border-slate-600'>
+                  <p className='text-slate-400 text-sm'>Votre Rôle</p>
+                  <p className='text-2xl font-bold text-purple-400 capitalize'>{user?.role}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -31,30 +31,33 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
+      console.log('🔍 Fetching user profile...');
+      console.log('📝 Token in headers:', axios.defaults.headers.common['Authorization']);
+      
       const { data } = await axios.get('http://localhost:5000/api/users/profile');
+      console.log('✅ User profile fetched:', data);
       setUser(data);
     } catch (error) {
-      console.error('Erreur lors de la récupération du profil:', error.message);
-      logout();
+      console.error('❌ Erreur lors de la récupération du profil:', error.response?.status, error.message);
+      
+      // Si erreur 401, c'est que le token n'est pas valide
+      if (error.response?.status === 401) {
+        console.log('🔄 Token invalid or expired, logging out...');
+        logout();
+      }
     } finally {
       setLoading(false);
     }
   };
 
   const login = (userData, userToken) => {
-    console.log('✅ Login successful:', userData);
     setUser(userData);
     setToken(userToken);
-    localStorage.setItem('token', userToken);
-    axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
   };
 
   const register = (userData, userToken) => {
-    console.log('✅ Register successful:', userData);
     setUser(userData);
     setToken(userToken);
-    localStorage.setItem('token', userToken);
-    axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
   };
 
   const logout = () => {

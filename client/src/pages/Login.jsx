@@ -24,22 +24,20 @@ const Login = () => {
     setLoading(true);
 
     try {
-      console.log('📝 Tentative de login avec:', formData.email);
-      const { data } = await axios.post('http://localhost:5000/api/users/login', formData);
-      console.log('✅ Réponse du serveur:', data);
+      const response = await axios.post('http://localhost:5000/api/users/login', formData);
+      const { token, ...userData } = response.data;
       
-      login(data, data.token);
+      console.log('✅ Login Success:', response.data);
+      login(userData, token);
       
       // Redirection basée sur le rôle
-      if (data.role === 'superadmin' || data.role === 'admin') {
+      if (response.data.role === 'superadmin' || response.data.role === 'admin') {
         navigate('/admin/dashboard');
       } else {
         navigate('/dashboard');
       }
     } catch (err) {
-      console.error('❌ Erreur login:', err);
-      const errorMessage = err.response?.data?.message || err.message || 'Erreur de connexion';
-      setError(errorMessage);
+      setError(err.response?.data?.message || 'Erreur de connexion');
     } finally {
       setLoading(false);
     }
@@ -50,10 +48,10 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pt-20">
       <Navbar />
       
-      <div className="pt-24 pb-12">
+      <div className="pb-12">
         <div className="max-w-md mx-auto px-4">
           <div className="bg-white rounded-xl shadow-lg p-8">
             <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">

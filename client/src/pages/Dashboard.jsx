@@ -1,249 +1,288 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
+﻿import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import CommentForm from '../components/CommentForm';
+import axios from 'axios';
+import { Menu, X, Home, MessageSquare, Settings, LogOut, Trash2, Star, Plus } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const Dashboard = () => {
-  const { user } = useAuth();
-  const [tasks, setTasks] = useState([]);
-  const [invoices, setInvoices] = useState([]);
-  const [stats, setStats] = useState({
-    tasks: { total: 0, pending: 0, completed: 0 },
-    invoices: { total: 0, paid: 0, pending: 0 },
-    revenue: { total: 0, paid: 0, pending: 0 }
-  });
-  const [loading, setLoading] = useState(true);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('welcome');
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [myComments, setMyComments] = useState([]);
+  const [loadingComments, setLoadingComments] = useState(false);
+  const [showCommentForm, setShowCommentForm] = useState(false);
+
+  const API_URL = 'http://localhost:5000/api';
+  const token = localStorage.getItem('token');
+  const headers = { Authorization: 'Bearer ' + token };
+
+  const menuItems = [
+    { id: 'welcome', label: 'Accueil', icon: Home },
+    { id: 'comments', label: 'Mes Commentaires', icon: MessageSquare },
+    { id: 'settings', label: 'Paramètres', icon: Settings }
+  ];
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (activeTab === 'comments') {
+      fetchMyComments();
+    }
+  }, [activeTab]);
 
-  const fetchData = async () => {
+  const fetchMyComments = async () => {
+    setLoadingComments(true);
     try {
-      // Récupérer les stats personnelles
-      const statsRes = await axios.get('http://localhost:5000/api/users/stats/personal', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
-      setStats(statsRes.data);
-
-      // Récupérer les tâches et factures
-      const [tasksRes, invoicesRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/tasks', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        }),
-        axios.get('http://localhost:5000/api/invoices', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        })
-      ]);
-
-      setTasks(tasksRes.data.slice(0, 5)); // 5 dernières tâches
-      setInvoices(invoicesRes.data.slice(0, 5));
+      const response = await axios.get(`${API_URL}/comments/my-comments`, { headers });
+      setMyComments(response.data || []);
     } catch (error) {
-      console.error('Erreur lors du chargement des données:', error);
+      console.error('Erreur:', error);
+      setMyComments([]);
     } finally {
-      setLoading(false);
+      setLoadingComments(false);
     }
   };
 
-  const getStatusColor = (status) => {
-    const colors = {
-      pending: 'bg-yellow-100 text-yellow-800',
-      'in-progress': 'bg-blue-100 text-blue-800',
-      completed: 'bg-green-100 text-green-800',
-      cancelled: 'bg-red-100 text-red-800'
-    };
-    return colors[status] || 'bg-gray-100 text-gray-800';
+
+
+  const handleDeleteComment = async (commentId) => {
+    if (window.confirm('Êtes-vous sûr?')) {
+      try {
+        await axios.delete(`${API_URL}/comments/${commentId}`, { headers });
+        setMyComments(myComments.filter(c => c._id !== commentId));
+      } catch (error) {
+        console.error('Erreur:', error);
+      }
+    }
   };
 
-  const getStatusText = (status) => {
-    const texts = {
-      pending: 'En attente',
-      'in-progress': 'En cours',
-      completed: 'Terminé',
-      cancelled: 'Annulé'
+  const getStatusBadge = (status) => {
+    const badges = {
+      pending: { bg: 'bg-yellow-100', text: 'text-yellow-800', label: '⏳ En attente' },
+      approved: { bg: 'bg-green-100', text: 'text-green-800', label: '✅ Approuvé' },
+      rejected: { bg: 'bg-red-100', text: 'text-red-800', label: '❌ Rejeté' }
     };
-    return texts[status] || status;
+    const badge = badges[status];
+    return badge ? (
+      <span className={`inline-block ${badge.bg} ${badge.text} px-3 py-1 rounded-full text-xs font-semibold`}>
+        {badge.label}
+      </span>
+    ) : null;
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-900 text-white">
       <Navbar />
+      
+      <div className="flex pt-16">
+        {/* Sidebar Toggle Button */}
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className='fixed top-20 left-4 z-40 p-2 hover:bg-slate-700 rounded-lg lg:hidden'
+        >
+          {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
 
-      <div className="pt-20 pb-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* En-tête */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">
-              Bienvenue, {user?.name} 👋
-            </h1>
-            <p className="text-gray-600 mt-2">
-              Voici un aperçu de vos demandes d'aide
-            </p>
-          </div>
+        {/* Sidebar */}
+        <aside
+          className={`fixed left-0 top-16 h-full w-64 bg-gradient-to-b from-slate-800 to-slate-900 border-r border-slate-700 transition-all duration-300 ${
+            sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          } lg:translate-x-0 lg:relative z-30`}
+        >
+          <div className='p-6'>
+            <h2 className='text-xl font-bold mb-8 text-blue-400'>Do It</h2>
+            
+            <nav className='space-y-2'>
+              {menuItems.map(item => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      setActiveTab(item.id);
+                      setSidebarOpen(false);
+                    }}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
+                      activeTab === item.id
+                        ? 'bg-blue-600 text-white'
+                        : 'text-slate-300 hover:bg-slate-700'
+                    }`}
+                  >
+                    <Icon size={20} />
+                    <span>{item.label}</span>
+                  </button>
+                );
+              })}
+            </nav>
 
-          {/* Statistiques */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white p-6 rounded-xl shadow-md">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Total Tâches</p>
-                  <p className="text-3xl font-bold text-gray-900">{stats.tasks.total}</p>
-                </div>
-                <div className="bg-primary bg-opacity-10 p-3 rounded-lg">
-                  <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white p-6 rounded-xl shadow-md">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">En attente</p>
-                  <p className="text-3xl font-bold text-yellow-600">{stats.tasks.pending}</p>
-                </div>
-                <div className="bg-yellow-100 p-3 rounded-lg">
-                  <svg className="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white p-6 rounded-xl shadow-md">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Complétées</p>
-                  <p className="text-3xl font-bold text-green-600">{stats.tasks.completed}</p>
-                </div>
-                <div className="bg-green-100 p-3 rounded-lg">
-                  <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white p-6 rounded-xl shadow-md">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Revenu Total</p>
-                  <p className="text-3xl font-bold text-green-600">{Math.round(stats.revenue.total).toLocaleString()} DT</p>
-                </div>
-                <div className="bg-green-100 p-3 rounded-lg">
-                  <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-              </div>
+            <div className='absolute bottom-6 left-6 right-6'>
+              <button
+                onClick={() => {
+                  logout();
+                  navigate('/');
+                }}
+                className='w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-400 hover:bg-red-500/20 transition'
+              >
+                <LogOut size={20} />
+                <span>Déconnexion</span>
+              </button>
             </div>
           </div>
+        </aside>
 
-          {/* Actions rapides */}
-          <div className="bg-gradient-to-r from-primary to-secondary rounded-xl shadow-lg p-8 mb-8 text-white">
-            <h2 className="text-2xl font-bold mb-4">Nouvelle demande d'aide</h2>
-            <p className="mb-6">Besoin d'aide pour un devoir ou un projet ? Créez une nouvelle demande maintenant !</p>
-            <Link
-              to="/new-task"
-              className="inline-block bg-white text-primary px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition"
-            >
-              Créer une demande
-            </Link>
+        {/* Main Content */}
+        <main className='flex-1 p-6'>
+          <div className='max-w-6xl mx-auto'>
+            <h1 className='text-4xl font-bold mb-2'>Bienvenue, {user?.name}!</h1>
+            <p className='text-slate-400 mb-8'>Gérez votre profil et vos commentaires</p>
+
+            {/* Welcome Tab */}
+            {activeTab === 'welcome' && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className='bg-slate-800 border border-slate-700 rounded-lg p-8'
+              >
+                <h2 className='text-2xl font-bold mb-6'>Informations du Profil</h2>
+                <div className='space-y-4'>
+                  <div className='flex justify-between items-center pb-4 border-b border-slate-700'>
+                    <span className='text-slate-400'>Email:</span>
+                    <span className='font-semibold'>{user?.email}</span>
+                  </div>
+                  <div className='flex justify-between items-center pb-4 border-b border-slate-700'>
+                    <span className='text-slate-400'>Nom:</span>
+                    <span className='font-semibold'>{user?.name}</span>
+                  </div>
+                  <div className='flex justify-between items-center pb-4 border-b border-slate-700'>
+                    <span className='text-slate-400'>Année universitaire:</span>
+                    <span className='font-semibold'>{user?.universityYear || 'Non spécifiée'}</span>
+                  </div>
+                  <div className='flex justify-between items-center'>
+                    <span className='text-slate-400'>Rôle:</span>
+                    <span className='font-semibold capitalize'>{user?.role || 'Utilisateur'}</span>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Comments Tab */}
+            {activeTab === 'comments' && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <div className='flex justify-between items-center mb-6'>
+                  <h2 className='text-2xl font-bold'>Mes Commentaires</h2>
+                  {!showCommentForm && (
+                    <button
+                      onClick={() => setShowCommentForm(true)}
+                      className='flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition'
+                    >
+                      <Plus size={20} />
+                      Nouveau Commentaire
+                    </button>
+                  )}
+                </div>
+
+                {showCommentForm && (
+                  <div className='mb-8 bg-slate-800 border border-slate-700 rounded-lg p-6'>
+                    <CommentForm
+                      onCommentSubmitted={() => {
+                        setShowCommentForm(false);
+                        fetchMyComments();
+                      }}
+                      onClose={() => {
+                        setShowCommentForm(false);
+                      }}
+                    />
+                  </div>
+                )}
+
+                {loadingComments ? (
+                  <div className='flex justify-center py-12'>
+                    <div className='w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin' />
+                  </div>
+                ) : myComments.length === 0 ? (
+                  <div className='bg-slate-800 border border-slate-700 rounded-lg p-8 text-center'>
+                    <MessageSquare size={48} className='mx-auto mb-4 text-slate-500' />
+                    <p className='text-slate-400'>Vous n\'avez pas encore écrit de commentaires</p>
+                  </div>
+                ) : (
+                  <div className='space-y-4'>
+                    {myComments.map((comment, index) => (
+                      <motion.div
+                        key={comment._id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                        className='bg-slate-800 border border-slate-700 rounded-lg p-6 hover:shadow-lg transition'
+                      >
+                        <div className='flex justify-between items-start mb-4'>
+                          <div className='flex-1'>
+                            <div className='flex gap-1 mb-3'>
+                              {[...Array(5)].map((_, i) => (
+                                <Star
+                                  key={i}
+                                  size={18}
+                                  className={`${
+                                    i < comment.rating
+                                      ? 'fill-yellow-400 text-yellow-400'
+                                      : 'text-slate-600'
+                                  }`}
+                                />
+                              ))}
+                            </div>
+
+                            <div className='mb-3'>
+                              {getStatusBadge(comment.status)}
+                            </div>
+
+                            <p className='text-slate-300 mb-3'>{comment.text}</p>
+
+                            {comment.status === 'rejected' && comment.rejectionReason && (
+                              <div className='bg-red-500/10 border border-red-500/30 rounded p-3 text-sm text-red-300 mt-3'>
+                                <p className='font-semibold mb-1'>Raison du rejet:</p>
+                                <p>{comment.rejectionReason}</p>
+                              </div>
+                            )}
+
+                            <p className='text-xs text-slate-500 mt-3'>
+                              {new Date(comment.createdAt).toLocaleDateString('fr-FR')}
+                            </p>
+                          </div>
+
+                          <button
+                            onClick={() => handleDeleteComment(comment._id)}
+                            className='p-2 text-red-400 hover:bg-red-500/20 rounded-lg transition ml-4'
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+              </motion.div>
+            )}
+
+            {/* Settings Tab */}
+            {activeTab === 'settings' && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className='bg-slate-800 border border-slate-700 rounded-lg p-8'
+              >
+                <h2 className='text-2xl font-bold mb-6'>Paramètres</h2>
+                <div className='p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg'>
+                  <p className='text-blue-300'>ℹ️ La modification du profil sera disponible prochainement.</p>
+                </div>
+              </motion.div>
+            )}
           </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Dernières tâches */}
-            <div className="bg-white rounded-xl shadow-md p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-900">Dernières demandes</h2>
-                <Link to="/history" className="text-primary hover:text-secondary text-sm font-medium">
-                  Voir tout →
-                </Link>
-              </div>
-
-              {tasks.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  <p>Aucune demande pour le moment</p>
-                  <Link to="/new-task" className="text-primary hover:text-secondary font-medium mt-2 inline-block">
-                    Créer votre première demande
-                  </Link>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {tasks.map((task) => (
-                    <div key={task._id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-gray-900 mb-1">{task.title}</h3>
-                          <p className="text-sm text-gray-600 mb-2">{task.taskType}</p>
-                          <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(task.status)}`}>
-                            {getStatusText(task.status)}
-                          </span>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-lg font-bold text-primary">{task.price} DZD</p>
-                          <p className="text-xs text-gray-500">
-                            {new Date(task.createdAt).toLocaleDateString('fr-FR')}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Dernières factures */}
-            <div className="bg-white rounded-xl shadow-md p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-900">Factures récentes</h2>
-              </div>
-
-              {invoices.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  <p>Aucune facture</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {invoices.map((invoice) => (
-                    <div key={invoice._id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-semibold text-gray-900">{invoice.invoiceNumber}</p>
-                          <p className="text-sm text-gray-600">
-                            {new Date(invoice.date).toLocaleDateString('fr-FR')}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-lg font-bold text-gray-900">{invoice.totalAmount} DZD</p>
-                          <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
-                            invoice.paymentStatus === 'paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                          }`}>
-                            {invoice.paymentStatus === 'paid' ? 'Payé' : 'En attente'}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
+        </main>
       </div>
-
-      <Footer />
     </div>
   );
 };

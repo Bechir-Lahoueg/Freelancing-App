@@ -23,15 +23,12 @@ export const protect = async (req, res, next) => {
 
       next();
     } catch (error) {
-      console.error('Erreur d\'authentification:', error.message);
-      
-      if (error.name === 'TokenExpiredError') {
-        return res.status(401).json({ message: 'Token expiré' });
-      }
-      
+      console.error('Erreur d\'authentification:', error);
       return res.status(401).json({ message: 'Non autorisé, token invalide' });
     }
-  } else {
+  }
+
+  if (!token) {
     return res.status(401).json({ message: 'Non autorisé, aucun token fourni' });
   }
 };
@@ -42,3 +39,6 @@ export const generateToken = (id) => {
     expiresIn: '30d'
   });
 };
+
+// Export authenticate as an alias for protect
+export const authenticate = protect;

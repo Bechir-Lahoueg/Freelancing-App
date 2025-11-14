@@ -13,6 +13,8 @@ import authRoutes from './routes/authRoutes.js';
 import taskRoutes from './routes/taskRoutes.js';
 import invoiceRoutes from './routes/invoiceRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
+import commentRoutes from './routes/commentRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js';
 
 // Charger les variables d'environnement
 dotenv.config();
@@ -44,6 +46,9 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Servir les fichiers statiques (images, etc.)
+app.use('/uploads', express.static('uploads'));
+
 // Configuration de la session
 app.use(session({
   secret: process.env.SESSION_SECRET || 'votre_session_secret',
@@ -62,7 +67,7 @@ app.use(passport.session());
 // Route de test
 app.get('/', (req, res) => {
   res.json({ 
-    message: '🚀 API Mousaada est en ligne !',
+    message: '🚀 API Do It est en ligne !',
     version: '1.0.0',
     endpoints: {
       users: '/api/users',
@@ -73,12 +78,27 @@ app.get('/', (req, res) => {
   });
 });
 
+// Add request logging middleware for debugging
+app.use((req, res, next) => {
+  try {
+    console.log(`\n[${new Date().toISOString()}] ${req.method} ${req.path}`);
+    if (req.body && Object.keys(req.body).length > 0) {
+      console.log('Body:', req.body);
+    }
+  } catch (e) {
+    console.error('Logging error:', e.message);
+  }
+  next();
+});
+
 // Routes API
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/invoices', invoiceRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/comments', commentRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Middleware de gestion d'erreurs
 app.use(notFound);

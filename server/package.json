@@ -1,7 +1,7 @@
 {
-  "name": "mousaada-server",
+  "name": "do-it-server",
   "version": "1.0.0",
-  "description": "Backend API pour la plateforme Mousaada",
+  "description": "Backend API pour la plateforme Do It",
   "main": "server.js",
   "type": "module",
   "scripts": {
@@ -9,22 +9,30 @@
     "dev": "nodemon server.js",
     "server": "nodemon server.js"
   },
-  "keywords": ["express", "mongodb", "oauth2", "jwt"],
+  "keywords": [
+    "express",
+    "mongodb",
+    "oauth2",
+    "jwt"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2",
-    "mongoose": "^8.0.3",
-    "dotenv": "^16.3.1",
-    "cors": "^2.8.5",
     "bcryptjs": "^2.4.3",
-    "jsonwebtoken": "^9.0.2",
+    "cloudinary": "^1.41.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
     "express-validator": "^7.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.0.3",
+    "multer": "^1.4.5-lts.1",
+    "multer-storage-cloudinary": "^4.0.0",
     "passport": "^0.7.0",
-    "passport-google-oauth20": "^2.0.0",
     "passport-facebook": "^3.0.0",
-    "passport-microsoft": "^1.0.0",
-    "express-session": "^1.17.3"
+    "passport-google-oauth20": "^2.0.0",
+    "passport-microsoft": "^1.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"

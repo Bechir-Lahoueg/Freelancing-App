@@ -1,21 +1,19 @@
 import Notification from '../models/Notification.js';
 import User from '../models/User.js';
 
-// @desc    Obtenir les notifications pour l'admin
+// @desc    Obtenir les notifications pour l'utilisateur connecté
 // @route   GET /api/notifications
-// @access  Private (Admin)
+// @access  Private
 export const getNotifications = async (req, res) => {
   try {
-    // Récupérer tous les admins et superadmins
-    const admins = await User.find({ role: { $in: ['admin', 'superadmin'] } }).select('_id');
-    const adminIds = admins.map(a => a._id);
+    const userId = req.user._id;
 
-    const notifications = await Notification.find({ admin: { $in: adminIds } })
+    const notifications = await Notification.find({ user: userId })
       .sort({ createdAt: -1 })
       .limit(50);
 
     const unreadCount = await Notification.countDocuments({
-      admin: { $in: adminIds },
+      user: userId,
       read: false
     });
 

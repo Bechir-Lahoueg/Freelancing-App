@@ -1,15 +1,30 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import CategoriesDropdown from './CategoriesDropdown';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import NotificationBell from './NotificationBell';
-import { LogIn, UserPlus, Zap, Handshake, Menu, X, LogOut, LayoutDashboard } from 'lucide-react';
+import CategoriesDropdown from './CategoriesDropdown';
+import { LogIn, UserPlus, Handshake, Briefcase, Menu, X, LogOut, LayoutDashboard, MessageCircle } from 'lucide-react';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  // Détecter les pages avec fond blanc (login, register, dashboard, etc.)
+  const isWhiteBackgroundPage = ['/login', '/register', '/dashboard', '/admin/dashboard', '/partner'].includes(location.pathname) || 
+                                 location.pathname.startsWith('/dashboard') || 
+                                 location.pathname.startsWith('/admin');
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -18,20 +33,30 @@ const Navbar = () => {
   };
 
   const navItems = [
-    { label: 'Catégories', icon: Zap, onClick: () => { navigate('/categories'); setMobileMenuOpen(false); } },
     { label: 'Devenir Partenaire', icon: Handshake, onClick: () => { navigate('/partner'); setMobileMenuOpen(false); } },
-    { label: 'Services', icon: Zap, onClick: () => { navigate('/services'); setMobileMenuOpen(false); } },
+    { label: 'Services', icon: Briefcase, onClick: () => { navigate('/services'); setMobileMenuOpen(false); } },
   ];
 
+  // Déterminer les classes selon l'état
+  const shouldShowWhiteStyle = isWhiteBackgroundPage || scrolled;
+
   return (
-    <nav className="fixed top-0 w-full z-50 bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 shadow-2xl">
+    <motion.nav 
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      className={`fixed top-0 w-full z-50 transition-all duration-500 ${
+        shouldShowWhiteStyle
+          ? 'bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-200' 
+          : 'bg-transparent backdrop-blur-sm border-b border-white/20'
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <motion.button
             onClick={() => navigate('/')}
-            className="flex items-center hover:opacity-90 transition"
-            whileHover={{ scale: 1.08 }}
+            className="flex items-center hover:opacity-90 transition relative group"
+            whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             <img src="/logo.png" alt="Do It" className="h-32 w-32 object-contain" />
@@ -40,16 +65,16 @@ const Navbar = () => {
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8">
             {/* Categories Dropdown */}
-            <div className="text-white">
-              <CategoriesDropdown />
-            </div>
-
+            <CategoriesDropdown shouldShowWhiteStyle={shouldShowWhiteStyle} />
+            
             {/* Navigation Items */}
             {navItems.map((item) => (
               <motion.button
                 key={item.label}
                 onClick={item.onClick}
-                className="flex items-center gap-2 text-white font-semibold hover:text-cyan-100 transition duration-300 group"
+                className={`flex items-center gap-2 font-semibold transition duration-300 group ${
+                  shouldShowWhiteStyle ? 'text-gray-800 hover:text-orange-600' : 'text-white hover:text-orange-300'
+                }`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -65,7 +90,11 @@ const Navbar = () => {
               <>
                 <motion.button
                   onClick={() => navigate('/login')}
-                  className="flex items-center gap-2 px-5 py-2.5 text-white font-semibold rounded-lg bg-white/20 hover:bg-white/30 transition duration-300 backdrop-blur-sm border border-white/30"
+                  className={`flex items-center gap-2 px-5 py-2.5 font-semibold rounded-full transition duration-300 backdrop-blur-sm border ${
+                    shouldShowWhiteStyle
+                      ? 'text-gray-800 bg-gray-100 hover:bg-gray-200 border-gray-300' 
+                      : 'text-white bg-white/10 hover:bg-white/20 border-white/30'
+                  }`}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -74,8 +103,8 @@ const Navbar = () => {
                 </motion.button>
                 <motion.button
                   onClick={() => navigate('/register')}
-                  className="flex items-center gap-2 px-5 py-2.5 bg-white text-blue-600 font-semibold rounded-lg hover:shadow-xl transition duration-300 transform hover:scale-105"
-                  whileHover={{ boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.2)' }}
+                  className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold rounded-full hover:shadow-xl transition duration-300"
+                  whileHover={{ scale: 1.05, boxShadow: '0 20px 25px -5px rgba(251, 146, 60, 0.4)' }}
                   whileTap={{ scale: 0.95 }}
                 >
                   <UserPlus size={18} />
@@ -84,21 +113,14 @@ const Navbar = () => {
               </>
             ) : (
               <>
-                <NotificationBell />
-                <div className="flex items-center gap-3 border-r border-white/30 pr-4">
-                  <div className="text-right hidden lg:block">
-                    <p className="font-bold text-sm text-white">{user.name}</p>
-                    <p className="text-xs text-cyan-100 capitalize">
-                      {user.role}
-                    </p>
-                  </div>
-                  <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">{user.name?.charAt(0).toUpperCase()}</span>
-                  </div>
-                </div>
+                <NotificationBell scrolled={shouldShowWhiteStyle} />
                 <motion.button
                   onClick={() => navigate(user.role === 'superadmin' ? '/admin/dashboard' : '/dashboard')}
-                  className="flex items-center gap-2 px-5 py-2.5 bg-white/20 text-white rounded-lg hover:bg-white/30 transition duration-300 backdrop-blur-sm border border-white/30 font-semibold"
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-full transition duration-300 backdrop-blur-sm border font-semibold ${
+                    shouldShowWhiteStyle
+                      ? 'bg-gray-100 hover:bg-gray-200 text-gray-800 border-gray-300' 
+                      : 'bg-white/10 hover:bg-white/20 text-white border-white/30'
+                  }`}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -107,7 +129,7 @@ const Navbar = () => {
                 </motion.button>
                 <motion.button
                   onClick={handleLogout}
-                  className="flex items-center gap-2 px-5 py-2.5 bg-red-500/80 text-white rounded-lg hover:bg-red-600 transition duration-300 font-semibold"
+                  className="flex items-center gap-2 px-5 py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-full transition duration-300 font-semibold"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -121,7 +143,11 @@ const Navbar = () => {
           {/* Mobile Menu Button */}
           <motion.button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-3 rounded-lg text-white hover:bg-white/20 transition"
+            className={`md:hidden p-3 rounded-full transition ${
+              shouldShowWhiteStyle
+                ? 'text-gray-800 hover:bg-gray-100' 
+                : 'text-white hover:bg-white/20'
+            }`}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -130,89 +156,115 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Menu */}
-        <motion.div
-          initial={false}
-          animate={mobileMenuOpen ? { height: 'auto', opacity: 1 } : { height: 0, opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          className="md:hidden overflow-hidden"
-        >
-          <div className="py-4 space-y-2 bg-gradient-to-b from-blue-600 to-blue-700 border-t border-white/20">
-            {/* Navigation Items for Mobile */}
-            {navItems.map((item) => (
-              <motion.button
-                key={item.label}
-                onClick={item.onClick}
-                className="w-full px-4 py-3 flex items-center gap-3 text-white font-semibold hover:bg-white/20 rounded-lg transition"
-                whileHover={{ x: 4 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <item.icon size={18} />
-                <span>{item.label}</span>
-              </motion.button>
-            ))}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="md:hidden overflow-hidden"
+            >
+              <div className={`py-4 space-y-2 border-t ${
+                shouldShowWhiteStyle
+                  ? 'bg-white border-gray-200' 
+                  : 'bg-white/10 backdrop-blur-xl border-white/20'
+              }`}>
+                {/* Categories Dropdown for Mobile */}
+                <CategoriesDropdown 
+                  shouldShowWhiteStyle={shouldShowWhiteStyle} 
+                  isMobile={true}
+                  onClose={() => setMobileMenuOpen(false)}
+                />
 
-            <div className="border-t border-white/20 my-2 pt-2"></div>
+                <div className={`border-t my-2 ${shouldShowWhiteStyle ? 'border-gray-200' : 'border-white/20'}`}></div>
+                
+                {/* Navigation Items for Mobile */}
+                {navItems.map((item) => (
+                  <motion.button
+                    key={item.label}
+                    onClick={item.onClick}
+                    className={`w-full px-4 py-3 flex items-center gap-3 font-semibold rounded-lg transition ${
+                      shouldShowWhiteStyle
+                        ? 'text-gray-800 hover:bg-gray-100' 
+                        : 'text-white hover:bg-white/20'
+                    }`}
+                    whileHover={{ x: 4 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <item.icon size={18} />
+                    <span>{item.label}</span>
+                  </motion.button>
+                ))}
 
-            {!user ? (
-              <>
-                <motion.button
-                  onClick={() => {
-                    navigate('/login');
-                    setMobileMenuOpen(false);
-                  }}
-                  className="w-full px-4 py-3 flex items-center gap-2 font-semibold hover:bg-white/20 rounded-lg transition text-white"
-                  whileHover={{ x: 4 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <LogIn size={18} />
-                  Connexion
-                </motion.button>
-                <motion.button
-                  onClick={() => {
-                    navigate('/register');
-                    setMobileMenuOpen(false);
-                  }}
-                  className="w-full px-4 py-3 flex items-center gap-2 bg-white text-blue-600 rounded-lg font-semibold hover:shadow-lg transition"
-                  whileHover={{ x: 4 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <UserPlus size={18} />
-                  S'inscrire
-                </motion.button>
-              </>
-            ) : (
-              <>
-                <div className="px-4 py-3 border-b border-white/20 mb-2">
-                  <p className="font-semibold text-white">{user.name}</p>
-                  <p className="text-xs text-cyan-100 capitalize">{user.role}</p>
-                </div>
-                <motion.button
-                  onClick={() => {
-                    navigate(user.role === 'superadmin' ? '/admin/dashboard' : '/dashboard');
-                    setMobileMenuOpen(false);
-                  }}
-                  className="w-full px-4 py-3 flex items-center gap-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition font-semibold"
-                  whileHover={{ x: 4 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <LayoutDashboard size={18} />
-                  Dashboard
-                </motion.button>
-                <motion.button
-                  onClick={handleLogout}
-                  className="w-full px-4 py-3 flex items-center gap-2 bg-red-500/80 text-white rounded-lg hover:bg-red-600 transition font-semibold"
-                  whileHover={{ x: 4 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <LogOut size={18} />
-                  Déconnexion
-                </motion.button>
-              </>
-            )}
-          </div>
-        </motion.div>
+                <div className={`border-t my-2 pt-2 ${shouldShowWhiteStyle ? 'border-gray-200' : 'border-white/20'}`}></div>
+
+                {!user ? (
+                  <>
+                    <motion.button
+                      onClick={() => {
+                        navigate('/login');
+                        setMobileMenuOpen(false);
+                      }}
+                      className={`w-full px-4 py-3 flex items-center gap-2 font-semibold rounded-lg transition ${
+                        shouldShowWhiteStyle
+                          ? 'text-gray-800 hover:bg-gray-100' 
+                          : 'text-white hover:bg-white/20'
+                      }`}
+                      whileHover={{ x: 4 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <LogIn size={18} />
+                      Connexion
+                    </motion.button>
+                    <motion.button
+                      onClick={() => {
+                        navigate('/register');
+                        setMobileMenuOpen(false);
+                      }}
+                      className="w-full px-4 py-3 flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg font-semibold hover:shadow-lg transition"
+                      whileHover={{ x: 4 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <UserPlus size={18} />
+                      S'inscrire
+                    </motion.button>
+                  </>
+                ) : (
+                  <>
+                    <motion.button
+                      onClick={() => {
+                        navigate(user.role === 'superadmin' ? '/admin/dashboard' : '/dashboard');
+                        setMobileMenuOpen(false);
+                      }}
+                      className={`w-full px-4 py-3 flex items-center gap-2 rounded-lg transition font-semibold ${
+                        shouldShowWhiteStyle
+                          ? 'bg-gray-100 hover:bg-gray-200 text-gray-800' 
+                          : 'bg-white/10 hover:bg-white/20 text-white'
+                      }`}
+                      whileHover={{ x: 4 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <LayoutDashboard size={18} />
+                      Dashboard
+                    </motion.button>
+                    <motion.button
+                      onClick={handleLogout}
+                      className="w-full px-4 py-3 flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition font-semibold"
+                      whileHover={{ x: 4 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <LogOut size={18} />
+                      Déconnexion
+                    </motion.button>
+                  </>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </nav>
+    </motion.nav>
   );
 };
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
@@ -6,13 +6,20 @@ import Navbar from '../components/Navbar';
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Rediriger si déjà authentifié
+  useEffect(() => {
+    if (user) {
+      navigate(user.role === 'superadmin' ? '/admin/dashboard' : '/dashboard');
+    }
+  }, [user, navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -29,6 +36,14 @@ const Login = () => {
       
       console.log('✅ Login Success:', response.data);
       login(userData, token);
+      
+      // Vérifier s'il y a une redirection sauvegardée
+      const redirectUrl = localStorage.getItem('redirectAfterLogin');
+      if (redirectUrl) {
+        localStorage.removeItem('redirectAfterLogin');
+        navigate(redirectUrl);
+        return;
+      }
       
       // Redirection basée sur le rôle
       if (response.data.role === 'superadmin' || response.data.role === 'admin') {
@@ -48,7 +63,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-20">
+    <div className="min-h-screen bg-gray-50 pt-24">
       <Navbar />
       
       <div className="pb-12">
@@ -75,7 +90,7 @@ const Login = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 bg-white placeholder:text-gray-400"
                   placeholder="votre@email.com"
                 />
               </div>
@@ -90,7 +105,7 @@ const Login = () => {
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 bg-white placeholder:text-gray-400"
                   placeholder="••••••••"
                 />
               </div>
@@ -98,7 +113,7 @@ const Login = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-secondary transition disabled:opacity-50"
+                className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-amber-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Connexion...' : 'Se connecter'}
               </button>
@@ -152,7 +167,7 @@ const Login = () => {
 
             <p className="mt-6 text-center text-sm text-gray-600">
               Pas encore de compte ?{' '}
-              <Link to="/register" className="text-primary font-semibold hover:text-secondary">
+              <Link to="/register" className="text-orange-600 font-semibold hover:text-orange-700 transition">
                 S'inscrire
               </Link>
             </p>

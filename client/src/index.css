@@ -129,20 +129,41 @@ body {
 
 /* Scrollbar personnalisée */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: hsl(var(--background));
+  background: rgb(30, 41, 59); /* slate-800 */
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted));
-  border-radius: 5px;
+  background: rgb(71, 85, 105); /* slate-600 */
+  border-radius: 4px;
+  transition: background 0.2s;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground));
+  background: rgb(100, 116, 139); /* slate-500 */
+}
+
+/* Scrollbar pour custom-scrollbar class */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3); /* slate-400 with opacity */
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.5);
 }
 
 /* Animations */

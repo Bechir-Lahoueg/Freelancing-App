@@ -1,18 +1,18 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Grid, ChevronDown } from 'lucide-react';
 
-const CategoriesDropdown = () => {
-  const [categories, setCategories] = useState([]);
+const CategoriesDropdown = ({ shouldShowWhiteStyle, isMobile = false, onClose }) => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState([]);
   const dropdownRef = useRef(null);
 
-  // Fetch categories on component mount
   useEffect(() => {
     fetchCategories();
   }, []);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -20,164 +20,157 @@ const CategoriesDropdown = () => {
       }
     };
 
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }
-  }, [isOpen]);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const fetchCategories = async () => {
     try {
-      setLoading(true);
       const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/categories/list`);
       const data = await response.json();
-      setCategories(data);
+      setCategories(data.slice(0, 6)); // Limit to 6 categories for dropdown
     } catch (error) {
-      console.error('Erreur lors du chargement des catégories:', error);
-    } finally {
-      setLoading(false);
+      console.error('Erreur:', error);
     }
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0, y: -10 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.3,
-        staggerChildren: 0.05,
-        delayChildren: 0.1
-      }
-    }
+  const handleCategoryClick = (categoryId) => {
+    navigate(`/tasks?category=${categoryId}`);
+    setIsOpen(false);
+    if (onClose) onClose();
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, x: -10 },
-    visible: { opacity: 1, x: 0 }
+  const handleViewAll = () => {
+    navigate('/categories');
+    setIsOpen(false);
+    if (onClose) onClose();
   };
 
+  if (isMobile) {
+    // Mobile version - simple list
+    return (
+      <div className="space-y-2">
+        <button
+          onClick={handleViewAll}
+          className={`w-full px-4 py-3 flex items-center gap-3 font-semibold rounded-lg transition ${
+            shouldShowWhiteStyle
+              ? 'text-gray-800 hover:bg-gray-100'
+              : 'text-white hover:bg-white/20'
+          }`}
+        >
+          <Grid size={18} />
+          <span>Toutes les catégories</span>
+        </button>
+        {categories.map((category) => (
+          <button
+            key={category._id}
+            onClick={() => handleCategoryClick(category._id)}
+            className={`w-full px-4 py-3 pl-11 flex items-center gap-3 rounded-lg transition ${
+              shouldShowWhiteStyle
+                ? 'text-gray-700 hover:bg-gray-100'
+                : 'text-slate-300 hover:bg-white/10'
+            }`}
+          >
+            <span className="text-xl">{category.icon}</span>
+            <span className="text-sm">{category.name}</span>
+          </button>
+        ))}
+      </div>
+    );
+  }
+
+  // Desktop version - dropdown
   return (
-    <div className="relative" ref={dropdownRef}>
-      <button
+    <div ref={dropdownRef} className="relative">
+      <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-muted transition duration-300 font-semibold text-foreground group"
+        onMouseEnter={() => setIsOpen(true)}
+        className={`flex items-center gap-2 font-semibold transition duration-300 group ${
+          shouldShowWhiteStyle ? 'text-gray-800 hover:text-orange-600' : 'text-white hover:text-orange-300'
+        }`}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
       >
+        <Grid size={20} className="group-hover:rotate-12 transition" />
         <span>Catégories</span>
-        <motion.svg
+        <motion.div
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.3 }}
-          className="w-4 h-4 group-hover:text-primary"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19 14l-7 7m0 0l-7-7m7 7V3"
-          />
-        </motion.svg>
-      </button>
+          <ChevronDown size={16} />
+        </motion.div>
+      </motion.button>
 
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
-            className="absolute left-0 mt-2 w-80 bg-white rounded-xl shadow-2xl border border-border/60 z-40"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.2 }}
+            onMouseLeave={() => setIsOpen(false)}
+            className={`absolute top-full left-0 mt-2 w-72 rounded-xl shadow-2xl overflow-hidden border ${
+              shouldShowWhiteStyle
+                ? 'bg-white border-gray-200'
+                : 'bg-slate-900/95 backdrop-blur-xl border-slate-700'
+            }`}
           >
-            {loading ? (
-              <div className="p-6 text-center">
-                <div className="inline-block animate-spin">
-                  <svg
-                    className="w-6 h-6 text-primary"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </div>
-              </div>
-            ) : categories.length === 0 ? (
-              <div className="p-6 text-center text-muted-foreground">
-                <p>Aucune catégorie disponible</p>
-              </div>
-            ) : (
-              <div className="max-h-96 overflow-y-auto">
-                <motion.div
-                  variants={containerVariants}
-                  initial="hidden"
-                  animate="visible"
-                  className="grid grid-cols-1 md:grid-cols-2 gap-3 p-4"
-                >
-                  {categories.map((category) => (
-                    <motion.a
-                      key={category._id}
-                      href={`/tasks?category=${category.slug}`}
-                      variants={itemVariants}
-                      whileHover={{ scale: 1.05, translateX: 4 }}
-                      className="group block p-3 rounded-lg hover:bg-gray-50 transition duration-200 border border-transparent hover:border-primary/30 cursor-pointer"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <div className="flex items-start gap-3">
-                        <div
-                          className="text-2xl flex-shrink-0"
-                          style={{ filter: `hue-rotate(${Math.random() * 360}deg)` }}
-                        >
-                          {category.icon}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-sm text-foreground group-hover:text-primary transition">
-                            {category.name}
-                          </h3>
-                          <p className="text-xs text-muted-foreground line-clamp-2">
-                            {category.description}
-                          </p>
-                        </div>
-                      </div>
-                    </motion.a>
-                  ))}
-                </motion.div>
-              </div>
-            )}
+            {/* Header */}
+            <div className={`px-4 py-3 border-b ${
+              shouldShowWhiteStyle ? 'bg-gray-50 border-gray-200' : 'bg-slate-800 border-slate-700'
+            }`}>
+              <p className={`text-sm font-bold ${
+                shouldShowWhiteStyle ? 'text-gray-800' : 'text-white'
+              }`}>
+                Nos Catégories
+              </p>
+            </div>
 
-            {categories.length > 0 && (
-              <motion.div
-                variants={itemVariants}
-                className="border-t border-border/60 p-3"
-              >
-                <a
-                  href="/services"
-                  className="flex items-center justify-center gap-2 w-full px-4 py-2 bg-primary text-white rounded-lg font-semibold hover:bg-secondary transition duration-300 text-sm"
-                  onClick={() => setIsOpen(false)}
+            {/* Categories List */}
+            <div className="py-2 max-h-96 overflow-y-auto">
+              {categories.map((category, index) => (
+                <motion.button
+                  key={category._id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  onClick={() => handleCategoryClick(category._id)}
+                  className={`w-full px-4 py-3 flex items-center gap-3 transition group ${
+                    shouldShowWhiteStyle
+                      ? 'hover:bg-orange-50 text-gray-700'
+                      : 'hover:bg-slate-800 text-slate-300'
+                  }`}
                 >
-                  Voir toutes les catégories
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </a>
-              </motion.div>
-            )}
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                    {category.icon}
+                  </div>
+                  <div className="flex-1 text-left">
+                    <p className={`font-semibold text-sm group-hover:text-orange-600 transition ${
+                      shouldShowWhiteStyle ? 'text-gray-800' : 'text-white'
+                    }`}>
+                      {category.name}
+                    </p>
+                    <p className={`text-xs line-clamp-1 ${
+                      shouldShowWhiteStyle ? 'text-gray-500' : 'text-slate-500'
+                    }`}>
+                      {category.description}
+                    </p>
+                  </div>
+                </motion.button>
+              ))}
+            </div>
+
+            {/* Footer - View All */}
+            <div className={`px-4 py-3 border-t ${
+              shouldShowWhiteStyle ? 'bg-gray-50 border-gray-200' : 'bg-slate-800 border-slate-700'
+            }`}>
+              <button
+                onClick={handleViewAll}
+                className="w-full px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg font-semibold hover:shadow-lg transition text-sm"
+              >
+                Voir toutes les catégories →
+              </button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

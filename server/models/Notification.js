@@ -1,26 +1,44 @@
 import mongoose from 'mongoose';
 
 const notificationSchema = new mongoose.Schema({
-  admin: {
+  user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
   },
   type: {
     type: String,
-    enum: ['comment_created', 'comment_deleted'],
+    enum: [
+      'comment_created', 
+      'comment_deleted',
+      'task_created',
+      'task_updated',
+      'task_completed',
+      'message_received',
+      'partner_request',
+      'partner_approved',
+      'partner_rejected',
+      'invoice_created',
+      'invoice_paid'
+    ],
+    required: true
+  },
+  title: {
+    type: String,
     required: true
   },
   message: {
     type: String,
     required: true
   },
-  comment: {
-    _id: mongoose.Schema.Types.ObjectId,
-    text: String,
-    rating: Number,
-    userEmail: String,
-    userName: String
+  relatedId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: false
+  },
+  relatedModel: {
+    type: String,
+    enum: ['Comment', 'TaskRequest', 'Conversation', 'PartnerRequest', 'Invoice'],
+    required: false
   },
   read: {
     type: Boolean,
@@ -29,7 +47,7 @@ const notificationSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    expires: 604800 // Auto-delete après 7 jours
+    expires: 600 // Auto-delete après 10 minutes (600 secondes)
   }
 });
 

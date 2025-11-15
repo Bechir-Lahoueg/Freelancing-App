@@ -4,8 +4,10 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
-import Tasks from './pages/Tasks'
 import AdminDashboard from './pages/AdminDashboard'
+import Categories from './pages/Categories'
+import Services from './pages/Services'
+import ServiceRequest from './pages/ServiceRequest'
 import PrivateRoute from './components/PrivateRoute'
 import { usePageLoading } from './hooks/usePageLoading'
 import Partner from './pages/Partner'
@@ -22,7 +24,13 @@ function AppContent() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/partner" element={<Partner />} />
-        <Route path="/tasks" element={<Tasks />} />
+        <Route path="/categories" element={<Categories />} />
+        <Route path="/services" element={<Services />} />
+        <Route path="/service-request" element={
+          <PrivateRoute>
+            <ServiceRequest />
+          </PrivateRoute>
+        } />
 
         {/* Routes privées */}
         <Route path="/dashboard" element={

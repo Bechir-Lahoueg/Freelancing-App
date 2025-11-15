@@ -1,11 +1,14 @@
-import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useState, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
-import { Star } from 'lucide-react';
+import { Star, Quote, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 
 export default function TestimonialsSection() {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [direction, setDirection] = useState(0);
+  const autoPlayRef = useRef();
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -26,94 +29,221 @@ export default function TestimonialsSection() {
     fetchComments();
   }, []);
 
+  useEffect(() => {
+    const commentsList = Array.isArray(comments) ? comments : [];
+    if (commentsList.length > 0) {
+      autoPlayRef.current = setInterval(() => {
+        handleNext();
+      }, 5000);
+    }
+    return () => clearInterval(autoPlayRef.current);
+  }, [comments, currentIndex]);
+
+  const handleNext = () => {
+    const commentsList = Array.isArray(comments) ? comments : [];
+    setDirection(1);
+    setCurrentIndex((prev) => (prev + 1) % commentsList.length);
+  };
+
+  const handlePrev = () => {
+    const commentsList = Array.isArray(comments) ? comments : [];
+    setDirection(-1);
+    setCurrentIndex((prev) => (prev - 1 + commentsList.length) % commentsList.length);
+  };
+
   if (loading) {
     return (
-      <div className="py-20 bg-gray-50 flex justify-center items-center">
-        <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+      <div className="py-20 bg-gradient-to-b from-black via-neutral-950 to-black flex justify-center items-center">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+          className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full"
+        />
       </div>
     );
   }
 
-  // Vérifier que comments est un array
   const commentsList = Array.isArray(comments) ? comments : [];
 
   if (commentsList.length === 0) {
     return null;
   }
 
+  const slideVariants = {
+    enter: (direction) => ({
+      x: direction > 0 ? 100 : -100,
+      opacity: 0
+    }),
+    center: {
+      x: 0,
+      opacity: 1
+    },
+    exit: (direction) => ({
+      x: direction < 0 ? 100 : -100,
+      opacity: 0
+    })
+  };
+
+  const currentComment = commentsList[currentIndex];
+
   return (
-    <section className="py-16 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="relative py-16 overflow-hidden bg-gradient-to-b from-neutral-950 via-black to-neutral-950">
+      {/* Animated Background */}
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0" style={{
+          backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(251, 146, 60, 0.1) 1px, transparent 0)',
+          backgroundSize: '50px 50px'
+        }} />
+      </div>
+
+      {/* Floating Orbs */}
+      <motion.div
+        animate={{ 
+          x: [0, 100, 0],
+          y: [0, -100, 0],
+        }}
+        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        className="absolute top-20 left-20 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl"
+      />
+      <motion.div
+        animate={{ 
+          x: [0, -100, 0],
+          y: [0, 100, 0],
+        }}
+        transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+        className="absolute bottom-20 right-20 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl"
+      />
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Avis de nos utilisateurs
+          <motion.div
+            initial={{ scale: 0 }}
+            whileInView={{ scale: 1 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500/20 backdrop-blur-xl border border-orange-500/30 rounded-full mb-4"
+          >
+            <Sparkles className="w-4 h-4 text-orange-400" />
+            <span className="text-orange-300 font-semibold text-xs tracking-wide">CE QUE DISENT NOS ÉTUDIANTS</span>
+          </motion.div>
+          
+          <h2 className="text-3xl md:text-4xl font-black text-white mb-3 leading-tight">
+            Des milliers d'<span className="bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">étudiants</span> satisfaits
           </h2>
-          <p className="text-gray-600 text-lg">
-            Découvrez ce que nos utilisateurs pensent de leurs expériences
+          <p className="text-base text-gray-400 max-w-2xl mx-auto">
+            Découvrez les témoignages authentiques de notre communauté
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {commentsList.map((comment, index) => (
-            <motion.div
-              key={comment._id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition"
-            >
-              {/* Rating */}
-              <div className="flex gap-1 mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    size={18}
-                    className={`${
-                      i < comment.rating
-                        ? 'fill-yellow-400 text-yellow-400'
-                        : 'text-gray-300'
-                    }`}
-                  />
-                ))}
-              </div>
+        {/* Carousel */}
+        <div className="relative max-w-3xl mx-auto">
+          {/* Navigation Buttons */}
+          <motion.button
+            onClick={handlePrev}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-14 z-20 w-10 h-10 bg-neutral-800/80 backdrop-blur-xl border border-orange-500/30 rounded-full flex items-center justify-center text-white hover:bg-neutral-700/80 transition"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </motion.button>
 
-              {/* Comment Text */}
-              <p className="text-gray-700 mb-4 line-clamp-3">
-                "{comment.text}"
-              </p>
+          <motion.button
+            onClick={handleNext}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-14 z-20 w-10 h-10 bg-neutral-800/80 backdrop-blur-xl border border-orange-500/30 rounded-full flex items-center justify-center text-white hover:bg-neutral-700/80 transition"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </motion.button>
 
-              {/* User Info */}
-              <div className="border-t pt-4 mt-4">
-                <div className="flex items-center gap-3">
-                  {comment.user.avatar ? (
-                    <img
-                      src={comment.user.avatar}
-                      alt={comment.user.name}
-                      className="w-10 h-10 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                      {comment.user.name.charAt(0).toUpperCase()}
+          {/* Card - Compact Height */}
+          <div className="relative h-[280px]">
+            <AnimatePresence initial={false} custom={direction} mode="wait">
+              <motion.div
+                key={currentIndex}
+                custom={direction}
+                variants={slideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{
+                  x: { type: 'spring', stiffness: 200, damping: 25 },
+                  opacity: { duration: 0.3 }
+                }}
+                className="absolute inset-0"
+              >
+                <div className="relative h-full bg-gradient-to-br from-neutral-900/90 via-neutral-800/50 to-neutral-900/90 backdrop-blur-xl border border-neutral-700/50 rounded-2xl p-6 overflow-hidden group hover:border-orange-500/40 transition duration-300">
+                  {/* Glow Effect */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-amber-500/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-300" />
+                  
+                  {/* Quote Icon - Compact */}
+                  <div className="absolute top-4 left-4 w-10 h-10 bg-gradient-to-br from-orange-500/20 to-amber-500/20 rounded-lg flex items-center justify-center">
+                    <Quote className="w-5 h-5 text-orange-400/40" />
+                  </div>
+
+                  {/* Content */}
+                  <div className="relative z-10 flex flex-col h-full justify-between">
+                    <div>
+                      {/* Stars - Compact */}
+                      <div className="flex gap-0.5 mb-3">
+                        {[...Array(5)].map((_, i) => (
+                          <Star key={i} className="w-3.5 h-3.5 fill-orange-400 text-orange-400" />
+                        ))}
+                      </div>
+
+                      {/* Comment Text - Compact */}
+                      <p className="text-base font-medium text-white leading-relaxed mb-4 line-clamp-4">
+                        "{currentComment.text}"
+                      </p>
                     </div>
-                  )}
-                  <div>
-                    <p className="font-semibold text-gray-900">
-                      {comment.user.name}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {new Date(comment.approvedAt).toLocaleDateString('fr-FR')}
-                    </p>
+
+                    {/* Author - Compact */}
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-500 rounded-full flex items-center justify-center text-base font-bold text-white shadow-lg">
+                        {currentComment.user?.name?.charAt(0).toUpperCase() || '?'}
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold text-white">
+                          {currentComment.user?.name || 'Utilisateur anonyme'}
+                        </h4>
+                        <p className="text-xs text-gray-400">
+                          {new Date(currentComment.createdAt).toLocaleDateString('fr-FR', { 
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric'
+                          })}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* Indicators - Compact */}
+          <div className="flex justify-center gap-1.5 mt-6">
+            {commentsList.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  setDirection(index > currentIndex ? 1 : -1);
+                  setCurrentIndex(index);
+                }}
+                className={`h-1 rounded-full transition-all duration-300 ${
+                  index === currentIndex 
+                    ? 'w-6 bg-gradient-to-r from-orange-500 to-amber-500' 
+                    : 'w-1 bg-neutral-700 hover:bg-neutral-600'
+                }`}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>

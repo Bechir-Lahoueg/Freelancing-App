@@ -307,7 +307,7 @@ export default function CommentsModeration() {
               value={rejectionReason}
               onChange={(e) => setRejectionReason(e.target.value.slice(0, 200))}
               placeholder="Raison du rejet (optionnel)..."
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none mb-4"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none mb-4 text-gray-900 bg-white placeholder:text-gray-400"
               rows={3}
             />
             <p className="text-xs text-gray-500 mb-6">{rejectionReason.length}/200</p>

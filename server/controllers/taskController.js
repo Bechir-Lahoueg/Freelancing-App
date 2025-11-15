@@ -62,35 +62,34 @@ export const createTaskRequest = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { taskType, title, description, options } = req.body;
+    const { serviceId, categoryId, title, description, budget, deadline, answers } = req.body;
 
-    // Calculer le prix
-    const price = calculatePrice(taskType, options || {});
-
-    // Créer la tâche
+    // Créer la tâche avec les réponses personnalisées
     const task = await TaskRequest.create({
       userId: req.user._id,
-      taskType,
+      serviceId,
+      categoryId: categoryId || null,
       title,
       description,
-      options: options || {},
-      price
+      budget: budget || null,
+      deadline: deadline || null,
+      responses: answers || [],
+      status: 'pending'
     });
 
-    // Créer automatiquement une facture
-    const invoice = await Invoice.create({
-      requestId: task._id,
-      userId: req.user._id,
-      amount: price,
-      taxAmount: Math.round(price * 0.19), // TVA 19%
-      totalAmount: Math.round(price * 1.19)
-    });
+    // Peupler les informations du service et de la catégorie
+    await task.populate([
+      { path: 'serviceId', select: 'name icon' },
+      { path: 'categoryId', select: 'name icon' }
+    ]);
 
     res.status(201).json({
-      task,
-      invoice
+      success: true,
+      message: 'Demande créée avec succès',
+      task
     });
   } catch (error) {
+    console.error('Erreur création tâche:', error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -101,6 +100,8 @@ export const createTaskRequest = async (req, res) => {
 export const getUserTasks = async (req, res) => {
   try {
     const tasks = await TaskRequest.find({ userId: req.user._id })
+      .populate('serviceId', 'name icon')
+      .populate('categoryId', 'name icon')
       .sort({ createdAt: -1 });
 
     res.json(tasks);
@@ -114,7 +115,9 @@ export const getUserTasks = async (req, res) => {
 // @access  Private
 export const getTaskById = async (req, res) => {
   try {
-    const task = await TaskRequest.findById(req.params.id);
+    const task = await TaskRequest.findById(req.params.id)
+      .populate('serviceId', 'name icon')
+      .populate('categoryId', 'name icon');
 
     if (!task) {
       return res.status(404).json({ message: 'Tâche non trouvée' });

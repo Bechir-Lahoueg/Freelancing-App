@@ -6,10 +6,14 @@ const taskRequestSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
-  taskType: {
-    type: String,
-    required: [true, 'Le type de tâche est requis'],
-    enum: ['rédaction', 'codage', 'présentation', 'rapport', 'recherche', 'traduction', 'autre']
+  serviceId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Service',
+    required: true
+  },
+  categoryId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category'
   },
   title: {
     type: String,
@@ -20,37 +24,39 @@ const taskRequestSchema = new mongoose.Schema({
     type: String,
     required: [true, 'La description est requise']
   },
-  options: {
-    level: {
-      type: String,
-      enum: ['débutant', 'intermédiaire', 'avancé', 'expert'],
-      default: 'intermédiaire'
-    },
-    deadline: {
-      type: String,
-      enum: ['24h', '48h', '1 semaine', '2 semaines', '1 mois'],
-      default: '1 semaine'
-    },
-    complexity: {
-      type: String,
-      enum: ['simple', 'moyen', 'complexe', 'très complexe'],
-      default: 'moyen'
-    },
-    pages: {
-      type: Number,
-      min: 1,
-      default: 1
-    }
-  },
-  price: {
+  responses: [{
+    questionId: String,
+    questionLabel: String,
+    answer: mongoose.Schema.Types.Mixed // String, Number, Array, etc.
+  }],
+  budget: {
     type: Number,
-    required: true,
     min: 0
+  },
+  deadline: {
+    type: Date
   },
   status: {
     type: String,
-    enum: ['pending', 'in-progress', 'completed', 'cancelled'],
+    enum: ['pending', 'approved', 'rejected', 'in-progress', 'completed', 'cancelled'],
     default: 'pending'
+  },
+  rejectionReason: {
+    type: String
+  },
+  approvedAt: {
+    type: Date
+  },
+  rejectedAt: {
+    type: Date
+  },
+  adminResponse: {
+    message: String,
+    respondedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    respondedAt: Date
   },
   files: [{
     name: String,

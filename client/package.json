@@ -13,11 +13,13 @@
     "axios": "^1.13.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "emoji-picker-react": "^4.15.1",
     "framer-motion": "^12.23.24",
     "lucide-react": "^0.407.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.9.5",
+    "socket.io-client": "^4.8.1",
     "tailwind-merge": "^2.2.0",
     "three": "^0.160.0"
   },

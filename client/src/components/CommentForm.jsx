@@ -132,7 +132,7 @@ export default function CommentForm({ onCommentSubmitted, onClose }) {
                     value={text}
                     onChange={(e) => setText(e.target.value.slice(0, 500))}
                     placeholder="Partagez votre expérience avec ce prestataire..."
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm text-gray-900 bg-white placeholder:text-gray-400"
                     rows={4}
                   />
                   <p className="text-xs text-gray-500 mt-1">

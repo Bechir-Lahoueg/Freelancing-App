@@ -18,7 +18,7 @@ router.use(protect);
 // @desc    Créer une nouvelle demande de tâche
 // @access  Private
 router.post('/', [
-  body('taskType').notEmpty().withMessage('Le type de tâche est requis'),
+  body('serviceId').notEmpty().withMessage('Le service est requis'),
   body('title').notEmpty().withMessage('Le titre est requis'),
   body('description').notEmpty().withMessage('La description est requise')
 ], createTaskRequest);

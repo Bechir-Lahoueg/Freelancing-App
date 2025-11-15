@@ -31,6 +31,25 @@ const categorySchema = new mongoose.Schema({
     type: String,
     default: null
   },
+  questions: [{
+    id: String,
+    label: String,
+    type: {
+      type: String,
+      enum: ['text', 'textarea', 'select', 'multiselect', 'checkbox', 'radio', 'number', 'file'],
+      default: 'text'
+    },
+    options: [String], // Pour select, multiselect, radio
+    required: {
+      type: Boolean,
+      default: false
+    },
+    placeholder: String,
+    order: {
+      type: Number,
+      default: 0
+    }
+  }],
   isActive: {
     type: Boolean,
     default: true

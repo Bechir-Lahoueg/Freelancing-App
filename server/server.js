@@ -20,6 +20,7 @@ import notificationRoutes from './routes/notificationRoutes.js';
 import serviceRoutes from './routes/serviceRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
 import partnerRoutes from './routes/partnerRoutes.js';
+import healthRoutes from './routes/healthRoutes.js';
 
 // Charger les variables d'environnement
 dotenv.config();
@@ -128,6 +129,7 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/partner', partnerRoutes);
+app.use('/api/health', healthRoutes);
 
 // Socket.IO - Gestion des connexions en temps réel
 const onlineUsers = new Map(); // userId -> socketId

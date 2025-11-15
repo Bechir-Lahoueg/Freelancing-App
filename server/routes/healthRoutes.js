@@ -1,8 +1,13 @@
-const express = require('express');
+import express from 'express';
+import mongoose from 'mongoose';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const router = express.Router();
-const mongoose = require('mongoose');
-const fs = require('fs');
-const path = require('path');
 
 // Route de health check complète
 router.get('/check', async (req, res) => {
@@ -97,4 +102,4 @@ router.get('/db', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

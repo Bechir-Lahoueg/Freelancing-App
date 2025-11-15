@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import { Package, Search, Filter, Sparkles, TrendingUp, Clock, DollarSign, User, Star, ArrowRight } from 'lucide-react';
@@ -291,6 +292,9 @@ const Services = () => {
           )}
         </div>
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };

@@ -23,6 +23,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', token);
       fetchUser();
     } else {
+      // Important: Ne pas inclure de header Authorization pour les utilisateurs non connectés
       delete axios.defaults.headers.common['Authorization'];
       localStorage.removeItem('token');
       setLoading(false);

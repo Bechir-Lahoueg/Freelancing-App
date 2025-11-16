@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
-import axios from 'axios';
+import { publicAxios, privateAxios } from '../utils/axios';
 import { ArrowLeft, Send, CheckCircle } from 'lucide-react';
 
 const ServiceRequest = () => {
@@ -37,7 +37,8 @@ const ServiceRequest = () => {
 
   const fetchService = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/services/${serviceId}`);
+      // Récupérer le service (route publique)
+      const response = await publicAxios.get(`/api/services/${serviceId}`);
       setService(response.data);
     } catch (error) {
       console.error('Erreur:', error);
@@ -63,8 +64,6 @@ const ServiceRequest = () => {
     setSubmitting(true);
 
     try {
-      const token = localStorage.getItem('token');
-      
       // Préparer les réponses avec les labels
       const answersArray = service.questions?.map(q => ({
         questionId: q.id,
@@ -82,16 +81,8 @@ const ServiceRequest = () => {
         answers: answersArray
       };
 
-      await axios.post(
-        'http://localhost:5000/api/tasks',
-        requestData,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+      // Utiliser privateAxios qui ajoute automatiquement le token
+      await privateAxios.post('/api/tasks', requestData);
 
       setSubmitted(true);
       setTimeout(() => {

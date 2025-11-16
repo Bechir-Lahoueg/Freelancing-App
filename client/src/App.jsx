@@ -6,6 +6,7 @@ import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import AdminDashboard from './pages/AdminDashboard'
 import Categories from './pages/Categories'
+import CategoryServices from './pages/CategoryServices'
 import Services from './pages/Services'
 import ServiceRequest from './pages/ServiceRequest'
 import PrivateRoute from './components/PrivateRoute'
@@ -25,6 +26,7 @@ function AppContent() {
         <Route path="/register" element={<Register />} />
         <Route path="/partner" element={<Partner />} />
         <Route path="/categories" element={<Categories />} />
+        <Route path="/category-services" element={<CategoryServices />} />
         <Route path="/services" element={<Services />} />
         <Route path="/service-request" element={
           <PrivateRoute>

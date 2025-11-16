@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
-import axios from 'axios';
+import { publicAxios } from '../utils/axios';
 import { ArrowLeft, ArrowRight, Clock, DollarSign } from 'lucide-react';
 
 const CategoryServices = () => {
@@ -22,15 +22,21 @@ const CategoryServices = () => {
 
   const fetchCategoryAndServices = async () => {
     try {
-      // Récupérer la catégorie
-      const categoryRes = await axios.get(`http://localhost:5000/api/admin/categories/${categoryId}`);
+      console.log('🔍 Fetching category and services for categoryId:', categoryId);
+      
+      // Récupérer la catégorie (route publique)
+      const categoryRes = await publicAxios.get(`/api/admin/categories/${categoryId}`);
+      console.log('✅ Category fetched:', categoryRes.data);
       setCategory(categoryRes.data);
 
-      // Récupérer les services de cette catégorie
-      const servicesRes = await axios.get(`http://localhost:5000/api/services?categoryId=${categoryId}`);
+      // Récupérer les services de cette catégorie (route publique)
+      const servicesRes = await publicAxios.get(`/api/services?categoryId=${categoryId}`);
+      console.log('✅ Services fetched:', servicesRes.data);
       setServices(servicesRes.data);
     } catch (error) {
-      console.error('Erreur:', error);
+      console.error('❌ Erreur lors du chargement:', error);
+      console.error('Error response:', error.response?.data);
+      console.error('Error status:', error.response?.status);
       alert('Erreur lors du chargement');
       navigate('/categories');
     } finally {

@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
+import { publicAxios } from '../utils/axios';
 import { Package, Search, Filter, Sparkles, TrendingUp, Clock, DollarSign, User, Star, ArrowRight } from 'lucide-react';
 
 const Services = () => {
@@ -30,12 +30,12 @@ const Services = () => {
     try {
       setLoading(true);
       
-      // Récupérer toutes les catégories
-      const categoriesRes = await axios.get('http://localhost:5000/api/admin/categories');
+      // Récupérer toutes les catégories (route publique)
+      const categoriesRes = await publicAxios.get('/api/admin/categories/list');
       setCategories(categoriesRes.data);
 
-      // Récupérer tous les services
-      const servicesRes = await axios.get('http://localhost:5000/api/services');
+      // Récupérer tous les services (route publique)
+      const servicesRes = await publicAxios.get('/api/services');
       setServices(servicesRes.data);
       setFilteredServices(servicesRes.data);
     } catch (error) {

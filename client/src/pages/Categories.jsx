@@ -28,7 +28,7 @@ const Categories = () => {
   };
 
   const handleCategoryClick = (categoryId) => {
-    navigate(`/services?category=${categoryId}`);
+    navigate(`/category-services?category=${categoryId}`);
   };
 
   return (

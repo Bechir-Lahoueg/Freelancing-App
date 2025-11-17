@@ -28,7 +28,7 @@ const Home = () => {
       const data = await response.json();
       setCategories(data);
     } catch (error) {
-      console.error('Erreur lors du chargement des catégories:', error);
+      console.error('Erreur lors du chargement des categories:', error);
     } finally {
       setLoading(false);
     }
@@ -37,53 +37,53 @@ const Home = () => {
   const features = [
     {
       icon: Zap,
-      title: 'Réponse Ultra-Rapide',
+      title: 'Reponse Ultra-Rapide',
       description: 'Obtenez de l\'aide en quelques heures, pas en jours',
       color: 'from-yellow-400 to-orange-500',
       gradient: 'bg-gradient-to-br from-yellow-500/20 to-orange-500/20'
     },
     {
       icon: Users,
-      title: 'Experts Certifiés',
-      description: 'Plus de 10 professionnels qualifiés à votre service',
+      title: 'Experts Certifies',
+      description: 'Plus de 10 professionnels qualifies a votre service',
       color: 'from-blue-400 to-cyan-500',
       gradient: 'bg-gradient-to-br from-blue-500/20 to-cyan-500/20'
     },
     {
       icon: Shield,
-      title: 'Sécurité Garantie',
-      description: 'Vos données protégées avec cryptage de niveau bancaire',
+      title: 'Securite Garantie',
+      description: 'Vos donnees protegees avec cryptage de niveau bancaire',
       color: 'from-green-400 to-emerald-500',
       gradient: 'bg-gradient-to-br from-green-500/20 to-emerald-500/20'
     },
     {
       icon: DollarSign,
       title: 'Prix Transparents',
-      description: 'Tarifs clairs et compétitifs sans frais cachés',
+      description: 'Tarifs clairs et competitifs sans frais caches',
       color: 'from-purple-400 to-pink-500',
       gradient: 'bg-gradient-to-br from-purple-500/20 to-pink-500/20'
     }
   ];
 
   const stats = [
-    { number: '10K+', label: 'Étudiants satisfaits', icon: Users, color: 'from-blue-500 to-cyan-500' },
-    { number: '5K+', label: 'Projets réalisés', icon: CheckCircle2, color: 'from-green-500 to-emerald-500' },
-    { number: '50+', label: 'Experts qualifiés', icon: Award, color: 'from-purple-500 to-pink-500' },
-    { number: '99%', label: 'Taux de réussite', icon: TrendingUp, color: 'from-yellow-500 to-orange-500' }
+    { number: '10K+', label: 'Etudiants satisfaits', icon: Users, color: 'from-blue-500 to-cyan-500' },
+    { number: '5K+', label: 'Projets realises', icon: CheckCircle2, color: 'from-green-500 to-emerald-500' },
+    { number: '50+', label: 'Experts qualifies', icon: Award, color: 'from-purple-500 to-pink-500' },
+    { number: '99%', label: 'Taux de reussite', icon: TrendingUp, color: 'from-yellow-500 to-orange-500' }
   ];
 
   const steps = [
     {
       number: '01',
       title: 'Inscription Rapide',
-      description: 'Créez votre compte en 30 secondes',
+      description: 'Creez votre compte en 30 secondes',
       icon: Target,
       delay: 0.2
     },
     {
       number: '02',
-      title: 'Décrivez Votre Besoin',
-      description: 'Expliquez votre projet en détail',
+      title: 'Decrivez Votre Besoin',
+      description: 'Expliquez votre projet en detail',
       icon: Clock,
       delay: 0.4
     },
@@ -97,7 +97,7 @@ const Home = () => {
     {
       number: '04',
       title: 'Recevez Votre Travail',
-      description: 'Obtenez des résultats de qualité',
+      description: 'Obtenez des resultats de qualite',
       icon: CheckCircle2,
       delay: 0.8
     }
@@ -167,20 +167,20 @@ const Home = () => {
             >
               {/* Main Heading */}
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6 leading-tight">
-                Réussissez
+                Reussissez
                 <br />
                 <span className="bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 bg-clip-text text-transparent">
                   Brillamment
                 </span>
                 <br />
-                vos études
+                vos etudes
               </h1>
 
               <p className="text-lg md:text-xl text-gray-300 mb-10 leading-relaxed max-w-3xl mx-auto">
-                Connectez-vous avec des <span className="text-orange-400 font-semibold">experts qualifiés</span> et obtenez l'aide dont vous avez besoin pour exceller dans vos projets académiques.
+                Connectez-vous avec des <span className="text-orange-400 font-semibold">experts qualifies</span> et obtenez l'aide dont vous avez besoin pour exceller dans vos projets academiques.
               </p>
 
-              {/* CTA Buttons - Cachés si utilisateur connecté */}
+              {/* CTA Buttons - Caches si utilisateur connecte */}
               {!user && (
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <motion.button
@@ -244,10 +244,10 @@ const Home = () => {
             </motion.div>
             
             <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
-              Une expérience <span className="bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">exceptionnelle</span>
+              Une experience <span className="bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">exceptionnelle</span>
             </h2>
             <p className="text-base text-gray-400 max-w-3xl mx-auto">
-              Des fonctionnalités pensées pour votre réussite académique
+              Des fonctionnalites pensees pour votre reussite academique
             </p>
           </motion.div>
 
@@ -302,10 +302,10 @@ const Home = () => {
             className="text-center mb-12"
           >
             <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
-              Nos Catégories de <span className="bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">Services</span>
+              Nos Categories de <span className="bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">Services</span>
             </h2>
             <p className="text-base text-gray-400 max-w-2xl mx-auto">
-              Découvrez tous les services disponibles que nos experts peuvent vous proposer
+              Decouvrez tous les services disponibles que nos experts peuvent vous proposer
             </p>
           </motion.div>
 
@@ -319,8 +319,8 @@ const Home = () => {
             </div>
           ) : categories.length === 0 ? (
             <div className="text-center py-16 bg-gray-100 rounded-2xl">
-              <p className="text-xl text-gray-600">Aucune catégorie disponible pour le moment</p>
-              <p className="text-sm text-gray-500 mt-2">Vérifiez plus tard pour les nouvelles catégories</p>
+              <p className="text-xl text-gray-600">Aucune categorie disponible pour le moment</p>
+              <p className="text-sm text-gray-500 mt-2">Verifiez plus tard pour les nouvelles categories</p>
             </div>
           ) : (
             <motion.div
@@ -400,7 +400,7 @@ const Home = () => {
                 onClick={() => navigate('/services')}
                 className="inline-block px-6 py-3 bg-gradient-to-r from-orange-600 to-amber-600 text-white rounded-xl font-bold text-base hover:shadow-xl transition duration-300 transform hover:scale-105"
               >
-                Voir toutes les catégories ?
+                Voir toutes les categories ?
               </button>
             </motion.div>
           )}
@@ -418,10 +418,10 @@ const Home = () => {
             className="text-center mb-12"
           >
             <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
-              Comment ça <span className="bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">marche</span> ?
+              Comment ca <span className="bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">marche</span> ?
             </h2>
             <p className="text-base text-gray-400 max-w-2xl mx-auto">
-              4 étapes simples pour obtenir l'aide que vous méritez
+              4 etapes simples pour obtenir l'aide que vous meritez
             </p>
           </motion.div>
 
@@ -433,10 +433,10 @@ const Home = () => {
             className="grid grid-cols-1 md:grid-cols-4 gap-4"
           >
             {[
-              { number: '01', title: 'Inscrivez-vous', description: 'Créez votre compte gratuitement en 30 secondes', icon: '??' },
-              { number: '02', title: 'Décrivez votre besoin', description: 'Expliquez clairement ce que vous avez besoin', icon: '??' },
-              { number: '03', title: 'Choisissez votre expert', description: 'Sélectionnez le meilleur expert pour vous', icon: '?????' },
-              { number: '04', title: 'Recevez votre aide', description: 'Obtenez votre travail complété à temps', icon: '?' }
+              { number: '01', title: 'Inscrivez-vous', description: 'Creez votre compte gratuitement en 30 secondes', icon: '??' },
+              { number: '02', title: 'Decrivez votre besoin', description: 'Expliquez clairement ce que vous avez besoin', icon: '??' },
+              { number: '03', title: 'Choisissez votre expert', description: 'Selectionnez le meilleur expert pour vous', icon: '?????' },
+              { number: '04', title: 'Recevez votre aide', description: 'Obtenez votre travail complete a temps', icon: '?' }
             ].map((step, index) => (
               <motion.div
                 key={index}
@@ -482,12 +482,12 @@ const Home = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
-              Prêt à transformer vos études ?
+              Pret a transformer vos etudes ?
             </h2>
             <p className="text-base text-white/90 mb-6 max-w-2xl mx-auto">
-              Rejoignez les milliers d'étudiants qui réussissent grâce à Do It. Commencez dès maintenant !
+              Rejoignez les milliers d'etudiants qui reussissent grace a Do It. Commencez des maintenant !
             </p>
-            {/* CTA Buttons - Cachés si utilisateur connecté */}
+            {/* CTA Buttons - Caches si utilisateur connecte */}
             {!user && (
               <motion.div
                 className="flex flex-col sm:flex-row gap-3 justify-center"

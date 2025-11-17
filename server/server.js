@@ -31,10 +31,16 @@ const app = express();
 // Créer le serveur HTTP
 const httpServer = createServer(app);
 
-// Configurer Socket.IO
+// Configurer Socket.IO avec CORS flexible
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  'http://localhost:5173',
+  'http://localhost:3000'
+].filter(Boolean);
+
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: allowedOrigins,
     credentials: true,
     methods: ['GET', 'POST']
   }
@@ -64,11 +70,34 @@ const initializeApp = async () => {
 
 initializeApp();
 
+// Configuration CORS plus flexible
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Autoriser les requêtes sans origin (mobile apps, curl, postman, etc.)
+    if (!origin) return callback(null, true);
+    
+    // Liste des origines autorisées
+    const allowedOrigins = [
+      process.env.CLIENT_URL,
+      'http://localhost:5173',
+      'http://localhost:3000',
+      'https://freelancing-app-mdgw.onrender.com'
+    ].filter(Boolean);
+    
+    // En développement, autoriser toutes les origines localhost
+    if (process.env.NODE_ENV !== 'production' || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
 // Middleware
-app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
-  credentials: true
-}));
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

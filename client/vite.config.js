@@ -16,9 +16,14 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    host: true,
+    port: 5173,
+  },
   build: {
     outDir: 'dist',
     sourcemap: false,
+    charset: 'utf8',
     rollupOptions: {
       output: {
         manualChunks: {

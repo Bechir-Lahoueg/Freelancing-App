@@ -71,12 +71,27 @@ router.get('/check', async (req, res) => {
   }
 });
 
-// Route simple de ping
+// Route simple de ping (ultra-léger pour UptimeRobot)
 router.get('/ping', (req, res) => {
   res.status(200).json({ 
     status: 'OK', 
     message: 'Pong!',
     timestamp: new Date().toISOString()
+  });
+});
+
+// Route encore plus légère pour UptimeRobot (sans JSON parsing)
+router.get('/alive', (req, res) => {
+  res.status(200).send('OK');
+});
+
+// Route avec vérification minimale de la DB
+router.get('/status', (req, res) => {
+  const isDBConnected = mongoose.connection.readyState === 1;
+  res.status(isDBConnected ? 200 : 503).json({ 
+    status: isDBConnected ? 'OK' : 'ERROR',
+    db: isDBConnected ? 'Connected' : 'Disconnected',
+    uptime: Math.floor(process.uptime())
   });
 });
 

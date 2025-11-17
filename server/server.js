@@ -40,7 +40,18 @@ const allowedOrigins = [
 
 const io = new Server(httpServer, {
   cors: {
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+      // Autoriser sans origin
+      if (!origin) return callback(null, true);
+      
+      // Autoriser localhost et CLIENT_URL
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      
+      // Autoriser tous les domaines Vercel
+      if (origin.includes('.vercel.app')) return callback(null, true);
+      
+      callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
     methods: ['GET', 'POST']
   }
@@ -84,8 +95,11 @@ const corsOptions = {
       'https://freelancing-app-mdgw.onrender.com'
     ].filter(Boolean);
     
+    // Autoriser tous les domaines Vercel
+    const isVercelDomain = origin.includes('.vercel.app');
+    
     // En developpement, autoriser toutes les origines localhost
-    if (process.env.NODE_ENV !== 'production' || allowedOrigins.includes(origin)) {
+    if (process.env.NODE_ENV !== 'production' || allowedOrigins.includes(origin) || isVercelDomain) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));

@@ -6,7 +6,7 @@ const AuthContext = createContext();
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth doit être utilisé dans un AuthProvider');
+    throw new Error('useAuth doit etre utilise dans un AuthProvider');
   }
   return context;
 };
@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', token);
       fetchUser();
     } else {
-      // Important: Ne pas inclure de header Authorization pour les utilisateurs non connectés
+      // Important: Ne pas inclure de header Authorization pour les utilisateurs non connectes
       delete axios.defaults.headers.common['Authorization'];
       localStorage.removeItem('token');
       setLoading(false);
@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
       console.log('✅ User profile fetched:', data);
       setUser(data);
     } catch (error) {
-      console.error('❌ Erreur lors de la récupération du profil:', error.response?.status, error.message);
+      console.error('Erreur lors de la recuperation du profil:', error.response?.status, error.message);
       
       // Si erreur 401, c'est que le token n'est pas valide
       if (error.response?.status === 401) {

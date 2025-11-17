@@ -7,7 +7,7 @@ const Footer = () => {
 
   const footerLinks = {
     entreprise: [
-      { label: 'À propos', path: '/about' },
+      { label: 'A propos', path: '/about' },
       { label: 'Services', path: '/services' },
       { label: 'Devenir Partenaire', path: '/partner' },
       { label: 'Blog', path: '/blog' },
@@ -16,7 +16,7 @@ const Footer = () => {
       { label: 'Centre d\'aide', path: '/help' },
       { label: 'FAQ', path: '/faq' },
       { label: 'Conditions d\'utilisation', path: '/terms' },
-      { label: 'Politique de confidentialité', path: '/privacy' },
+      { label: 'Politique de confidentialite', path: '/privacy' },
     ],
     contact: [
       { icon: Mail, text: 'contact@doit.com', link: 'mailto:contact@doit.com' },
@@ -52,7 +52,7 @@ const Footer = () => {
                 onClick={() => navigate('/')}
               />
               <p className="text-gray-400 text-sm leading-relaxed">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-500 font-bold">Do IT</span> est votre plateforme de freelancing moderne qui connecte talents et opportunités. Transformez vos idées en réalité.
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-500 font-bold">Do IT</span> est votre plateforme de freelancing moderne qui connecte talents et opportunites. Transformez vos idees en realite.
               </p>
             </motion.div>
 
@@ -174,10 +174,10 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex-1 text-center md:text-left">
               <h3 className="text-white font-bold text-lg mb-2">
-                Restez informé de nos actualités
+                Restez informe de nos actualites
               </h3>
               <p className="text-gray-400 text-sm">
-                Inscrivez-vous à notre newsletter et recevez les dernières nouvelles et offres exclusives.
+                Inscrivez-vous a notre newsletter et recevez les dernieres nouvelles et offres exclusives.
               </p>
             </div>
             <div className="flex gap-2 w-full md:w-auto">
@@ -205,13 +205,13 @@ const Footer = () => {
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-500 font-bold">
                 Do IT
               </span>
-              . Tous droits réservés.
+              . Tous droits reserves.
             </p>
             
             <p className="flex items-center gap-2">
               Fait avec <Heart size={16} className="text-red-500 fill-red-500 animate-pulse" /> 
               <span className="text-gray-400">par</span>
-              <span className="text-orange-400 font-semibold">l'équipe Do IT</span>
+              <span className="text-orange-400 font-semibold">l'equipe Do IT</span>
             </p>
 
             <div className="flex gap-6">
@@ -225,7 +225,7 @@ const Footer = () => {
                 onClick={() => navigate('/privacy')}
                 className="hover:text-orange-400 transition-colors"
               >
-                Confidentialité
+                Confidentialite
               </button>
               <button
                 onClick={() => navigate('/cookies')}

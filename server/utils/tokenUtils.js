@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-// Générer un token JWT avec expiration
+// Generer un token JWT avec expiration
 export const generateToken = (userId, role) => {
   return jwt.sign(
     { id: userId, role },
@@ -9,7 +9,7 @@ export const generateToken = (userId, role) => {
   );
 };
 
-// Générer un Refresh Token
+// Generer un Refresh Token
 export const generateRefreshToken = (userId) => {
   return jwt.sign(
     { id: userId },
@@ -18,7 +18,7 @@ export const generateRefreshToken = (userId) => {
   );
 };
 
-// Vérifier un token
+// Verifier un token
 export const verifyToken = (token) => {
   try {
     return jwt.verify(
@@ -26,11 +26,11 @@ export const verifyToken = (token) => {
       process.env.JWT_SECRET || 'votre_secret_jwt_super_secure'
     );
   } catch (error) {
-    throw new Error('Token invalide ou expiré');
+    throw new Error('Token invalide ou expire');
   }
 };
 
-// Vérifier un Refresh Token
+// Verifier un Refresh Token
 export const verifyRefreshToken = (token) => {
   try {
     return jwt.verify(
@@ -38,6 +38,6 @@ export const verifyRefreshToken = (token) => {
       process.env.JWT_REFRESH_SECRET || 'votre_refresh_secret_super_secure'
     );
   } catch (error) {
-    throw new Error('Refresh token invalide ou expiré');
+    throw new Error('Refresh token invalide ou expire');
   }
 };

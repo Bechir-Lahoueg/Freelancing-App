@@ -7,19 +7,19 @@ const createSuperAdmin = async () => {
     const name = process.env.SUPER_ADMIN_NAME || 'Super Admin';
 
     if (!email || !password) {
-      console.log('⚠️  Credentials super admin non configurés dans .env');
+      console.log('⚠️  Credentials super admin non configures dans .env');
       return;
     }
 
-    // Vérifier si le super admin existe déjà
+    // Verifier si le super admin existe deja
     const existingSuperAdmin = await User.findOne({ email });
 
     if (existingSuperAdmin) {
-      console.log('✅ Super admin existe déjà');
+      console.log('✅ Super admin existe deja');
       return;
     }
 
-    // Créer le super admin
+    // Creer le super admin
     const superAdmin = await User.create({
       name,
       email,
@@ -29,10 +29,10 @@ const createSuperAdmin = async () => {
       universityYear: 'Autre'
     });
 
-    console.log('✅ Super admin créé avec succès!');
+    console.log('✅ Super admin cree avec succes!');
     console.log(`📧 Email: ${email}`);
   } catch (error) {
-    console.error('❌ Erreur lors de la création du super admin:', error.message);
+    console.error('❌ Erreur lors de la creation du super admin:', error.message);
   }
 };
 

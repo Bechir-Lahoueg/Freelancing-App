@@ -76,7 +76,7 @@ const serviceSchema = new mongoose.Schema({
   }
 });
 
-// Mise à jour automatique de updatedAt
+// Mise a jour automatique de updatedAt
 serviceSchema.pre('save', function(next) {
   this.updatedAt = Date.now();
   next();

@@ -1,7 +1,7 @@
 import Notification from '../models/Notification.js';
 import User from '../models/User.js';
 
-// @desc    Obtenir les notifications pour l'utilisateur connecté
+// @desc    Obtenir les notifications pour l'utilisateur connecte
 // @route   GET /api/notifications
 // @access  Private
 export const getNotifications = async (req, res) => {
@@ -45,17 +45,17 @@ export const markNotificationAsRead = async (req, res) => {
   }
 };
 
-// @desc    Créer une notification
+// @desc    Creer une notification
 // @route   POST /api/notifications (Internal)
 // @access  Private
 export const createNotification = async (type, message, comment) => {
   try {
-    // Récupérer tous les admins et superadmins
+    // Recuperer tous les admins et superadmins
     const admins = await User.find({ role: { $in: ['admin', 'superadmin'] } }).select('_id');
 
     console.log('📍 Found admins:', admins.length);
 
-    // Créer une notification pour chaque admin
+    // Creer une notification pour chaque admin
     const notifications = admins.map(admin => ({
       admin: admin._id,
       type,

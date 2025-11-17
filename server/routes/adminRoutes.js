@@ -38,7 +38,7 @@ const upload = multer({
     if (mimetype && extname) {
       return cb(null, true);
     } else {
-      cb(new Error('Seules les images sont acceptées'));
+      cb(new Error('Seules les images sont acceptees'));
     }
   }
 });
@@ -50,7 +50,7 @@ const router = express.Router();
 // ============================================
 
 // @route   POST /api/admin/superadmins
-// @desc    Créer un nouveau super admin
+// @desc    Creer un nouveau super admin
 // @access  Private (Super Admin Only)
 router.post(
   '/superadmins',
@@ -60,7 +60,7 @@ router.post(
     body('email').isEmail().withMessage('Email invalide'),
     body('password')
       .isLength({ min: 6 })
-      .withMessage('Le mot de passe doit faire au moins 6 caractères')
+      .withMessage('Le mot de passe doit faire au moins 6 caracteres')
   ],
   async (req, res) => {
     try {
@@ -71,13 +71,13 @@ router.post(
 
       const { name, email, password } = req.body;
 
-      // Vérifier si l'email existe déjà
+      // Verifier si l'email existe deja
       const userExists = await User.findOne({ email });
       if (userExists) {
-        return res.status(400).json({ message: 'Cet email est déjà utilisé' });
+        return res.status(400).json({ message: 'Cet email est deja utilise' });
       }
 
-      // Créer le super admin
+      // Creer le super admin
       const newSuperAdmin = await User.create({
         name,
         email,
@@ -87,7 +87,7 @@ router.post(
       });
 
       res.status(201).json({
-        message: 'Super admin créé avec succès',
+        message: 'Super admin cree avec succes',
         _id: newSuperAdmin._id,
         name: newSuperAdmin.name,
         email: newSuperAdmin.email,
@@ -122,10 +122,10 @@ router.delete('/superadmins/:id', protectSuperAdmin, async (req, res) => {
     const superAdmin = await User.findById(req.params.id);
 
     if (!superAdmin || superAdmin.role !== 'superadmin') {
-      return res.status(404).json({ message: 'Super admin non trouvé' });
+      return res.status(404).json({ message: 'Super admin non trouve' });
     }
 
-    // Empêcher la suppression si c'est le dernier super admin
+    // Empecher la suppression si c'est le dernier super admin
     const superAdminCount = await User.countDocuments({ role: 'superadmin' });
     if (superAdminCount <= 1) {
       return res.status(403).json({ 
@@ -135,7 +135,7 @@ router.delete('/superadmins/:id', protectSuperAdmin, async (req, res) => {
 
     await User.findByIdAndDelete(req.params.id);
 
-    res.json({ message: 'Super admin supprimé avec succès' });
+    res.json({ message: 'Super admin supprime avec succes' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -146,14 +146,14 @@ router.delete('/superadmins/:id', protectSuperAdmin, async (req, res) => {
 // ============================================
 
 // @route   POST /api/admin/categories
-// @desc    Créer une nouvelle catégorie avec image
+// @desc    Creer une nouvelle categorie avec image
 // @access  Private (Admin & Super Admin)
 router.post(
   '/categories',
   protectAdmin,
   upload.single('image'),
   [
-    body('name').trim().notEmpty().withMessage('Le nom de la catégorie est requis'),
+    body('name').trim().notEmpty().withMessage('Le nom de la categorie est requis'),
     body('description').trim().notEmpty().withMessage('La description est requise'),
     body('icon').optional().trim(),
     body('color').optional().trim()
@@ -169,26 +169,26 @@ router.post(
 
       console.log('📸 Full req.file object:', JSON.stringify(req.file, null, 2));
 
-      // Vérifier si le nom existe déjà
+      // Verifier si le nom existe deja
       const categoryExists = await Category.findOne({ name });
       if (categoryExists) {
-        return res.status(400).json({ message: 'Cette catégorie existe déjà' });
+        return res.status(400).json({ message: 'Cette categorie existe deja' });
       }
 
-      // Créer le slug
+      // Creer le slug
       const slug = name.toLowerCase().replace(/\s+/g, '-');
 
-      // Récupérer l'URL de l'image depuis Cloudinary
-      // multer-storage-cloudinary retourne la propriété 'path' avec l'URL complète
+      // Recuperer l'URL de l'image depuis Cloudinary
+      // multer-storage-cloudinary retourne la propriete 'path' avec l'URL complete
       let imageUrl = null;
       if (req.file) {
-        // Essayer différentes propriétés pour obtenir l'URL
+        // Essayer differentes proprietes pour obtenir l'URL
         imageUrl = req.file.secure_url || req.file.path || req.file.url;
         console.log('🔗 Resolved image URL:', imageUrl);
         console.log('📦 req.file properties:', Object.keys(req.file));
       }
 
-      // Créer la catégorie
+      // Creer la categorie
       const newCategory = await Category.create({
         name,
         slug,
@@ -204,7 +204,7 @@ router.post(
       console.log('✅ Category created:', newCategory);
 
       res.status(201).json({
-        message: 'Catégorie créée avec succès',
+        message: 'Categorie creee avec succes',
         category: newCategory
       });
     } catch (error) {
@@ -215,7 +215,7 @@ router.post(
 );
 
 // @route   GET /api/admin/categories
-// @desc    Obtenir toutes les catégories
+// @desc    Obtenir toutes les categories
 // @access  Private (Admin)
 router.get('/categories', protectAdmin, async (req, res) => {
   try {
@@ -230,7 +230,7 @@ router.get('/categories', protectAdmin, async (req, res) => {
 });
 
 // @route   PUT /api/admin/categories/:id
-// @desc    Mettre à jour une catégorie
+// @desc    Mettre a jour une categorie
 // @access  Private (Admin)
 router.put(
   '/categories/:id',
@@ -254,10 +254,10 @@ router.put(
       const category = await Category.findById(req.params.id);
 
       if (!category) {
-        return res.status(404).json({ message: 'Catégorie non trouvée' });
+        return res.status(404).json({ message: 'Categorie non trouvee' });
       }
 
-      // Mettre à jour les champs
+      // Mettre a jour les champs
       if (name) {
         category.name = name;
         category.slug = name.toLowerCase().replace(/\s+/g, '-');
@@ -268,7 +268,7 @@ router.put(
       if (typeof isActive !== 'undefined') category.isActive = isActive;
       if (order !== undefined) category.order = order;
 
-      // Gérer l'image depuis Cloudinary
+      // Gerer l'image depuis Cloudinary
       if (req.file) {
         // Supprimer l'ancienne image de Cloudinary si elle existe
         if (category.image) {
@@ -280,14 +280,14 @@ router.put(
             console.error('Erreur suppression ancienne image Cloudinary:', error);
           }
         }
-        // Utiliser la nouvelle image uploadée
+        // Utiliser la nouvelle image uploadee
         category.image = req.file.secure_url;
       }
 
       await category.save();
 
       res.json({
-        message: 'Catégorie mise à jour avec succès',
+        message: 'Categorie mise a jour avec succes',
         category
       });
     } catch (error) {
@@ -297,14 +297,14 @@ router.put(
 );
 
 // @route   DELETE /api/admin/categories/:id
-// @desc    Supprimer une catégorie
+// @desc    Supprimer une categorie
 // @access  Private (Admin)
 router.delete('/categories/:id', protectAdmin, async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
 
     if (!category) {
-      return res.status(404).json({ message: 'Catégorie non trouvée' });
+      return res.status(404).json({ message: 'Categorie non trouvee' });
     }
 
     // Supprimer l'image du serveur
@@ -317,14 +317,14 @@ router.delete('/categories/:id', protectAdmin, async (req, res) => {
 
     await Category.findByIdAndDelete(req.params.id);
 
-    res.json({ message: 'Catégorie supprimée avec succès' });
+    res.json({ message: 'Categorie supprimee avec succes' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
 // @route   PUT /api/admin/categories/reorder
-// @desc    Réorganiser les catégories
+// @desc    Reorganiser les categories
 // @access  Private (Admin)
 router.put('/categories-reorder', protectAdmin, async (req, res) => {
   try {
@@ -334,12 +334,12 @@ router.put('/categories-reorder', protectAdmin, async (req, res) => {
       return res.status(400).json({ message: 'Format invalide' });
     }
 
-    // Mettre à jour l'ordre de chaque catégorie
+    // Mettre a jour l'ordre de chaque categorie
     for (const cat of categories) {
       await Category.findByIdAndUpdate(cat.id, { order: cat.order });
     }
 
-    res.json({ message: 'Ordre des catégories mis à jour' });
+    res.json({ message: 'Ordre des categories mis a jour' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -423,14 +423,14 @@ router.get('/users', protectAdmin, async (req, res) => {
 });
 
 // @route   GET /api/admin/users/:id
-// @desc    Obtenir les détails d'un utilisateur
+// @desc    Obtenir les details d'un utilisateur
 // @access  Private (Super Admin)
 router.get('/users/:id', protectAdmin, async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select('-password');
     
     if (!user) {
-      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+      return res.status(404).json({ message: 'Utilisateur non trouve' });
     }
 
     // Obtenir les statistiques de cet utilisateur
@@ -464,7 +464,7 @@ router.get('/users/:id', protectAdmin, async (req, res) => {
 // @access  Private (Super Admin)
 router.delete('/users/:id', protectAdmin, async (req, res) => {
   try {
-    // Vérifier qu'on ne supprime pas le super admin
+    // Verifier qu'on ne supprime pas le super admin
     const user = await User.findById(req.params.id);
     
     if (user.role === 'superadmin') {
@@ -473,26 +473,26 @@ router.delete('/users/:id', protectAdmin, async (req, res) => {
       });
     }
 
-    // Supprimer l'utilisateur et ses données associées
+    // Supprimer l'utilisateur et ses donnees associees
     await TaskRequest.deleteMany({ userId: req.params.id });
     await Invoice.deleteMany({ userId: req.params.id });
     await User.findByIdAndDelete(req.params.id);
 
-    res.json({ message: 'Utilisateur supprimé avec succès' });
+    res.json({ message: 'Utilisateur supprime avec succes' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
 // @route   PUT /api/admin/users/:id/role
-// @desc    Modifier le rôle d'un utilisateur
+// @desc    Modifier le role d'un utilisateur
 // @access  Private (Super Admin)
 router.put('/users/:id/role', protectAdmin, async (req, res) => {
   try {
     const { role } = req.body;
 
     if (!['user', 'admin', 'superadmin'].includes(role)) {
-      return res.status(400).json({ message: 'Rôle invalide' });
+      return res.status(400).json({ message: 'Role invalide' });
     }
 
     const user = await User.findByIdAndUpdate(
@@ -502,7 +502,7 @@ router.put('/users/:id/role', protectAdmin, async (req, res) => {
     ).select('-password');
 
     if (!user) {
-      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+      return res.status(404).json({ message: 'Utilisateur non trouve' });
     }
 
     res.json(user);
@@ -516,7 +516,7 @@ router.put('/users/:id/role', protectAdmin, async (req, res) => {
 // ============================================
 
 // @route   GET /api/admin/categories/list
-// @desc    Obtenir toutes les catégories publiques
+// @desc    Obtenir toutes les categories publiques
 // @access  Public
 router.get('/categories/list', async (req, res) => {
   try {
@@ -531,14 +531,14 @@ router.get('/categories/list', async (req, res) => {
 });
 
 // @route   GET /api/admin/categories/:id
-// @desc    Obtenir une catégorie spécifique avec ses questions
+// @desc    Obtenir une categorie specifique avec ses questions
 // @access  Public
 router.get('/categories/:id', async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
     
     if (!category) {
-      return res.status(404).json({ message: 'Catégorie non trouvée' });
+      return res.status(404).json({ message: 'Categorie non trouvee' });
     }
 
     res.json(category);
@@ -552,7 +552,7 @@ router.get('/categories/:id', async (req, res) => {
 // ============================================
 
 // @route   GET /api/admin/services/by-category/:categoryId
-// @desc    Obtenir tous les services d'une catégorie (admin)
+// @desc    Obtenir tous les services d'une categorie (admin)
 // @access  Private (Admin/SuperAdmin)
 router.get('/services/by-category/:categoryId', protectAdmin, async (req, res) => {
   try {
@@ -567,7 +567,7 @@ router.get('/services/by-category/:categoryId', protectAdmin, async (req, res) =
 });
 
 // @route   POST /api/admin/services
-// @desc    Créer un nouveau service (admin)
+// @desc    Creer un nouveau service (admin)
 // @access  Private (Admin/SuperAdmin)
 router.post('/services', protectAdmin, async (req, res) => {
   try {
@@ -596,7 +596,7 @@ router.post('/services', protectAdmin, async (req, res) => {
 });
 
 // @route   PUT /api/admin/services/:id
-// @desc    Mettre à jour un service (admin)
+// @desc    Mettre a jour un service (admin)
 // @access  Private (Admin/SuperAdmin)
 router.put('/services/:id', protectAdmin, async (req, res) => {
   try {
@@ -610,7 +610,7 @@ router.put('/services/:id', protectAdmin, async (req, res) => {
     ).populate('categoryId', 'name icon');
 
     if (!service) {
-      return res.status(404).json({ message: 'Service non trouvé' });
+      return res.status(404).json({ message: 'Service non trouve' });
     }
 
     res.json(service);
@@ -628,17 +628,17 @@ router.delete('/services/:id', protectAdmin, async (req, res) => {
     const service = await Service.findByIdAndDelete(req.params.id);
 
     if (!service) {
-      return res.status(404).json({ message: 'Service non trouvé' });
+      return res.status(404).json({ message: 'Service non trouve' });
     }
 
-    res.json({ message: 'Service supprimé avec succès' });
+    res.json({ message: 'Service supprime avec succes' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
 // @route   GET /api/admin/tasks/all
-// @desc    Obtenir toutes les tâches (admin)
+// @desc    Obtenir toutes les taches (admin)
 // @access  Private (Admin/SuperAdmin)
 router.get('/tasks/all', protectAdmin, async (req, res) => {
   try {
@@ -655,7 +655,7 @@ router.get('/tasks/all', protectAdmin, async (req, res) => {
 });
 
 // @route   PUT /api/admin/tasks/:id/approve
-// @desc    Approuver une tâche et créer une conversation
+// @desc    Approuver une tache et creer une conversation
 // @access  Private (Admin/SuperAdmin)
 router.put('/tasks/:id/approve', protectAdmin, async (req, res) => {
   try {
@@ -669,10 +669,10 @@ router.put('/tasks/:id/approve', protectAdmin, async (req, res) => {
       .populate('userId', 'name email');
 
     if (!task) {
-      return res.status(404).json({ message: 'Tâche non trouvée' });
+      return res.status(404).json({ message: 'Tache non trouvee' });
     }
 
-    // Créer automatiquement une conversation pour cette tâche
+    // Creer automatiquement une conversation pour cette tache
     let conversation = await Conversation.findOne({ taskRequestId: task._id });
 
     if (!conversation) {
@@ -685,10 +685,10 @@ router.put('/tasks/:id/approve', protectAdmin, async (req, res) => {
         'Rami Grami'
       ];
 
-      // Sélectionner un agent aléatoirement
+      // Selectionner un agent aleatoirement
       const randomAgent = availableAgents[Math.floor(Math.random() * availableAgents.length)];
 
-      // Générer un code de conversation unique (format: CONV-XXXXXX)
+      // Generer un code de conversation unique (format: CONV-XXXXXX)
       const conversationCode = 'CONV-' + Math.random().toString(36).substring(2, 8).toUpperCase();
 
       conversation = await Conversation.create({
@@ -713,14 +713,14 @@ router.put('/tasks/:id/approve', protectAdmin, async (req, res) => {
         }
       });
 
-      // Créer deux messages système : un pour le client et un pour l'admin
+      // Creer deux messages systeme : un pour le client et un pour l'admin
       
       // Message pour le CLIENT
       const userMessage = await Message.create({
         conversationId: conversation._id,
         senderId: req.user._id,
-        recipientId: task.userId._id, // Destinataire spécifique
-        content: `🎉 Votre demande "${task.title}" a été approuvée !\n\n📋 Code de discussion: ${conversationCode}\n👤 Vous êtes mis en relation avec: ${randomAgent}\n\n💬 Vous pouvez maintenant discuter avec notre équipe.\n📌 Conservez ce code pour référence future.`,
+        recipientId: task.userId._id, // Destinataire specifique
+        content: `🎉 Votre demande "${task.title}" a ete approuvee !\n\n📋 Code de discussion: ${conversationCode}\n👤 Vous etes mis en relation avec: ${randomAgent}\n\n💬 Vous pouvez maintenant discuter avec notre equipe.\n📌 Conservez ce code pour reference future.`,
         messageType: 'system'
       });
 
@@ -729,18 +729,18 @@ router.put('/tasks/:id/approve', protectAdmin, async (req, res) => {
         conversationId: conversation._id,
         senderId: req.user._id,
         recipientId: req.user._id, // Destinataire = admin
-        content: `✅ Nouvelle conversation initiée\n\n👤 Client: ${task.userId.name}\n📧 Email: ${task.userId.email}\n📋 Code: ${conversationCode}\n🎯 Agent assigné: ${randomAgent}\n📝 Demande: "${task.title}"\n\n💼 Vous pouvez maintenant assister le client.`,
+        content: `✅ Nouvelle conversation initiee\n\n👤 Client: ${task.userId.name}\n📧 Email: ${task.userId.email}\n📋 Code: ${conversationCode}\n🎯 Agent assigne: ${randomAgent}\n📝 Demande: "${task.title}"\n\n💼 Vous pouvez maintenant assister le client.`,
         messageType: 'system'
       });
 
       conversation.lastMessage = {
-        content: `Conversation créée pour "${task.title}"`,
+        content: `Conversation creee pour "${task.title}"`,
         senderId: req.user._id,
         timestamp: userMessage.createdAt
       };
       await conversation.save();
 
-      // Émettre une notification via Socket.IO
+      // Emettre une notification via Socket.IO
       const io = req.app.get('io');
       if (io) {
         io.emit('conversation:created', {
@@ -751,20 +751,20 @@ router.put('/tasks/:id/approve', protectAdmin, async (req, res) => {
     }
 
     res.json({ 
-      message: 'Tâche approuvée et conversation créée', 
+      message: 'Tache approuvee et conversation creee', 
       task,
       conversationId: conversation._id,
       conversationCode: conversation.conversationCode,
       assignedAgent: conversation.assignedAgent.name
     });
   } catch (error) {
-    console.error('❌ Erreur approbation tâche:', error);
+    console.error('❌ Erreur approbation tache:', error);
     res.status(500).json({ message: error.message });
   }
 });
 
 // @route   PUT /api/admin/tasks/:id/reject
-// @desc    Rejeter une tâche
+// @desc    Rejeter une tache
 // @access  Private (Admin/SuperAdmin)
 router.put('/tasks/:id/reject', protectAdmin, async (req, res) => {
   try {
@@ -774,7 +774,7 @@ router.put('/tasks/:id/reject', protectAdmin, async (req, res) => {
       req.params.id,
       { 
         status: 'rejected', 
-        rejectionReason: reason || 'Non spécifiée',
+        rejectionReason: reason || 'Non specifiee',
         rejectedAt: new Date()
       },
       { new: true }
@@ -783,10 +783,10 @@ router.put('/tasks/:id/reject', protectAdmin, async (req, res) => {
       .populate('categoryId', 'name icon');
 
     if (!task) {
-      return res.status(404).json({ message: 'Tâche non trouvée' });
+      return res.status(404).json({ message: 'Tache non trouvee' });
     }
 
-    res.json({ message: 'Tâche rejetée', task });
+    res.json({ message: 'Tache rejetee', task });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -805,17 +805,17 @@ router.post('/conversations/:conversationId/leave', protectAdmin, async (req, re
     
     const conversation = await Conversation.findById(conversationId);
     if (!conversation) {
-      return res.status(404).json({ message: 'Conversation non trouvée' });
+      return res.status(404).json({ message: 'Conversation non trouvee' });
     }
 
-    // Vérifier que l'utilisateur est admin dans cette conversation
+    // Verifier que l'utilisateur est admin dans cette conversation
     const isAdmin = conversation.participants.some(
       p => p.userId.toString() === req.user._id.toString() && 
            (p.role === 'admin' || p.role === 'superadmin')
     );
 
     if (!isAdmin) {
-      return res.status(403).json({ message: 'Non autorisé' });
+      return res.status(403).json({ message: 'Non autorise' });
     }
 
     // Fermer la conversation
@@ -827,15 +827,15 @@ router.post('/conversations/:conversationId/leave', protectAdmin, async (req, re
     };
     await conversation.save();
 
-    // Créer un message système
+    // Creer un message systeme
     const systemMessage = await Message.create({
       conversationId,
-      content: `L'administrateur a quitté la conversation. Cette conversation est maintenant fermée.`,
+      content: `L'administrateur a quitte la conversation. Cette conversation est maintenant fermee.`,
       messageType: 'system',
       senderId: req.user._id
     });
 
-    // Émettre via Socket.IO
+    // Emettre via Socket.IO
     if (req.app.get('io')) {
       req.app.get('io').to(conversationId).emit('conversation:closed', {
         conversationId,
@@ -845,7 +845,7 @@ router.post('/conversations/:conversationId/leave', protectAdmin, async (req, re
     }
 
     res.json({ 
-      message: 'Conversation fermée avec succès',
+      message: 'Conversation fermee avec succes',
       conversation 
     });
   } catch (error) {
@@ -855,7 +855,7 @@ router.post('/conversations/:conversationId/leave', protectAdmin, async (req, re
 });
 
 // @route   POST /api/admin/conversations/:conversationId/complete
-// @desc    Marquer la tâche comme terminée
+// @desc    Marquer la tache comme terminee
 // @access  Private (Admin)
 router.post('/conversations/:conversationId/complete', protectAdmin, async (req, res) => {
   try {
@@ -866,24 +866,24 @@ router.post('/conversations/:conversationId/complete', protectAdmin, async (req,
       .populate('taskRequestId');
       
     if (!conversation) {
-      return res.status(404).json({ message: 'Conversation non trouvée' });
+      return res.status(404).json({ message: 'Conversation non trouvee' });
     }
 
-    // Vérifier que l'utilisateur est admin dans cette conversation
+    // Verifier que l'utilisateur est admin dans cette conversation
     const isAdmin = conversation.participants.some(
       p => p.userId.toString() === req.user._id.toString() && 
            (p.role === 'admin' || p.role === 'superadmin')
     );
 
     if (!isAdmin) {
-      return res.status(403).json({ message: 'Non autorisé' });
+      return res.status(403).json({ message: 'Non autorise' });
     }
 
-    // Marquer la tâche comme terminée
+    // Marquer la tache comme terminee
     conversation.taskCompleted = true;
     conversation.completedAction = action;
 
-    // Mettre à jour le statut de la TaskRequest
+    // Mettre a jour le statut de la TaskRequest
     if (conversation.taskRequestId) {
       await TaskRequest.findByIdAndUpdate(conversation.taskRequestId._id, {
         status: 'completed'
@@ -902,7 +902,7 @@ router.post('/conversations/:conversationId/complete', protectAdmin, async (req,
 
     await conversation.save();
 
-    // Incrémenter le compteur de projets complétés
+    // Incrementer le compteur de projets completes
     let siteStats = await SiteStats.findOne();
     if (!siteStats) {
       siteStats = await SiteStats.create({ projectsCompleted: 1 });
@@ -912,12 +912,12 @@ router.post('/conversations/:conversationId/complete', protectAdmin, async (req,
       await siteStats.save();
     }
 
-    // Créer un message système
-    let systemMessageContent = `✅ La tâche a été marquée comme terminée par l'administrateur.`;
+    // Creer un message systeme
+    let systemMessageContent = `✅ La tache a ete marquee comme terminee par l'administrateur.`;
     if (action === 'close_conversation') {
-      systemMessageContent += ` Cette conversation est maintenant fermée.`;
+      systemMessageContent += ` Cette conversation est maintenant fermee.`;
     } else {
-      systemMessageContent += ` La conversation reste ouverte pour d'éventuels échanges.`;
+      systemMessageContent += ` La conversation reste ouverte pour d'eventuels echanges.`;
     }
 
     const systemMessage = await Message.create({
@@ -927,7 +927,7 @@ router.post('/conversations/:conversationId/complete', protectAdmin, async (req,
       senderId: req.user._id
     });
 
-    // Émettre via Socket.IO
+    // Emettre via Socket.IO
     if (req.app.get('io')) {
       req.app.get('io').to(conversationId).emit('task:completed', {
         conversationId,
@@ -938,12 +938,12 @@ router.post('/conversations/:conversationId/complete', protectAdmin, async (req,
     }
 
     res.json({ 
-      message: 'Tâche marquée comme terminée',
+      message: 'Tache marquee comme terminee',
       conversation,
-      projectsCompleted: true // Pour incrémenter le compteur
+      projectsCompleted: true // Pour incrementer le compteur
     });
   } catch (error) {
-    console.error('Erreur lors de la complétion de la tâche:', error);
+    console.error('Erreur lors de la completion de la tache:', error);
     res.status(500).json({ message: error.message });
   }
 });
@@ -964,7 +964,7 @@ router.get('/site-stats', async (req, res) => {
 
     res.json(siteStats);
   } catch (error) {
-    console.error('Erreur lors de la récupération des stats:', error);
+    console.error('Erreur lors de la recuperation des stats:', error);
     res.status(500).json({ message: error.message });
   }
 });
@@ -991,13 +991,13 @@ router.get('/partner-requests', protectAdmin, async (req, res) => {
 
     res.json(requests);
   } catch (error) {
-    console.error('Erreur lors de la récupération des demandes:', error);
+    console.error('Erreur lors de la recuperation des demandes:', error);
     res.status(500).json({ message: error.message });
   }
 });
 
 // @route   GET /api/admin/partner-requests/:id
-// @desc    Obtenir une demande de partenariat spécifique
+// @desc    Obtenir une demande de partenariat specifique
 // @access  Private (Admin)
 router.get('/partner-requests/:id', protectAdmin, async (req, res) => {
   try {
@@ -1005,7 +1005,7 @@ router.get('/partner-requests/:id', protectAdmin, async (req, res) => {
       .populate('reviewedBy', 'name email');
 
     if (!request) {
-      return res.status(404).json({ message: 'Demande non trouvée' });
+      return res.status(404).json({ message: 'Demande non trouvee' });
     }
 
     res.json(request);
@@ -1025,12 +1025,12 @@ router.put('/partner-requests/:id/approve', protectAdmin, async (req, res) => {
     const request = await PartnerRequest.findById(req.params.id);
     
     if (!request) {
-      return res.status(404).json({ message: 'Demande non trouvée' });
+      return res.status(404).json({ message: 'Demande non trouvee' });
     }
 
     if (request.status !== 'pending') {
       return res.status(400).json({ 
-        message: 'Cette demande a déjà été traitée' 
+        message: 'Cette demande a deja ete traitee' 
       });
     }
 
@@ -1042,7 +1042,7 @@ router.put('/partner-requests/:id/approve', protectAdmin, async (req, res) => {
     await request.save();
 
     res.json({ 
-      message: 'Demande approuvée avec succès',
+      message: 'Demande approuvee avec succes',
       request 
     });
   } catch (error) {
@@ -1061,12 +1061,12 @@ router.put('/partner-requests/:id/reject', protectAdmin, async (req, res) => {
     const request = await PartnerRequest.findById(req.params.id);
     
     if (!request) {
-      return res.status(404).json({ message: 'Demande non trouvée' });
+      return res.status(404).json({ message: 'Demande non trouvee' });
     }
 
     if (request.status !== 'pending') {
       return res.status(400).json({ 
-        message: 'Cette demande a déjà été traitée' 
+        message: 'Cette demande a deja ete traitee' 
       });
     }
 
@@ -1079,7 +1079,7 @@ router.put('/partner-requests/:id/reject', protectAdmin, async (req, res) => {
     await request.save();
 
     res.json({ 
-      message: 'Demande rejetée',
+      message: 'Demande rejetee',
       request 
     });
   } catch (error) {
@@ -1096,10 +1096,10 @@ router.delete('/partner-requests/:id', protectSuperAdmin, async (req, res) => {
     const request = await PartnerRequest.findById(req.params.id);
     
     if (!request) {
-      return res.status(404).json({ message: 'Demande non trouvée' });
+      return res.status(404).json({ message: 'Demande non trouvee' });
     }
 
-    // Supprimer le CV de Cloudinary si présent
+    // Supprimer le CV de Cloudinary si present
     if (request.cvUrl) {
       const publicId = request.cvUrl.split('/').slice(-2).join('/').split('.')[0];
       try {
@@ -1111,7 +1111,7 @@ router.delete('/partner-requests/:id', protectSuperAdmin, async (req, res) => {
 
     await PartnerRequest.findByIdAndDelete(req.params.id);
 
-    res.json({ message: 'Demande supprimée avec succès' });
+    res.json({ message: 'Demande supprimee avec succes' });
   } catch (error) {
     console.error('Erreur lors de la suppression:', error);
     res.status(500).json({ message: error.message });

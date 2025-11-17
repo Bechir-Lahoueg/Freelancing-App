@@ -13,7 +13,7 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  // Détecter les pages avec fond blanc (login, register, dashboard, etc.)
+  // Detecter les pages avec fond blanc (login, register, dashboard, etc.)
   const isWhiteBackgroundPage = ['/login', '/register', '/dashboard', '/admin/dashboard', '/partner'].includes(location.pathname) || 
                                  location.pathname.startsWith('/dashboard') || 
                                  location.pathname.startsWith('/admin');
@@ -37,7 +37,7 @@ const Navbar = () => {
     { label: 'Services', icon: Briefcase, onClick: () => { navigate('/services'); setMobileMenuOpen(false); } },
   ];
 
-  // Déterminer les classes selon l'état
+  // Determiner les classes selon l'etat
   const shouldShowWhiteStyle = isWhiteBackgroundPage || scrolled;
 
   return (
@@ -134,7 +134,7 @@ const Navbar = () => {
                   whileTap={{ scale: 0.95 }}
                 >
                   <LogOut size={18} />
-                  Déconnexion
+                  Deconnexion
                 </motion.button>
               </>
             )}
@@ -255,7 +255,7 @@ const Navbar = () => {
                       whileTap={{ scale: 0.95 }}
                     >
                       <LogOut size={18} />
-                      Déconnexion
+                      Deconnexion
                     </motion.button>
                   </>
                 )}

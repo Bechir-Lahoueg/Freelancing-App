@@ -14,7 +14,7 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Rediriger si déjà authentifié
+  // Rediriger si deja authentifie
   useEffect(() => {
     if (user) {
       navigate(user.role === 'superadmin' ? '/admin/dashboard' : '/dashboard');
@@ -37,7 +37,7 @@ const Login = () => {
       console.log('✅ Login Success:', response.data);
       login(userData, token);
       
-      // Vérifier s'il y a une redirection sauvegardée
+      // Verifier s'il y a une redirection sauvegardee
       const redirectUrl = localStorage.getItem('redirectAfterLogin');
       if (redirectUrl) {
         localStorage.removeItem('redirectAfterLogin');
@@ -45,7 +45,7 @@ const Login = () => {
         return;
       }
       
-      // Redirection basée sur le rôle
+      // Redirection basee sur le role
       if (response.data.role === 'superadmin' || response.data.role === 'admin') {
         navigate('/admin/dashboard');
       } else {

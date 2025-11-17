@@ -62,7 +62,7 @@ export default function CommentsModeration() {
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
       
-      alert('Commentaire approuvé et publié!');
+      alert('Commentaire approuve et publie!');
       fetchComments();
     } catch (error) {
       console.error('Erreur lors de l\'approbation:', error);
@@ -79,7 +79,7 @@ export default function CommentsModeration() {
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
       
-      alert('Commentaire rejeté');
+      alert('Commentaire rejete');
       setRejectionModal({ isOpen: false, commentId: null });
       setRejectionReason('');
       fetchComments();
@@ -90,7 +90,7 @@ export default function CommentsModeration() {
   };
 
   const handleDelete = async (commentId) => {
-    if (window.confirm('Êtes-vous sûr de vouloir supprimer ce commentaire?')) {
+    if (window.confirm('Etes-vous sur de vouloir supprimer ce commentaire?')) {
       try {
         const token = localStorage.getItem('token');
         await axios.delete(
@@ -98,7 +98,7 @@ export default function CommentsModeration() {
           { headers: { 'Authorization': `Bearer ${token}` } }
         );
         
-        alert('Commentaire supprimé');
+        alert('Commentaire supprime');
         fetchComments();
       } catch (error) {
         console.error('Erreur lors de la suppression:', error);
@@ -183,17 +183,17 @@ export default function CommentsModeration() {
                 <p className="text-gray-700 mb-3">{comment.text}</p>
 
                 {/* Status Badge */}
-                {status === 'rejeté' && comment.rejectionReason && (
+                {status === 'rejete' && comment.rejectionReason && (
                   <div className="bg-red-50 border border-red-200 rounded p-3 text-sm">
                     <p className="font-semibold text-red-900 mb-1">Raison du rejet:</p>
                     <p className="text-red-800">{comment.rejectionReason}</p>
                   </div>
                 )}
 
-                {status === 'approuvé' && (
+                {status === 'approuve' && (
                   <div className="bg-green-50 border border-green-200 rounded p-3 text-sm">
                     <p className="text-green-800">
-                      ✓ Publié le {new Date(comment.approvedAt).toLocaleDateString('fr-FR')}
+                      ✓ Publie le {new Date(comment.approvedAt).toLocaleDateString('fr-FR')}
                     </p>
                   </div>
                 )}
@@ -240,8 +240,8 @@ export default function CommentsModeration() {
 
   const stats = [
     { label: 'En attente', count: pendingComments.length, color: 'bg-yellow-100 text-yellow-700' },
-    { label: 'Approuvés', count: approvedComments.length, color: 'bg-green-100 text-green-700' },
-    { label: 'Rejetés', count: rejectedComments.length, color: 'bg-red-100 text-red-700' }
+    { label: 'Approuves', count: approvedComments.length, color: 'bg-green-100 text-green-700' },
+    { label: 'Rejetes', count: rejectedComments.length, color: 'bg-red-100 text-red-700' }
   ];
 
   return (
@@ -275,16 +275,16 @@ export default function CommentsModeration() {
               }`}
             >
               {tab === 'pending' && `En attente (${pendingComments.length})`}
-              {tab === 'approved' && `Approuvés (${approvedComments.length})`}
-              {tab === 'rejected' && `Rejetés (${rejectedComments.length})`}
+              {tab === 'approved' && `Approuves (${approvedComments.length})`}
+              {tab === 'rejected' && `Rejetes (${rejectedComments.length})`}
             </button>
           ))}
         </div>
 
         <div className="p-6">
           {activeTab === 'pending' && renderComments(pendingComments, 'en attente')}
-          {activeTab === 'approved' && renderComments(approvedComments, 'approuvé')}
-          {activeTab === 'rejected' && renderComments(rejectedComments, 'rejeté')}
+          {activeTab === 'approved' && renderComments(approvedComments, 'approuve')}
+          {activeTab === 'rejected' && renderComments(rejectedComments, 'rejete')}
         </div>
       </div>
 

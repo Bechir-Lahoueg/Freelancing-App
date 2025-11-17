@@ -8,9 +8,9 @@ export const errorHandler = (err, req, res, next) => {
   });
 };
 
-// Middleware pour les routes non trouvées
+// Middleware pour les routes non trouvees
 export const notFound = (req, res, next) => {
-  const error = new Error(`Route non trouvée - ${req.originalUrl}`);
+  const error = new Error(`Route non trouvee - ${req.originalUrl}`);
   res.status(404);
   next(error);
 };

@@ -1,25 +1,25 @@
 import Invoice from '../models/Invoice.js';
 import TaskRequest from '../models/TaskRequest.js';
 
-// @desc    Créer une nouvelle facture
+// @desc    Creer une nouvelle facture
 // @route   POST /api/invoices
 // @access  Private
 export const createInvoice = async (req, res) => {
   try {
     const { requestId, amount } = req.body;
 
-    // Vérifier que la tâche existe et appartient à l'utilisateur
+    // Verifier que la tache existe et appartient a l'utilisateur
     const task = await TaskRequest.findById(requestId);
     
     if (!task) {
-      return res.status(404).json({ message: 'Tâche non trouvée' });
+      return res.status(404).json({ message: 'Tache non trouvee' });
     }
 
     if (task.userId.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: 'Non autorisé' });
+      return res.status(403).json({ message: 'Non autorise' });
     }
 
-    // Créer la facture
+    // Creer la facture
     const invoice = await Invoice.create({
       requestId,
       userId: req.user._id,
@@ -49,7 +49,7 @@ export const getUserInvoices = async (req, res) => {
   }
 };
 
-// @desc    Obtenir une facture spécifique
+// @desc    Obtenir une facture specifique
 // @route   GET /api/invoices/:id
 // @access  Private
 export const getInvoiceById = async (req, res) => {
@@ -59,12 +59,12 @@ export const getInvoiceById = async (req, res) => {
       .populate('userId', 'name email');
 
     if (!invoice) {
-      return res.status(404).json({ message: 'Facture non trouvée' });
+      return res.status(404).json({ message: 'Facture non trouvee' });
     }
 
-    // Vérifier que la facture appartient à l'utilisateur
+    // Verifier que la facture appartient a l'utilisateur
     if (invoice.userId._id.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: 'Non autorisé' });
+      return res.status(403).json({ message: 'Non autorise' });
     }
 
     res.json(invoice);
@@ -73,7 +73,7 @@ export const getInvoiceById = async (req, res) => {
   }
 };
 
-// @desc    Mettre à jour le statut de paiement
+// @desc    Mettre a jour le statut de paiement
 // @route   PUT /api/invoices/:id/payment
 // @access  Private
 export const updatePaymentStatus = async (req, res) => {
@@ -81,12 +81,12 @@ export const updatePaymentStatus = async (req, res) => {
     const invoice = await Invoice.findById(req.params.id);
 
     if (!invoice) {
-      return res.status(404).json({ message: 'Facture non trouvée' });
+      return res.status(404).json({ message: 'Facture non trouvee' });
     }
 
-    // Vérifier que la facture appartient à l'utilisateur
+    // Verifier que la facture appartient a l'utilisateur
     if (invoice.userId.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: 'Non autorisé' });
+      return res.status(403).json({ message: 'Non autorise' });
     }
 
     invoice.paymentStatus = req.body.paymentStatus || invoice.paymentStatus;

@@ -1,7 +1,7 @@
 import { validationResult } from 'express-validator';
 import Category from '../models/Category.js';
 
-// @desc    Obtenir toutes les catégories actives
+// @desc    Obtenir toutes les categories actives
 // @route   GET /api/categories
 // @access  Public
 export const getCategories = async (req, res) => {
@@ -16,7 +16,7 @@ export const getCategories = async (req, res) => {
   }
 };
 
-// @desc    Obtenir une catégorie par ID ou slug
+// @desc    Obtenir une categorie par ID ou slug
 // @route   GET /api/categories/:id
 // @access  Public
 export const getCategoryById = async (req, res) => {
@@ -30,7 +30,7 @@ export const getCategoryById = async (req, res) => {
     });
 
     if (!category) {
-      return res.status(404).json({ message: 'Catégorie non trouvée' });
+      return res.status(404).json({ message: 'Categorie non trouvee' });
     }
 
     res.json(category);
@@ -39,7 +39,7 @@ export const getCategoryById = async (req, res) => {
   }
 };
 
-// @desc    Créer une nouvelle catégorie (Admin only)
+// @desc    Creer une nouvelle categorie (Admin only)
 // @route   POST /api/categories
 // @access  Private (Admin/SuperAdmin)
 export const createCategory = async (req, res) => {
@@ -51,10 +51,10 @@ export const createCategory = async (req, res) => {
 
     const { name, description, icon, color, image, order } = req.body;
 
-    // Vérifier si le nom existe déjà
+    // Verifier si le nom existe deja
     const categoryExists = await Category.findOne({ name });
     if (categoryExists) {
-      return res.status(400).json({ message: 'Cette catégorie existe déjà' });
+      return res.status(400).json({ message: 'Cette categorie existe deja' });
     }
 
     const category = await Category.create({
@@ -74,7 +74,7 @@ export const createCategory = async (req, res) => {
   }
 };
 
-// @desc    Mettre à jour une catégorie (Admin only)
+// @desc    Mettre a jour une categorie (Admin only)
 // @route   PUT /api/categories/:id
 // @access  Private (Admin/SuperAdmin)
 export const updateCategory = async (req, res) => {
@@ -84,14 +84,14 @@ export const updateCategory = async (req, res) => {
 
     let category = await Category.findById(id);
     if (!category) {
-      return res.status(404).json({ message: 'Catégorie non trouvée' });
+      return res.status(404).json({ message: 'Categorie non trouvee' });
     }
 
-    // Vérifier si le nouveau nom existe déjà (si modifié)
+    // Verifier si le nouveau nom existe deja (si modifie)
     if (name && name !== category.name) {
       const categoryExists = await Category.findOne({ name });
       if (categoryExists) {
-        return res.status(400).json({ message: 'Ce nom de catégorie est déjà utilisé' });
+        return res.status(400).json({ message: 'Ce nom de categorie est deja utilise' });
       }
     }
 
@@ -115,7 +115,7 @@ export const updateCategory = async (req, res) => {
   }
 };
 
-// @desc    Supprimer une catégorie (Admin only)
+// @desc    Supprimer une categorie (Admin only)
 // @route   DELETE /api/categories/:id
 // @access  Private (Admin/SuperAdmin)
 export const deleteCategory = async (req, res) => {
@@ -124,16 +124,16 @@ export const deleteCategory = async (req, res) => {
     const category = await Category.findByIdAndDelete(id);
 
     if (!category) {
-      return res.status(404).json({ message: 'Catégorie non trouvée' });
+      return res.status(404).json({ message: 'Categorie non trouvee' });
     }
 
-    res.json({ message: 'Catégorie supprimée avec succès', category });
+    res.json({ message: 'Categorie supprimee avec succes', category });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// @desc    Activer/Désactiver une catégorie (Admin only)
+// @desc    Activer/Desactiver une categorie (Admin only)
 // @route   PATCH /api/categories/:id/toggle
 // @access  Private (Admin/SuperAdmin)
 export const toggleCategory = async (req, res) => {
@@ -142,7 +142,7 @@ export const toggleCategory = async (req, res) => {
 
     const category = await Category.findById(id);
     if (!category) {
-      return res.status(404).json({ message: 'Catégorie non trouvée' });
+      return res.status(404).json({ message: 'Categorie non trouvee' });
     }
 
     category.isActive = !category.isActive;
@@ -154,7 +154,7 @@ export const toggleCategory = async (req, res) => {
   }
 };
 
-// @desc    Réorganiser les catégories (Admin only)
+// @desc    Reorganiser les categories (Admin only)
 // @route   PUT /api/categories/reorder
 // @access  Private (Admin/SuperAdmin)
 export const reorderCategories = async (req, res) => {

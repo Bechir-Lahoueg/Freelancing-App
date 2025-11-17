@@ -1,6 +1,6 @@
 import User from '../models/User.js';
 
-// Fonction pour créer le super admin au démarrage
+// Fonction pour creer le super admin au demarrage
 const createSuperAdmin = async () => {
   try {
     const superAdminEmail = process.env.SUPER_ADMIN_EMAIL;
@@ -8,19 +8,19 @@ const createSuperAdmin = async () => {
     const superAdminName = process.env.SUPER_ADMIN_NAME || 'Super Admin';
 
     if (!superAdminEmail || !superAdminPassword) {
-      console.log('⚠️  Credentials du super admin non définis dans .env');
+      console.log('⚠️  Credentials du super admin non definis dans .env');
       return;
     }
 
-    // Vérifier si le super admin existe déjà
+    // Verifier si le super admin existe deja
     const existingSuperAdmin = await User.findOne({ email: superAdminEmail });
 
     if (existingSuperAdmin) {
-      console.log('✅ Super admin existe déjà');
+      console.log('✅ Super admin existe deja');
       return;
     }
 
-    // Créer le super admin
+    // Creer le super admin
     const superAdmin = await User.create({
       name: superAdminName,
       email: superAdminEmail,
@@ -30,11 +30,11 @@ const createSuperAdmin = async () => {
       role: 'superadmin'
     });
 
-    console.log('✅ Super admin créé avec succès!');
+    console.log('✅ Super admin cree avec succes!');
     console.log(`   Email: ${superAdminEmail}`);
-    console.log(`   Rôle: ${superAdmin.role}`);
+    console.log(`   Role: ${superAdmin.role}`);
   } catch (error) {
-    console.error('❌ Erreur lors de la création du super admin:', error.message);
+    console.error('❌ Erreur lors de la creation du super admin:', error.message);
   }
 };
 

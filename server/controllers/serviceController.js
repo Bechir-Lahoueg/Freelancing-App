@@ -32,7 +32,7 @@ export const getServiceById = async (req, res) => {
       .populate('categoryId', 'name icon description');
 
     if (!service) {
-      return res.status(404).json({ message: 'Service non trouvé' });
+      return res.status(404).json({ message: 'Service non trouve' });
     }
 
     res.json(service);
@@ -41,7 +41,7 @@ export const getServiceById = async (req, res) => {
   }
 };
 
-// @desc    Créer un nouveau service (Admin)
+// @desc    Creer un nouveau service (Admin)
 // @route   POST /api/services
 // @access  Private (Admin/SuperAdmin)
 export const createService = async (req, res) => {
@@ -75,7 +75,7 @@ export const createService = async (req, res) => {
   }
 };
 
-// @desc    Mettre à jour un service (Admin)
+// @desc    Mettre a jour un service (Admin)
 // @route   PUT /api/services/:id
 // @access  Private (Admin/SuperAdmin)
 export const updateService = async (req, res) => {
@@ -100,7 +100,7 @@ export const updateService = async (req, res) => {
     ).populate('categoryId', 'name icon');
 
     if (!service) {
-      return res.status(404).json({ message: 'Service non trouvé' });
+      return res.status(404).json({ message: 'Service non trouve' });
     }
 
     res.json(service);
@@ -117,10 +117,10 @@ export const deleteService = async (req, res) => {
     const service = await Service.findByIdAndDelete(req.params.id);
 
     if (!service) {
-      return res.status(404).json({ message: 'Service non trouvé' });
+      return res.status(404).json({ message: 'Service non trouve' });
     }
 
-    res.json({ message: 'Service supprimé avec succès' });
+    res.json({ message: 'Service supprime avec succes' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

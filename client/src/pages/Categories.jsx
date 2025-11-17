@@ -21,7 +21,7 @@ const Categories = () => {
       const data = await response.json();
       setCategories(data);
     } catch (error) {
-      console.error('Erreur lors du chargement des catégories:', error);
+      console.error('Erreur lors du chargement des categories:', error);
     } finally {
       setLoading(false);
     }
@@ -85,15 +85,15 @@ const Categories = () => {
             </motion.div>
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6 leading-tight">
-              Découvrez Nos
+              Decouvrez Nos
               <br />
               <span className="bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 bg-clip-text text-transparent">
-                Catégories
+                Categories
               </span>
             </h1>
 
             <p className="text-lg md:text-xl text-gray-300 mb-10 leading-relaxed max-w-3xl mx-auto">
-              Explorez notre gamme complète de services pour tous vos besoins académiques
+              Explorez notre gamme complete de services pour tous vos besoins academiques
             </p>
           </motion.div>
         </div>
@@ -120,7 +120,7 @@ const Categories = () => {
             </div>
           ) : categories.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-slate-400 text-xl">Aucune catégorie disponible pour le moment</p>
+              <p className="text-slate-400 text-xl">Aucune categorie disponible pour le moment</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -199,10 +199,10 @@ const Categories = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-4xl md:text-5xl font-black text-white mb-6">
-              Prêt à <span className="bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">commencer</span> ?
+              Pret a <span className="bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">commencer</span> ?
             </h2>
             <p className="text-slate-400 text-lg mb-8">
-              Choisissez une catégorie et trouvez l'expert parfait pour votre projet
+              Choisissez une categorie et trouvez l'expert parfait pour votre projet
             </p>
             <motion.button
               whileHover={{ scale: 1.05 }}

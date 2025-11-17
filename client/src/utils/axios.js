@@ -3,7 +3,7 @@ import axios from 'axios';
 // URL de base de l'API
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://freelancing-app-mdgw.onrender.com';
 
-// Créer une instance axios pour les requêtes publiques (sans authentification)
+// Creer une instance axios pour les requetes publiques (sans authentification)
 export const publicAxios = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -11,7 +11,7 @@ export const publicAxios = axios.create({
   }
 });
 
-// Créer une instance axios pour les requêtes authentifiées
+// Creer une instance axios pour les requetes authentifiees
 export const privateAxios = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -19,7 +19,7 @@ export const privateAxios = axios.create({
   }
 });
 
-// Intercepteur pour ajouter le token aux requêtes authentifiées
+// Intercepteur pour ajouter le token aux requetes authentifiees
 privateAxios.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -33,12 +33,12 @@ privateAxios.interceptors.request.use(
   }
 );
 
-// Intercepteur pour gérer les erreurs d'authentification
+// Intercepteur pour gerer les erreurs d'authentification
 privateAxios.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Token invalide ou expiré
+      // Token invalide ou expire
       localStorage.removeItem('token');
       window.location.href = '/login';
     }

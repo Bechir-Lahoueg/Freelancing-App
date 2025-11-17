@@ -2,28 +2,28 @@ import Conversation from '../models/Conversation.js';
 import Message from '../models/Message.js';
 import TaskRequest from '../models/TaskRequest.js';
 
-// @desc    Créer une nouvelle conversation (appelé automatiquement lors de l'approbation)
+// @desc    Creer une nouvelle conversation (appele automatiquement lors de l'approbation)
 // @route   POST /api/chat/conversations
 // @access  Private (Admin)
 export const createConversation = async (req, res) => {
   try {
     const { taskRequestId, userId } = req.body;
 
-    // Vérifier si une conversation existe déjà pour cette tâche
+    // Verifier si une conversation existe deja pour cette tache
     let conversation = await Conversation.findOne({ taskRequestId });
 
     if (conversation) {
       return res.status(200).json(conversation);
     }
 
-    // Récupérer la tâche pour avoir les infos
+    // Recuperer la tache pour avoir les infos
     const taskRequest = await TaskRequest.findById(taskRequestId).populate('userId');
 
     if (!taskRequest) {
       return res.status(404).json({ message: 'Demande de service introuvable' });
     }
 
-    // Créer la conversation avec l'utilisateur et le super admin
+    // Creer la conversation avec l'utilisateur et le super admin
     conversation = await Conversation.create({
       taskRequestId,
       participants: [
@@ -42,11 +42,11 @@ export const createConversation = async (req, res) => {
       }
     });
 
-    // Créer un message système
+    // Creer un message systeme
     const systemMessage = await Message.create({
       conversationId: conversation._id,
       senderId: req.user._id,
-      content: `Conversation créée pour le service "${taskRequest.title}". Vous pouvez maintenant discuter avec le client.`,
+      content: `Conversation creee pour le service "${taskRequest.title}". Vous pouvez maintenant discuter avec le client.`,
       messageType: 'system'
     });
 
@@ -57,7 +57,7 @@ export const createConversation = async (req, res) => {
     };
     await conversation.save();
 
-    // Populer les données
+    // Populer les donnees
     await conversation.populate([
       { path: 'participants.userId', select: 'name email' },
       { path: 'taskRequestId', select: 'title status' }
@@ -65,12 +65,12 @@ export const createConversation = async (req, res) => {
 
     res.status(201).json(conversation);
   } catch (error) {
-    console.error('❌ Erreur création conversation:', error);
+    console.error('❌ Erreur creation conversation:', error);
     res.status(500).json({ message: error.message });
   }
 };
 
-// @desc    Obtenir toutes les conversations de l'utilisateur connecté
+// @desc    Obtenir toutes les conversations de l'utilisateur connecte
 // @route   GET /api/chat/conversations
 // @access  Private
 export const getUserConversations = async (req, res) => {
@@ -86,7 +86,7 @@ export const getUserConversations = async (req, res) => {
 
     res.json(conversations);
   } catch (error) {
-    console.error('❌ Erreur récupération conversations:', error);
+    console.error('❌ Erreur recuperation conversations:', error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -99,7 +99,7 @@ export const getConversationMessages = async (req, res) => {
     const { id } = req.params;
     const { limit = 50, before } = req.query;
 
-    // Vérifier que l'utilisateur fait partie de la conversation
+    // Verifier que l'utilisateur fait partie de la conversation
     const conversation = await Conversation.findById(id);
     
     if (!conversation) {
@@ -111,17 +111,17 @@ export const getConversationMessages = async (req, res) => {
     );
 
     if (!isParticipant) {
-      return res.status(403).json({ message: 'Accès non autorisé' });
+      return res.status(403).json({ message: 'Acces non autorise' });
     }
 
-    // Construire la requête pour filtrer les messages
+    // Construire la requete pour filtrer les messages
     const query = { 
       conversationId: id,
       $or: [
-        { recipientId: { $exists: false } }, // Messages sans destinataire spécifique (visibles par tous)
+        { recipientId: { $exists: false } }, // Messages sans destinataire specifique (visibles par tous)
         { recipientId: null }, // Messages sans destinataire
-        { recipientId: req.user._id }, // Messages destinés à cet utilisateur
-        { senderId: req.user._id } // Messages envoyés par cet utilisateur
+        { recipientId: req.user._id }, // Messages destines a cet utilisateur
+        { senderId: req.user._id } // Messages envoyes par cet utilisateur
       ]
     };
     
@@ -136,7 +136,7 @@ export const getConversationMessages = async (req, res) => {
 
     res.json(messages.reverse());
   } catch (error) {
-    console.error('❌ Erreur récupération messages:', error);
+    console.error('❌ Erreur recuperation messages:', error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -149,7 +149,7 @@ export const sendMessage = async (req, res) => {
     const { id } = req.params;
     const { content, messageType = 'text', fileUrl, fileName, fileSize, mimeType } = req.body;
 
-    // Vérifier la conversation
+    // Verifier la conversation
     const conversation = await Conversation.findById(id);
     
     if (!conversation) {
@@ -161,14 +161,14 @@ export const sendMessage = async (req, res) => {
     );
 
     if (!isParticipant) {
-      return res.status(403).json({ message: 'Accès non autorisé' });
+      return res.status(403).json({ message: 'Acces non autorise' });
     }
 
-    // Créer le message
+    // Creer le message
     const message = await Message.create({
       conversationId: id,
       senderId: req.user._id,
-      content: content || (messageType !== 'text' ? `Fichier partagé: ${fileName}` : ''),
+      content: content || (messageType !== 'text' ? `Fichier partage: ${fileName}` : ''),
       messageType,
       fileUrl,
       fileName,
@@ -176,14 +176,14 @@ export const sendMessage = async (req, res) => {
       mimeType
     });
 
-    // Mettre à jour la conversation
+    // Mettre a jour la conversation
     conversation.lastMessage = {
       content: messageType === 'text' ? content : `📎 ${fileName || 'Fichier'}`,
       senderId: req.user._id,
       timestamp: message.createdAt
     };
 
-    // Incrémenter le compteur de non-lus pour les autres participants
+    // Incrementer le compteur de non-lus pour les autres participants
     conversation.participants.forEach(participant => {
       if (participant.userId.toString() !== req.user._id.toString()) {
         const userId = participant.userId.toString();
@@ -197,7 +197,7 @@ export const sendMessage = async (req, res) => {
     // Populer le message
     await message.populate('senderId', 'name email role');
 
-    // Émettre via Socket.IO
+    // Emettre via Socket.IO
     const io = req.app.get('io');
     io.to(id).emit('message:received', {
       message,
@@ -224,7 +224,7 @@ export const markMessagesAsRead = async (req, res) => {
       return res.status(404).json({ message: 'Conversation introuvable' });
     }
 
-    // Réinitialiser le compteur de non-lus pour cet utilisateur
+    // Reinitialiser le compteur de non-lus pour cet utilisateur
     conversation.unreadCount.set(req.user._id.toString(), 0);
     await conversation.save();
 
@@ -253,7 +253,7 @@ export const markMessagesAsRead = async (req, res) => {
       userId: req.user._id
     });
 
-    res.json({ message: 'Messages marqués comme lus' });
+    res.json({ message: 'Messages marques comme lus' });
   } catch (error) {
     console.error('❌ Erreur marquage messages lus:', error);
     res.status(500).json({ message: error.message });
@@ -275,7 +275,7 @@ export const archiveConversation = async (req, res) => {
       return res.status(404).json({ message: 'Conversation introuvable' });
     }
 
-    res.json({ message: 'Conversation archivée' });
+    res.json({ message: 'Conversation archivee' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -297,7 +297,7 @@ export const searchConversationByCode = async (req, res) => {
       return res.status(404).json({ message: 'Conversation introuvable' });
     }
 
-    // Récupérer les messages de cette conversation
+    // Recuperer les messages de cette conversation
     const messages = await Message.find({ conversationId: conversation._id })
       .populate('senderId', 'name email role')
       .sort({ createdAt: 1 });

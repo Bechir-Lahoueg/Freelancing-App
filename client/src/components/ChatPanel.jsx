@@ -67,12 +67,12 @@ const ChatPanel = () => {
     loadConversations();
   }, []);
 
-  // Écouter les événements Socket.IO
+  // Ecouter les evenements Socket.IO
   useEffect(() => {
     if (socket) {
       socket.on('message:received', ({ message, conversationId }) => {
         if (selectedConversation?._id === conversationId) {
-          // Éviter les doublons (ne pas ajouter si le message existe déjà)
+          // Eviter les doublons (ne pas ajouter si le message existe deja)
           setMessages(prev => {
             const exists = prev.some(msg => 
               msg._id === message._id || 
@@ -90,7 +90,7 @@ const ChatPanel = () => {
             markAsRead(conversationId);
           }
         } else {
-          // Mettre à jour le compteur de non-lus
+          // Mettre a jour le compteur de non-lus
           setConversations(prev => 
             prev.map(conv => {
               if (conv._id === conversationId) {
@@ -136,17 +136,17 @@ const ChatPanel = () => {
       });
 
       socket.on('conversation:closed', ({ conversationId, message }) => {
-        // Ajouter le message système
+        // Ajouter le message systeme
         if (selectedConversation?._id === conversationId) {
           setMessages(prev => [...prev, message]);
           scrollToBottom();
-          // Mettre à jour l'état de la conversation sélectionnée
+          // Mettre a jour l'etat de la conversation selectionnee
           setSelectedConversation(prev => ({
             ...prev,
             status: 'closed'
           }));
         }
-        // Mettre à jour la conversation dans la liste
+        // Mettre a jour la conversation dans la liste
         setConversations(prev =>
           prev.map(conv =>
             conv._id === conversationId ? { ...conv, status: 'closed' } : conv
@@ -155,18 +155,18 @@ const ChatPanel = () => {
       });
 
       socket.on('task:completed', ({ conversationId, action, message }) => {
-        // Ajouter le message système
+        // Ajouter le message systeme
         if (selectedConversation?._id === conversationId) {
           setMessages(prev => [...prev, message]);
           scrollToBottom();
-          // Mettre à jour l'état de la conversation sélectionnée
+          // Mettre a jour l'etat de la conversation selectionnee
           setSelectedConversation(prev => ({
             ...prev,
             taskCompleted: true,
             status: action === 'close_conversation' ? 'completed' : prev.status
           }));
         }
-        // Mettre à jour la conversation dans la liste
+        // Mettre a jour la conversation dans la liste
         setConversations(prev =>
           prev.map(conv =>
             conv._id === conversationId ? { 
@@ -233,7 +233,7 @@ const ChatPanel = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setMessages(response.data);
-      setTimeout(() => scrollToBottom(), 100); // Petit délai pour assurer le rendu
+      setTimeout(() => scrollToBottom(), 100); // Petit delai pour assurer le rendu
       markAsRead(conversationId);
     } catch (error) {
       console.error('Erreur chargement messages:', error);
@@ -280,7 +280,7 @@ const ChatPanel = () => {
     const messageContent = newMessage.trim();
     setSending(true);
     
-    // Optimistic update - Afficher le message immédiatement
+    // Optimistic update - Afficher le message immediatement
     const tempMessage = {
       _id: `temp-${Date.now()}`,
       content: messageContent,
@@ -312,7 +312,7 @@ const ChatPanel = () => {
         msg._id === tempMessage._id ? response.data : msg
       ));
       
-      // Mettre à jour la liste des conversations
+      // Mettre a jour la liste des conversations
       loadConversations();
       
       inputRef.current?.focus();
@@ -331,7 +331,7 @@ const ChatPanel = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Vérifier la taille (50MB max)
+    // Verifier la taille (50MB max)
     if (file.size > 50 * 1024 * 1024) {
       alert('Le fichier est trop volumineux (50MB maximum)');
       return;
@@ -339,7 +339,7 @@ const ChatPanel = () => {
 
     setSelectedFile(file);
 
-    // Créer une prévisualisation pour les images
+    // Creer une previsualisation pour les images
     if (file.type.startsWith('image/')) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -387,7 +387,7 @@ const ChatPanel = () => {
       await axios.post(
         `${API_URL}/api/chat/conversations/${selectedConversation._id}/messages`,
         {
-          content: newMessage.trim() || `Fichier partagé: ${fileData.fileName}`,
+          content: newMessage.trim() || `Fichier partage: ${fileData.fileName}`,
           messageType: fileData.type,
           fileUrl: fileData.url,
           fileName: fileData.fileName,
@@ -401,7 +401,7 @@ const ChatPanel = () => {
         }
       );
 
-      // Réinitialiser
+      // Reinitialiser
       setNewMessage('');
       handleCancelFile();
       loadMessages(selectedConversation._id);
@@ -435,7 +435,7 @@ const ChatPanel = () => {
   };
 
   const handleLeaveConversation = async () => {
-    if (!confirm('Êtes-vous sûr de vouloir quitter cette conversation ? Elle sera fermée définitivement.')) {
+    if (!confirm('Etes-vous sur de vouloir quitter cette conversation ? Elle sera fermee definitivement.')) {
       return;
     }
 
@@ -448,20 +448,20 @@ const ChatPanel = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
-      // Recharger les conversations pour mettre à jour le statut
+      // Recharger les conversations pour mettre a jour le statut
       await loadConversations();
       
-      // Recharger les messages pour afficher le message système
-      // Ne pas désélectionner la conversation pour que l'utilisateur voie le message
+      // Recharger les messages pour afficher le message systeme
+      // Ne pas deselectionner la conversation pour que l'utilisateur voie le message
       await loadMessages(selectedConversation._id);
       
-      // Mettre à jour localement le statut de la conversation sélectionnée
+      // Mettre a jour localement le statut de la conversation selectionnee
       setSelectedConversation(prev => ({
         ...prev,
         status: 'closed'
       }));
       
-      alert('Conversation fermée avec succès. Elle reste visible mais ne peut plus recevoir de messages.');
+      alert('Conversation fermee avec succes. Elle reste visible mais ne peut plus recevoir de messages.');
     } catch (error) {
       console.error('Erreur lors de la fermeture:', error);
       alert(error.response?.data?.message || 'Erreur lors de la fermeture de la conversation');
@@ -489,14 +489,14 @@ const ChatPanel = () => {
         setSelectedConversation(null);
         setMessages([]);
       } else {
-        // Recharger les messages pour afficher le message système
+        // Recharger les messages pour afficher le message systeme
         loadMessages(selectedConversation._id);
       }
       
-      alert('Tâche marquée comme terminée ! +1 projet complété 🎉');
+      alert('Tache marquee comme terminee ! +1 projet complete 🎉');
     } catch (error) {
-      console.error('Erreur lors de la complétion:', error);
-      alert(error.response?.data?.message || 'Erreur lors de la complétion de la tâche');
+      console.error('Erreur lors de la completion:', error);
+      alert(error.response?.data?.message || 'Erreur lors de la completion de la tache');
     } finally {
       setActionLoading(false);
     }
@@ -535,7 +535,7 @@ const ChatPanel = () => {
     if (viewMode === 'archived') {
       return matchSearch && conv.status === 'archived';
     }
-    // Afficher toutes les conversations actives, fermées et complétées
+    // Afficher toutes les conversations actives, fermees et completees
     return matchSearch && (conv.status === 'active' || conv.status === 'closed' || conv.status === 'completed');
   });
 
@@ -595,7 +595,7 @@ const ChatPanel = () => {
     const hours = Math.floor(diff / 3600000);
     const days = Math.floor(diff / 86400000);
 
-    if (minutes < 1) return "À l'instant";
+    if (minutes < 1) return "A l'instant";
     if (minutes < 60) return `${minutes}min`;
     if (hours < 24) return `${hours}h`;
     if (days < 7) return `${days}j`;
@@ -678,7 +678,7 @@ const ChatPanel = () => {
               onChange={(e) => setSortBy(e.target.value)}
               className="flex-1 bg-slate-700 text-slate-200 text-xs py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer"
             >
-              <option value="recent">Plus récent</option>
+              <option value="recent">Plus recent</option>
               <option value="unread">Non lus d'abord</option>
               <option value="client">Par nom (A-Z)</option>
             </select>
@@ -701,14 +701,14 @@ const ChatPanel = () => {
             <div className="p-8 text-center text-slate-400">
               <MessageCircle className="w-16 h-16 mx-auto mb-4 opacity-20" />
               <p className="text-sm font-medium mb-1">
-                {searchQuery ? 'Aucun résultat trouvé' : 'Aucune conversation'}
+                {searchQuery ? 'Aucun resultat trouve' : 'Aucune conversation'}
               </p>
               <p className="text-xs text-slate-500">
-                {searchQuery ? 'Essayez un autre terme de recherche' : 'Les conversations apparaîtront ici'}
+                {searchQuery ? 'Essayez un autre terme de recherche' : 'Les conversations apparaitront ici'}
               </p>
             </div>
           ) : viewMode === 'grouped' ? (
-            // VUE GROUPÉE PAR CLIENT
+            // VUE GROUPEE PAR CLIENT
             <div className="p-2">
               {groupedByClient().map(({ client, conversations: clientConvs }) => {
                 const isExpanded = expandedClients.has(client._id);
@@ -803,7 +803,7 @@ const ChatPanel = () => {
                                   {conversation.taskRequestId?.title || 'Sans titre'}
                                 </p>
 
-                                {/* Badge de statut fermé/complété */}
+                                {/* Badge de statut ferme/complete */}
                                 {(conversation.status === 'closed' || conversation.status === 'completed') && (
                                   <div className="mb-1.5">
                                     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
@@ -811,7 +811,7 @@ const ChatPanel = () => {
                                         ? 'bg-green-500/20 text-green-400 border border-green-500/30'
                                         : 'bg-red-500/20 text-red-400 border border-red-500/30'
                                     }`}>
-                                      {conversation.status === 'completed' ? '✅ Terminée' : '🔒 Fermée'}
+                                      {conversation.status === 'completed' ? '✅ Terminee' : '🔒 Fermee'}
                                     </span>
                                   </div>
                                 )}
@@ -898,7 +898,7 @@ const ChatPanel = () => {
                           📝 {conversation.taskRequestId?.title}
                         </p>
 
-                        {/* Badge de statut fermé/complété */}
+                        {/* Badge de statut ferme/complete */}
                         {(conversation.status === 'closed' || conversation.status === 'completed') && (
                           <div className="mb-1.5">
                             <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
@@ -906,7 +906,7 @@ const ChatPanel = () => {
                                 ? 'bg-green-500/20 text-green-400 border border-green-500/30'
                                 : 'bg-red-500/20 text-red-400 border border-red-500/30'
                             }`}>
-                              {conversation.status === 'completed' ? '✅ Terminée' : '🔒 Fermée'}
+                              {conversation.status === 'completed' ? '✅ Terminee' : '🔒 Fermee'}
                             </span>
                           </div>
                         )}
@@ -1011,7 +1011,7 @@ const ChatPanel = () => {
                           Actions Administrateur
                         </div>
 
-                        {/* Option: Marquer comme terminé */}
+                        {/* Option: Marquer comme termine */}
                         {!selectedConversation.taskCompleted && 
                          selectedConversation.status !== 'closed' && 
                          selectedConversation.status !== 'completed' && (
@@ -1028,8 +1028,8 @@ const ChatPanel = () => {
                               <CheckCircle2 className="w-4 h-4 text-green-400" />
                             </div>
                             <div className="flex-1">
-                              <p className="text-sm font-medium text-white">Marquer comme terminée</p>
-                              <p className="text-xs text-slate-400">+1 projet complété</p>
+                              <p className="text-sm font-medium text-white">Marquer comme terminee</p>
+                              <p className="text-xs text-slate-400">+1 projet complete</p>
                             </div>
                           </motion.button>
                         )}
@@ -1051,27 +1051,27 @@ const ChatPanel = () => {
                             </div>
                             <div className="flex-1">
                               <p className="text-sm font-medium text-white">Quitter la conversation</p>
-                              <p className="text-xs text-slate-400">Ferme définitivement</p>
+                              <p className="text-xs text-slate-400">Ferme definitivement</p>
                             </div>
                           </motion.button>
                         )}
 
-                        {/* État: Déjà terminé */}
+                        {/* Etat: Deja termine */}
                         {selectedConversation.taskCompleted && (
                           <div className="px-3 py-2.5 bg-green-500/10 border border-green-500/20 rounded-lg">
                             <div className="flex items-center gap-2">
                               <CheckCircle2 className="w-4 h-4 text-green-400" />
-                              <p className="text-xs text-green-400 font-medium">Tâche déjà terminée</p>
+                              <p className="text-xs text-green-400 font-medium">Tache deja terminee</p>
                             </div>
                           </div>
                         )}
 
-                        {/* État: Conversation fermée */}
+                        {/* Etat: Conversation fermee */}
                         {(selectedConversation.status === 'closed' || selectedConversation.status === 'completed') && (
                           <div className="px-3 py-2.5 bg-slate-700/50 border border-slate-600 rounded-lg">
                             <div className="flex items-center gap-2">
                               <X className="w-4 h-4 text-slate-400" />
-                              <p className="text-xs text-slate-400 font-medium">Conversation fermée</p>
+                              <p className="text-xs text-slate-400 font-medium">Conversation fermee</p>
                             </div>
                           </div>
                         )}
@@ -1127,7 +1127,7 @@ const ChatPanel = () => {
                                     className="max-w-xs rounded-lg mb-2 cursor-pointer hover:opacity-90 transition"
                                     onClick={() => window.open(message.fileUrl, '_blank')}
                                   />
-                                  {message.content && message.content !== `Fichier partagé: ${message.fileName}` && (
+                                  {message.content && message.content !== `Fichier partage: ${message.fileName}` && (
                                     <p className="text-sm whitespace-pre-wrap break-words mt-2">
                                       {message.content}
                                     </p>
@@ -1140,9 +1140,9 @@ const ChatPanel = () => {
                                     className="max-w-xs rounded-lg mb-2"
                                     src={message.fileUrl}
                                   >
-                                    Votre navigateur ne supporte pas la vidéo.
+                                    Votre navigateur ne supporte pas la video.
                                   </video>
-                                  {message.content && message.content !== `Fichier partagé: ${message.fileName}` && (
+                                  {message.content && message.content !== `Fichier partage: ${message.fileName}` && (
                                     <p className="text-sm whitespace-pre-wrap break-words mt-2">
                                       {message.content}
                                     </p>
@@ -1154,7 +1154,7 @@ const ChatPanel = () => {
                                     <source src={message.fileUrl} type={message.mimeType} />
                                     Votre navigateur ne supporte pas l'audio.
                                   </audio>
-                                  {message.content && message.content !== `Fichier partagé: ${message.fileName}` && (
+                                  {message.content && message.content !== `Fichier partage: ${message.fileName}` && (
                                     <p className="text-sm whitespace-pre-wrap break-words mt-2">
                                       {message.content}
                                     </p>
@@ -1249,14 +1249,14 @@ const ChatPanel = () => {
                 <div className="bg-slate-700/50 border border-slate-600 rounded-lg px-4 py-3 text-center">
                   <p className="text-slate-400 text-sm">
                     {selectedConversation.status === 'closed' 
-                      ? '🔒 Cette conversation est fermée. Aucun message ne peut être envoyé.'
-                      : '✅ Cette tâche est terminée. La conversation est fermée.'}
+                      ? '🔒 Cette conversation est fermee. Aucun message ne peut etre envoye.'
+                      : '✅ Cette tache est terminee. La conversation est fermee.'}
                   </p>
                 </div>
               </div>
             ) : (
               <>
-                {/* Preview du fichier sélectionné */}
+                {/* Preview du fichier selectionne */}
                 {selectedFile && (
                   <div className="p-4 border-t border-slate-700 bg-slate-800">
                     <div className="bg-slate-700 rounded-lg p-3 flex items-center gap-3">
@@ -1322,7 +1322,7 @@ const ChatPanel = () => {
                           setNewMessage(e.target.value);
                           handleTyping();
                         }}
-                        placeholder={selectedFile ? "Ajouter un message (optionnel)..." : "Écrivez votre message..."}
+                        placeholder={selectedFile ? "Ajouter un message (optionnel)..." : "Ecrivez votre message..."}
                         className="flex-1 bg-transparent text-white text-sm focus:outline-none placeholder-slate-400"
                         disabled={sending || uploadingFile}
                       />
@@ -1362,14 +1362,14 @@ const ChatPanel = () => {
               </div>
               <p className="text-lg font-semibold text-white mb-2">Vos Messages</p>
               <p className="text-sm text-slate-400">
-                Sélectionnez une conversation pour commencer à discuter
+                Selectionnez une conversation pour commencer a discuter
               </p>
             </div>
           </div>
         )}
       </div>
 
-      {/* Modal de confirmation pour terminer la tâche */}
+      {/* Modal de confirmation pour terminer la tache */}
       <AnimatePresence>
         {showCompleteModal && (
           <motion.div
@@ -1390,11 +1390,11 @@ const ChatPanel = () => {
                 <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center">
                   <CheckCircle2 className="w-6 h-6 text-green-400" />
                 </div>
-                <h3 className="text-xl font-bold text-white">Marquer la tâche comme terminée</h3>
+                <h3 className="text-xl font-bold text-white">Marquer la tache comme terminee</h3>
               </div>
 
               <p className="text-slate-300 mb-6">
-                Félicitations ! La tâche sera marquée comme terminée. Que souhaitez-vous faire avec la conversation ?
+                Felicitations ! La tache sera marquee comme terminee. Que souhaitez-vous faire avec la conversation ?
               </p>
 
               <div className="space-y-3">
@@ -1407,7 +1407,7 @@ const ChatPanel = () => {
                 >
                   <div>
                     <p className="font-semibold text-blue-400 mb-1">Garder ouverte</p>
-                    <p className="text-xs text-slate-400">La conversation reste accessible pour d'éventuels échanges</p>
+                    <p className="text-xs text-slate-400">La conversation reste accessible pour d'eventuels echanges</p>
                   </div>
                   <ChevronRight className="w-5 h-5 text-blue-400 flex-shrink-0" />
                 </motion.button>
@@ -1421,7 +1421,7 @@ const ChatPanel = () => {
                 >
                   <div>
                     <p className="font-semibold text-orange-400 mb-1">Fermer la conversation</p>
-                    <p className="text-xs text-slate-400">La conversation sera fermée définitivement</p>
+                    <p className="text-xs text-slate-400">La conversation sera fermee definitivement</p>
                   </div>
                   <ChevronRight className="w-5 h-5 text-orange-400 flex-shrink-0" />
                 </motion.button>

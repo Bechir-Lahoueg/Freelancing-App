@@ -72,7 +72,7 @@ export default function TaskCard({ task, onComment }) {
         <div className="mb-4">
           {task.status === 'completed' && (
             <span className="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">
-              ✓ Complétée
+              ✓ Completee
             </span>
           )}
           {task.status === 'in-progress' && (

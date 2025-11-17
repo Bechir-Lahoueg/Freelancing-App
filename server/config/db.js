@@ -11,8 +11,8 @@ const connectDB = async () => {
       }
     });
 
-    console.log(`✅ MongoDB connecté avec succès`);
-    console.log(`📊 Base de données: EspritApp`);
+    console.log(`✅ MongoDB connecte avec succes`);
+    console.log(`📊 Base de donnees: EspritApp`);
     console.log(`🌐 Cluster: ${process.env.MONGODB_URI.split('@')[1].split('/')[0]}`);
     
     return conn;

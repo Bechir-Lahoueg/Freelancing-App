@@ -37,7 +37,7 @@ const ServiceRequest = () => {
 
   const fetchService = async () => {
     try {
-      // Récupérer le service (route publique)
+      // Recuperer le service (route publique)
       const response = await publicAxios.get(`/api/services/${serviceId}`);
       setService(response.data);
     } catch (error) {
@@ -64,7 +64,7 @@ const ServiceRequest = () => {
     setSubmitting(true);
 
     try {
-      // Préparer les réponses avec les labels
+      // Preparer les reponses avec les labels
       const answersArray = service.questions?.map(q => ({
         questionId: q.id,
         questionLabel: q.label,
@@ -120,7 +120,7 @@ const ServiceRequest = () => {
             required={question.required}
             className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
           >
-            <option value="">Sélectionner...</option>
+            <option value="">Selectionner...</option>
             {question.options?.map((opt, idx) => (
               <option key={idx} value={opt}>{opt}</option>
             ))}
@@ -217,7 +217,7 @@ const ServiceRequest = () => {
           <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle size={48} className="text-white" />
           </div>
-          <h2 className="text-3xl font-bold text-white mb-2">Demande envoyée !</h2>
+          <h2 className="text-3xl font-bold text-white mb-2">Demande envoyee !</h2>
           <p className="text-slate-400">Redirection vers votre dashboard...</p>
         </motion.div>
       </div>
@@ -264,9 +264,9 @@ const ServiceRequest = () => {
             onSubmit={handleSubmit}
             className="bg-slate-800 rounded-xl p-8 border border-slate-700 space-y-6"
           >
-            {/* Informations générales */}
+            {/* Informations generales */}
             <div className="space-y-4">
-              <h3 className="text-xl font-bold text-white mb-4">Informations générales</h3>
+              <h3 className="text-xl font-bold text-white mb-4">Informations generales</h3>
               
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
@@ -276,7 +276,7 @@ const ServiceRequest = () => {
                   type="text"
                   value={formData.title}
                   onChange={(e) => setFormData({...formData, title: e.target.value})}
-                  placeholder="Ex: Rédaction de rapport de stage"
+                  placeholder="Ex: Redaction de rapport de stage"
                   required
                   className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 />
@@ -284,12 +284,12 @@ const ServiceRequest = () => {
 
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
-                  Description détaillée *
+                  Description detaillee *
                 </label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({...formData, description: e.target.value})}
-                  placeholder="Décrivez votre projet en détail..."
+                  placeholder="Decrivez votre projet en detail..."
                   required
                   rows={4}
                   className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
@@ -326,10 +326,10 @@ const ServiceRequest = () => {
               </div>
             </div>
 
-            {/* Questions spécifiques */}
+            {/* Questions specifiques */}
             {service?.questions && service.questions.length > 0 && (
               <div className="space-y-4 pt-6 border-t border-slate-700">
-                <h3 className="text-xl font-bold text-white mb-4">Questions spécifiques</h3>
+                <h3 className="text-xl font-bold text-white mb-4">Questions specifiques</h3>
                 
                 {service.questions
                   .sort((a, b) => (a.order || 0) - (b.order || 0))

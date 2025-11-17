@@ -20,10 +20,10 @@ const commentValidation = [
   body('text')
     .trim()
     .isLength({ min: 10, max: 500 })
-    .withMessage('Le commentaire doit contenir entre 10 et 500 caractères'),
+    .withMessage('Le commentaire doit contenir entre 10 et 500 caracteres'),
   body('rating')
     .isInt({ min: 1, max: 5 })
-    .withMessage('La note doit être entre 1 et 5')
+    .withMessage('La note doit etre entre 1 et 5')
 ];
 
 const rejectValidation = [
@@ -31,7 +31,7 @@ const rejectValidation = [
     .optional()
     .trim()
     .isLength({ max: 200 })
-    .withMessage('La raison du rejet ne peut pas dépasser 200 caractères')
+    .withMessage('La raison du rejet ne peut pas depasser 200 caracteres')
 ];
 
 // Public routes

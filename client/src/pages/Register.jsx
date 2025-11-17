@@ -17,7 +17,7 @@ const Register = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Rediriger si déjà authentifié
+  // Rediriger si deja authentifie
   useEffect(() => {
     if (user) {
       navigate(user.role === 'superadmin' ? '/admin/dashboard' : '/dashboard');
@@ -38,7 +38,7 @@ const Register = () => {
     }
 
     if (formData.password.length < 6) {
-      setError('Le mot de passe doit contenir au moins 6 caractères');
+      setError('Le mot de passe doit contenir au moins 6 caracteres');
       return;
     }
 
@@ -117,7 +117,7 @@ const Register = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Année universitaire
+                  Annee universitaire
                 </label>
                 <select
                   name="universityYear"
@@ -221,7 +221,7 @@ const Register = () => {
             </div>
 
             <p className="mt-6 text-center text-sm text-gray-600">
-              Déjà un compte ?{' '}
+              Deja un compte ?{' '}
               <Link to="/login" className="text-orange-600 font-semibold hover:text-orange-700 transition">
                 Se connecter
               </Link>

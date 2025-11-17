@@ -14,30 +14,30 @@ const partnerRequestSchema = new mongoose.Schema({
   },
   age: {
     type: Number,
-    required: [true, 'L\'âge est requis']
+    required: [true, 'L\'age est requis']
   },
   personality: {
     type: String,
-    enum: ['Calme et organisé', 'Créatif et innovateur', 'Leader et motivé', 'Sérieux et rigoureux', 'Flexible et sociable'],
-    required: [true, 'La personnalité est requise']
+    enum: ['Calme et organise', 'Creatif et innovateur', 'Leader et motive', 'Serieux et rigoureux', 'Flexible et sociable'],
+    required: [true, 'La personnalite est requise']
   },
   domain: {
     type: String,
-    enum: ['Développement Web', 'Développement Mobile', 'Encadrant / Enseignant PFE', 'Designer UI/UX', 'Support Technique', 'Autre'],
+    enum: ['Developpement Web', 'Developpement Mobile', 'Encadrant / Enseignant PFE', 'Designer UI/UX', 'Support Technique', 'Autre'],
     required: [true, 'Le domaine est requis']
   },
   experience: {
     type: String,
-    required: [true, 'L\'expérience est requise']
+    required: [true, 'L\'experience est requise']
   },
   pricingModel: {
     type: String,
-    enum: ['Salaire mensuel', 'Prix par projet', 'Éducateur (prix par séance)'],
-    required: [true, 'Le modèle de prix est requis']
+    enum: ['Salaire mensuel', 'Prix par projet', 'Educateur (prix par seance)'],
+    required: [true, 'Le modele de prix est requis']
   },
   priceValue: {
     type: String,
-    required: [true, 'Le prix proposé est requis']
+    required: [true, 'Le prix propose est requis']
   },
   availability: {
     type: String

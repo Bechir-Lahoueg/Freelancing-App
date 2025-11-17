@@ -14,12 +14,12 @@ export default function CommentForm({ onCommentSubmitted, onClose }) {
     e.preventDefault();
 
     if (rating === 0) {
-      alert('Veuillez sélectionner une note');
+      alert('Veuillez selectionner une note');
       return;
     }
 
     if (text.trim().length < 10) {
-      alert('Le commentaire doit contenir au moins 10 caractères');
+      alert('Le commentaire doit contenir au moins 10 caracteres');
       return;
     }
 
@@ -90,7 +90,7 @@ export default function CommentForm({ onCommentSubmitted, onClose }) {
                   </svg>
                 </div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">Merci!</h3>
-                <p className="text-gray-600">Votre commentaire a été soumis et est en attente d'approbation.</p>
+                <p className="text-gray-600">Votre commentaire a ete soumis et est en attente d'approbation.</p>
               </motion.div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -131,12 +131,12 @@ export default function CommentForm({ onCommentSubmitted, onClose }) {
                     id="comment"
                     value={text}
                     onChange={(e) => setText(e.target.value.slice(0, 500))}
-                    placeholder="Partagez votre expérience avec ce prestataire..."
+                    placeholder="Partagez votre experience avec ce prestataire..."
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm text-gray-900 bg-white placeholder:text-gray-400"
                     rows={4}
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    Minimum 10 caractères, maximum 500 caractères
+                    Minimum 10 caracteres, maximum 500 caracteres
                   </p>
                 </div>
 

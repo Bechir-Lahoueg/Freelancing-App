@@ -9,11 +9,11 @@ import { protect } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Toutes les routes sont protégées
+// Toutes les routes sont protegees
 router.use(protect);
 
 // @route   POST /api/invoices
-// @desc    Créer une nouvelle facture
+// @desc    Creer une nouvelle facture
 // @access  Private
 router.post('/', createInvoice);
 
@@ -23,12 +23,12 @@ router.post('/', createInvoice);
 router.get('/', getUserInvoices);
 
 // @route   GET /api/invoices/:id
-// @desc    Obtenir une facture spécifique
+// @desc    Obtenir une facture specifique
 // @access  Private
 router.get('/:id', getInvoiceById);
 
 // @route   PUT /api/invoices/:id/payment
-// @desc    Mettre à jour le statut de paiement
+// @desc    Mettre a jour le statut de paiement
 // @access  Private
 router.put('/:id/payment', updatePaymentStatus);
 

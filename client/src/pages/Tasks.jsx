@@ -57,10 +57,10 @@ export default function Tasks() {
           className="mb-8"
         >
           <h1 className="text-4xl font-bold mb-2">
-            {category ? `Tâches - ${category}` : 'Toutes les tâches'}
+            {category ? `Taches - ${category}` : 'Toutes les taches'}
           </h1>
           <p className="text-slate-400">
-            {tasks.length} tâche{tasks.length !== 1 ? 's' : ''} disponible{tasks.length !== 1 ? 's' : ''}
+            {tasks.length} tache{tasks.length !== 1 ? 's' : ''} disponible{tasks.length !== 1 ? 's' : ''}
           </p>
         </motion.div>
 
@@ -76,7 +76,7 @@ export default function Tasks() {
                   : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
               }`}
             >
-              {status === 'all' ? 'Toutes' : status === 'open' ? 'Ouvertes' : status === 'in-progress' ? 'En cours' : 'Complétées'}
+              {status === 'all' ? 'Toutes' : status === 'open' ? 'Ouvertes' : status === 'in-progress' ? 'En cours' : 'Completees'}
             </button>
           ))}
         </div>
@@ -92,7 +92,7 @@ export default function Tasks() {
             animate={{ opacity: 1 }}
             className="text-center py-12"
           >
-            <p className="text-slate-400 text-lg">Aucune tâche disponible</p>
+            <p className="text-slate-400 text-lg">Aucune tache disponible</p>
           </motion.div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

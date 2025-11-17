@@ -30,11 +30,11 @@ const Services = () => {
     try {
       setLoading(true);
       
-      // Récupérer toutes les catégories (route publique)
+      // Recuperer toutes les categories (route publique)
       const categoriesRes = await publicAxios.get('/api/admin/categories/list');
       setCategories(categoriesRes.data);
 
-      // Récupérer tous les services (route publique)
+      // Recuperer tous les services (route publique)
       const servicesRes = await publicAxios.get('/api/services');
       setServices(servicesRes.data);
       setFilteredServices(servicesRes.data);
@@ -48,7 +48,7 @@ const Services = () => {
   const filterServices = () => {
     let filtered = [...services];
 
-    // Filtrer par catégorie
+    // Filtrer par categorie
     if (selectedCategory !== 'all') {
       filtered = filtered.filter(service => service.category?._id === selectedCategory);
     }
@@ -69,14 +69,14 @@ const Services = () => {
   const handleServiceClick = (serviceId) => {
     if (!user) {
       localStorage.setItem('redirectAfterLogin', `/service-request?service=${serviceId}`);
-      alert('Vous devez être connecté pour postuler à un service');
+      alert('Vous devez etre connecte pour postuler a un service');
       navigate('/login');
       return;
     }
     navigate(`/service-request?service=${serviceId}`);
   };
 
-  // Compter les services par catégorie
+  // Compter les services par categorie
   const getServiceCountByCategory = (categoryId) => {
     return services.filter(s => s.category?._id === categoryId).length;
   };
@@ -110,14 +110,14 @@ const Services = () => {
               whileHover={{ scale: 1.05 }}
             >
               <Sparkles size={16} />
-              <span>Découvrez nos services</span>
+              <span>Decouvrez nos services</span>
             </motion.div>
             
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4">
               Tous nos <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-500">Services</span>
             </h1>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              Explorez notre catalogue complet de services professionnels organisés par catégorie
+              Explorez notre catalogue complet de services professionnels organises par categorie
             </p>
 
             {/* Stats */}
@@ -128,7 +128,7 @@ const Services = () => {
               </div>
               <div className="text-center">
                 <div className="text-3xl sm:text-4xl font-bold text-amber-500">{categories.length}</div>
-                <div className="text-gray-400 text-sm">Catégories</div>
+                <div className="text-gray-400 text-sm">Categories</div>
               </div>
             </div>
           </motion.div>
@@ -161,7 +161,7 @@ const Services = () => {
                   onChange={(e) => setSelectedCategory(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 sm:py-4 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-orange-500 transition appearance-none cursor-pointer"
                 >
-                  <option value="all" className="bg-slate-900">Toutes les catégories</option>
+                  <option value="all" className="bg-slate-900">Toutes les categories</option>
                   {categories.map(cat => (
                     <option key={cat._id} value={cat._id} className="bg-slate-900">
                       {cat.name} ({getServiceCountByCategory(cat._id)})
@@ -193,7 +193,7 @@ const Services = () => {
 
           {/* Results Count */}
           <div className="mb-6 text-gray-400 text-sm sm:text-base">
-            {filteredServices.length} service{filteredServices.length > 1 ? 's' : ''} trouvé{filteredServices.length > 1 ? 's' : ''}
+            {filteredServices.length} service{filteredServices.length > 1 ? 's' : ''} trouve{filteredServices.length > 1 ? 's' : ''}
           </div>
 
           {/* Services Grid */}
@@ -204,8 +204,8 @@ const Services = () => {
               className="text-center py-16 sm:py-20"
             >
               <Package size={64} className="mx-auto text-gray-600 mb-4" />
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-400 mb-2">Aucun service trouvé</h3>
-              <p className="text-gray-500">Essayez de modifier vos critères de recherche</p>
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-400 mb-2">Aucun service trouve</h3>
+              <p className="text-gray-500">Essayez de modifier vos criteres de recherche</p>
             </motion.div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -226,7 +226,7 @@ const Services = () => {
                       {/* Category Badge */}
                       <div className="flex items-center justify-between mb-4">
                         <span className="px-3 py-1 bg-gradient-to-r from-orange-500/20 to-amber-500/20 text-orange-400 rounded-full text-xs font-semibold border border-orange-500/30">
-                          {service.category?.name || 'Non catégorisé'}
+                          {service.category?.name || 'Non categorise'}
                         </span>
                         <TrendingUp size={16} className="text-green-500" />
                       </div>

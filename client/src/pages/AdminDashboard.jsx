@@ -73,14 +73,14 @@ const AdminDashboard = () => {
 
   const menuItems = [
     { id: 'stats', label: 'Statistiques', icon: BarChart3 },
-    { id: 'tasks', label: 'Gestion des Tâches', icon: Briefcase },
+    { id: 'tasks', label: 'Gestion des Taches', icon: Briefcase },
     { id: 'messages', label: 'Messages', icon: MessageCircle, badge: unreadMessagesCount },
-    { id: 'categories', label: 'Catégories', icon: LayoutGrid },
+    { id: 'categories', label: 'Categories', icon: LayoutGrid },
     { id: 'services', label: 'Services', icon: Settings },
     { id: 'superadmins', label: 'Super Admins', icon: Users, adminOnly: true },
     { id: 'comments', label: 'Commentaires', icon: MessageSquare, adminOnly: true },
     { id: 'partners', label: 'Demandes Partenariat', icon: Handshake },
-    { id: 'settings', label: 'Paramètres', icon: Settings }
+    { id: 'settings', label: 'Parametres', icon: Settings }
   ];
 
   useEffect(() => {
@@ -111,7 +111,7 @@ const AdminDashboard = () => {
     } else if (activeTab === 'tasks') {
       fetchAllTasks();
     } else if (activeTab === 'services') {
-      fetchCategories(); // Pour la sélection de catégorie
+      fetchCategories(); // Pour la selection de categorie
     } else if (activeTab === 'messages') {
       fetchUnreadMessagesCount();
     } else if (activeTab === 'partners') {
@@ -177,7 +177,7 @@ const AdminDashboard = () => {
       await axios.put(`${API_URL}/admin/tasks/${taskId}/approve`, {}, { headers });
       fetchAllTasks();
       if (activeTab === 'stats') fetchStats();
-      alert('Tâche approuvée avec succès');
+      alert('Tache approuvee avec succes');
     } catch (error) {
       console.error('Erreur:', error);
       alert('Erreur lors de l\'approbation');
@@ -190,7 +190,7 @@ const AdminDashboard = () => {
       await axios.put(`${API_URL}/admin/tasks/${taskId}/reject`, { reason }, { headers });
       fetchAllTasks();
       if (activeTab === 'stats') fetchStats();
-      alert('Tâche rejetée');
+      alert('Tache rejetee');
     } catch (error) {
       console.error('Erreur:', error);
       alert('Erreur lors du rejet');
@@ -216,16 +216,16 @@ const AdminDashboard = () => {
     e.preventDefault();
     try {
       if (editingServiceId) {
-        // Mise à jour
+        // Mise a jour
         await axios.put(`${API_URL}/admin/services/${editingServiceId}`, serviceForm, { headers });
-        alert('Service mis à jour !');
+        alert('Service mis a jour !');
       } else {
-        // Création
+        // Creation
         await axios.post(`${API_URL}/admin/services`, {
           ...serviceForm,
           categoryId: selectedCategoryForServices
         }, { headers });
-        alert('Service créé !');
+        alert('Service cree !');
       }
       
       setShowServiceForm(false);
@@ -256,7 +256,7 @@ const AdminDashboard = () => {
     if (window.confirm('Supprimer ce service ?')) {
       try {
         await axios.delete(`${API_URL}/admin/services/${serviceId}`, { headers });
-        alert('Service supprimé !');
+        alert('Service supprime !');
         fetchServicesByCategory(selectedCategoryForServices);
       } catch (error) {
         console.error('Erreur:', error);
@@ -346,7 +346,7 @@ const AdminDashboard = () => {
       await axios.put(`${API_URL}/admin/partner-requests/${id}/approve`, { notes }, { headers });
       fetchPartnerRequests();
       setSelectedRequest(null);
-      alert('Demande approuvée avec succès !');
+      alert('Demande approuvee avec succes !');
     } catch (error) {
       console.error('Erreur:', error);
       alert('Erreur lors de l\'approbation');
@@ -362,7 +362,7 @@ const AdminDashboard = () => {
       await axios.put(`${API_URL}/admin/partner-requests/${id}/reject`, { reason }, { headers });
       fetchPartnerRequests();
       setSelectedRequest(null);
-      alert('Demande rejetée');
+      alert('Demande rejetee');
     } catch (error) {
       console.error('Erreur:', error);
       alert('Erreur lors du rejet');
@@ -370,12 +370,12 @@ const AdminDashboard = () => {
   };
 
   const handleDeletePartner = async (id) => {
-    if (!window.confirm('Êtes-vous sûr de vouloir supprimer cette demande ?')) return;
+    if (!window.confirm('Etes-vous sur de vouloir supprimer cette demande ?')) return;
     try {
       await axios.delete(`${API_URL}/admin/partner-requests/${id}`, { headers });
       fetchPartnerRequests();
       setSelectedRequest(null);
-      alert('Demande supprimée');
+      alert('Demande supprimee');
     } catch (error) {
       console.error('Erreur:', error);
       alert('Erreur lors de la suppression');
@@ -385,7 +385,7 @@ const AdminDashboard = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Créer un aperçu de l'image
+      // Creer un apercu de l'image
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result);
@@ -428,17 +428,17 @@ const AdminDashboard = () => {
       setImagePreview(null);
       setShowCategoryForm(false);
       fetchCategories();
-      alert('Catégorie créée avec succès!');
+      alert('Categorie creee avec succes!');
     } catch (error) {
       console.error('Erreur:', error);
-      alert('Erreur lors de la création: ' + (error.response?.data?.message || error.message));
+      alert('Erreur lors de la creation: ' + (error.response?.data?.message || error.message));
     } finally {
       setLoading(false);
     }
   };
 
   const handleDeleteCategory = async (id) => {
-    if (!window.confirm('Êtes-vous sûr?')) return;
+    if (!window.confirm('Etes-vous sur?')) return;
     setLoading(true);
     try {
       await axios.delete(API_URL + '/admin/categories/' + id, { headers });
@@ -459,7 +459,7 @@ const AdminDashboard = () => {
       color: category.color,
       image: null
     });
-    // Afficher l'image existante en aperçu
+    // Afficher l'image existante en apercu
     if (category.image) {
       setImagePreview(category.image);
     }
@@ -493,10 +493,10 @@ const AdminDashboard = () => {
       setEditingCategoryId(null);
       setImagePreview(null);
       fetchCategories();
-      alert('Catégorie mise à jour avec succès!');
+      alert('Categorie mise a jour avec succes!');
     } catch (error) {
       console.error('Erreur:', error);
-      alert('Erreur lors de la mise à jour: ' + (error.response?.data?.message || error.message));
+      alert('Erreur lors de la mise a jour: ' + (error.response?.data?.message || error.message));
     } finally {
       setLoading(false);
     }
@@ -529,7 +529,7 @@ const AdminDashboard = () => {
       setSuperAdminForm({ name: '', email: '', password: '' });
       setShowSuperAdminForm(false);
       fetchSuperAdmins();
-      alert('Super admin créé avec succès!');
+      alert('Super admin cree avec succes!');
     } catch (error) {
       console.error('Erreur:', error);
       alert('Erreur: ' + (error.response?.data?.message || ''));
@@ -539,7 +539,7 @@ const AdminDashboard = () => {
   };
 
   const handleDeleteSuperAdmin = async (id) => {
-    if (!window.confirm('Êtes-vous sûr?')) return;
+    if (!window.confirm('Etes-vous sur?')) return;
     setLoading(true);
     try {
       await axios.delete(API_URL + '/admin/superadmins/' + id, { headers });
@@ -667,7 +667,7 @@ const AdminDashboard = () => {
               className='w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-red-400 hover:bg-red-500/10 transition font-medium'
             >
               <LogOut size={20} />
-              {sidebarOpen && <span>Déconnexion</span>}
+              {sidebarOpen && <span>Deconnexion</span>}
             </button>
           </div>
         </div>
@@ -680,21 +680,21 @@ const AdminDashboard = () => {
               {activeTab === 'stats' && (
                 <>
                   <h1 className='text-4xl font-bold mb-2 bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent'>
-                    Statistiques & Aperçu
+                    Statistiques & Apercu
                   </h1>
                   <p className='text-slate-400'>Vue d'ensemble des performances de la plateforme</p>
                 </>
               )}
               {activeTab === 'categories' && (
                 <>
-                  <h1 className='text-4xl font-bold mb-2'>Catégories</h1>
-                  <p className='text-slate-400'>Gestion des catégories de services</p>
+                  <h1 className='text-4xl font-bold mb-2'>Categories</h1>
+                  <p className='text-slate-400'>Gestion des categories de services</p>
                 </>
               )}
               {activeTab === 'tasks' && (
                 <>
                   <h1 className='text-4xl font-bold mb-2 bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent'>
-                    Gestion des Tâches
+                    Gestion des Taches
                   </h1>
                   <p className='text-slate-400'>Approuver ou rejeter les demandes de services</p>
                 </>
@@ -704,7 +704,7 @@ const AdminDashboard = () => {
                   <h1 className='text-4xl font-bold mb-2 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent'>
                     Gestion des Services
                   </h1>
-                  <p className='text-slate-400'>Créer et gérer les services de chaque catégorie</p>
+                  <p className='text-slate-400'>Creer et gerer les services de chaque categorie</p>
                 </>
               )}
               {activeTab === 'superadmins' && (
@@ -716,13 +716,13 @@ const AdminDashboard = () => {
               {activeTab === 'comments' && (
                 <>
                   <h1 className='text-4xl font-bold mb-2'>Commentaires</h1>
-                  <p className='text-slate-400'>Modération des avis utilisateurs</p>
+                  <p className='text-slate-400'>Moderation des avis utilisateurs</p>
                 </>
               )}
               {activeTab === 'settings' && (
                 <>
-                  <h1 className='text-4xl font-bold mb-2'>Paramètres</h1>
-                  <p className='text-slate-400'>Configuration générale</p>
+                  <h1 className='text-4xl font-bold mb-2'>Parametres</h1>
+                  <p className='text-slate-400'>Configuration generale</p>
                 </>
               )}
             </div>
@@ -740,7 +740,7 @@ const AdminDashboard = () => {
                 ) : allTasks.length === 0 ? (
                   <div className='bg-slate-800 border border-slate-700 rounded-xl p-12 text-center'>
                     <Briefcase size={48} className='mx-auto text-slate-600 mb-4' />
-                    <h3 className='text-xl font-bold text-white mb-2'>Aucune tâche</h3>
+                    <h3 className='text-xl font-bold text-white mb-2'>Aucune tache</h3>
                     <p className='text-slate-400'>Aucune demande de service pour le moment</p>
                   </div>
                 ) : (
@@ -759,14 +759,14 @@ const AdminDashboard = () => {
                           color: 'text-green-400', 
                           bg: 'bg-green-500/20', 
                           border: 'border-green-500/30',
-                          label: 'Approuvée' 
+                          label: 'Approuvee' 
                         },
                         rejected: { 
                           icon: XCircle, 
                           color: 'text-red-400', 
                           bg: 'bg-red-500/20', 
                           border: 'border-red-500/30',
-                          label: 'Rejetée' 
+                          label: 'Rejetee' 
                         }
                       };
 
@@ -789,7 +789,7 @@ const AdminDashboard = () => {
                               <div className='flex-1'>
                                 <h3 className='text-xl font-bold text-white'>{task.title}</h3>
                                 <p className='text-sm text-slate-400'>
-                                  {task.serviceId?.name || 'Service'} · {task.categoryId?.name || 'Catégorie'}
+                                  {task.serviceId?.name || 'Service'} · {task.categoryId?.name || 'Categorie'}
                                 </p>
                                 <p className='text-xs text-slate-500 mt-1'>
                                   Par: {task.userId?.name || 'Utilisateur'} ({task.userId?.email || 'email'})
@@ -821,7 +821,7 @@ const AdminDashboard = () => {
 
                           {task.responses && task.responses.length > 0 && (
                             <div className='mb-4 pt-4 border-t border-slate-700'>
-                              <h4 className='text-sm font-semibold text-slate-300 mb-3'>Réponses aux questions:</h4>
+                              <h4 className='text-sm font-semibold text-slate-300 mb-3'>Reponses aux questions:</h4>
                               <div className='space-y-2'>
                                 {task.responses.map((response, idx) => (
                                   <div key={idx} className='text-sm bg-slate-800/50 p-3 rounded-lg'>
@@ -847,7 +847,7 @@ const AdminDashboard = () => {
 
                           <div className='flex items-center justify-between pt-4 border-t border-slate-700'>
                             <span className='text-xs text-slate-500'>
-                              Créé le {new Date(task.createdAt).toLocaleDateString('fr-FR')} à {new Date(task.createdAt).toLocaleTimeString('fr-FR')}
+                              Cree le {new Date(task.createdAt).toLocaleDateString('fr-FR')} a {new Date(task.createdAt).toLocaleTimeString('fr-FR')}
                             </span>
                             
                             {task.status === 'pending' && (
@@ -889,7 +889,7 @@ const AdminDashboard = () => {
               >
                 {!selectedCategoryForServices ? (
                   <div>
-                    <h2 className='text-2xl font-bold text-white mb-6'>Sélectionnez une catégorie</h2>
+                    <h2 className='text-2xl font-bold text-white mb-6'>Selectionnez une categorie</h2>
                     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
                       {categories.map((category) => (
                         <motion.div
@@ -922,7 +922,7 @@ const AdminDashboard = () => {
                         }}
                         className='text-slate-400 hover:text-white transition'
                       >
-                        ← Retour aux catégories
+                        ← Retour aux categories
                       </button>
                       <button
                         onClick={() => {
@@ -958,7 +958,7 @@ const AdminDashboard = () => {
                               />
                             </div>
                             <div>
-                              <label className='block text-sm font-medium text-slate-300 mb-2'>Icône</label>
+                              <label className='block text-sm font-medium text-slate-300 mb-2'>Icone</label>
                               <input
                                 type='text'
                                 value={serviceForm.icon}
@@ -977,7 +977,7 @@ const AdminDashboard = () => {
                               required
                               rows={3}
                               className='w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white'
-                              placeholder='Description détaillée du service'
+                              placeholder='Description detaillee du service'
                             />
                           </div>
 
@@ -993,7 +993,7 @@ const AdminDashboard = () => {
                               />
                             </div>
                             <div>
-                              <label className='block text-sm font-medium text-slate-300 mb-2'>Durée estimée</label>
+                              <label className='block text-sm font-medium text-slate-300 mb-2'>Duree estimee</label>
                               <input
                                 type='text'
                                 value={serviceForm.estimatedDuration}
@@ -1065,19 +1065,19 @@ const AdminDashboard = () => {
                                           <option value='text'>Texte</option>
                                           <option value='textarea'>Texte long</option>
                                           <option value='number'>Nombre</option>
-                                          <option value='select'>Sélection</option>
+                                          <option value='select'>Selection</option>
                                           <option value='radio'>Radio</option>
-                                          <option value='checkbox'>Cases à cocher</option>
+                                          <option value='checkbox'>Cases a cocher</option>
                                           <option value='date'>Date</option>
                                           <option value='email'>Email</option>
-                                          <option value='tel'>Téléphone</option>
+                                          <option value='tel'>Telephone</option>
                                         </select>
                                       </div>
                                     </div>
 
                                     {['select', 'radio', 'checkbox'].includes(question.type) && (
                                       <div className='mb-3'>
-                                        <label className='block text-xs text-slate-400 mb-1'>Options (séparées par des virgules)</label>
+                                        <label className='block text-xs text-slate-400 mb-1'>Options (separees par des virgules)</label>
                                         <input
                                           type='text'
                                           value={question.options?.join(', ') || ''}
@@ -1110,7 +1110,7 @@ const AdminDashboard = () => {
                               type='submit'
                               className='px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition'
                             >
-                              {editingServiceId ? 'Mettre à jour' : 'Créer le service'}
+                              {editingServiceId ? 'Mettre a jour' : 'Creer le service'}
                             </button>
                             <button
                               type='button'
@@ -1138,7 +1138,7 @@ const AdminDashboard = () => {
                           <span className='text-4xl'>📋</span>
                         </div>
                         <h3 className='text-xl font-bold text-white mb-2'>Aucun service</h3>
-                        <p className='text-slate-400'>Créez votre premier service pour cette catégorie</p>
+                        <p className='text-slate-400'>Creez votre premier service pour cette categorie</p>
                       </div>
                     ) : (
                       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
@@ -1232,13 +1232,13 @@ const AdminDashboard = () => {
                       onClick={() => fetchPartnerRequests('approved')}
                       className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition"
                     >
-                      Approuvées
+                      Approuvees
                     </button>
                     <button
                       onClick={() => fetchPartnerRequests('rejected')}
                       className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition"
                     >
-                      Rejetées
+                      Rejetees
                     </button>
                   </div>
                 </div>
@@ -1277,8 +1277,8 @@ const AdminDashboard = () => {
                                 'bg-red-500/20 text-red-400'
                               }`}>
                                 {request.status === 'pending' ? '⏳ En attente' :
-                                 request.status === 'approved' ? '✅ Approuvé' :
-                                 '❌ Rejeté'}
+                                 request.status === 'approved' ? '✅ Approuve' :
+                                 '❌ Rejete'}
                               </span>
                             </div>
                           </div>
@@ -1287,7 +1287,7 @@ const AdminDashboard = () => {
                               onClick={() => setSelectedRequest(selectedRequest?._id === request._id ? null : request)}
                               className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
                             >
-                              {selectedRequest?._id === request._id ? 'Fermer' : 'Détails'}
+                              {selectedRequest?._id === request._id ? 'Fermer' : 'Details'}
                             </button>
                           </div>
                         </div>
@@ -1296,11 +1296,11 @@ const AdminDashboard = () => {
                           <div className="mt-4 pt-4 border-t border-slate-600 space-y-3">
                             <div className="grid grid-cols-2 gap-4 text-sm">
                               <div>
-                                <span className="text-gray-400">Âge:</span>
+                                <span className="text-gray-400">Age:</span>
                                 <span className="ml-2 text-white">{request.age} ans</span>
                               </div>
                               <div>
-                                <span className="text-gray-400">Personnalité:</span>
+                                <span className="text-gray-400">Personnalite:</span>
                                 <span className="ml-2 text-white">{request.personality}</span>
                               </div>
                               <div>
@@ -1308,7 +1308,7 @@ const AdminDashboard = () => {
                                 <span className="ml-2 text-white">{request.domain}</span>
                               </div>
                               <div>
-                                <span className="text-gray-400">Expérience:</span>
+                                <span className="text-gray-400">Experience:</span>
                                 <span className="ml-2 text-white">{request.experience}</span>
                               </div>
                               <div>
@@ -1316,8 +1316,8 @@ const AdminDashboard = () => {
                                 <span className="ml-2 text-white">{request.pricingModel} - {request.priceValue}</span>
                               </div>
                               <div>
-                                <span className="text-gray-400">Disponibilité:</span>
-                                <span className="ml-2 text-white">{request.availability || 'Non spécifié'}</span>
+                                <span className="text-gray-400">Disponibilite:</span>
+                                <span className="ml-2 text-white">{request.availability || 'Non specifie'}</span>
                               </div>
                             </div>
 
@@ -1361,7 +1361,7 @@ const AdminDashboard = () => {
                                     download
                                     className="inline-block px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition text-sm"
                                   >
-                                    💾 Télécharger le CV
+                                    💾 Telecharger le CV
                                   </a>
                                 </div>
                               </div>
@@ -1369,7 +1369,7 @@ const AdminDashboard = () => {
 
                             {request.reviewedBy && (
                               <div className="text-sm text-gray-400">
-                                Traité par {request.reviewedBy.name} le {new Date(request.reviewedAt).toLocaleDateString()}
+                                Traite par {request.reviewedBy.name} le {new Date(request.reviewedAt).toLocaleDateString()}
                               </div>
                             )}
 
@@ -1413,7 +1413,7 @@ const AdminDashboard = () => {
                             {request.status === 'approved' && (
                               <div className="mt-4">
                                 <a
-                                  href={`mailto:${request.email}?subject=${encodeURIComponent('🎉 Félicitations ! Votre candidature a été acceptée - Do IT')}&body=${encodeURIComponent(`Bonjour ${request.fullName},\n\nNous avons le plaisir de vous informer que votre candidature pour devenir partenaire de Do IT a été acceptée !\n\n✅ Votre profil correspond parfaitement à nos attentes et nous sommes ravis de vous compter parmi nos partenaires.\n\nProchaines étapes :\n- Nous allons vous contacter prochainement pour finaliser votre intégration\n- Vous recevrez les informations nécessaires pour commencer à travailler avec nous\n- Notre équipe sera à votre disposition pour toute question\n\nNous sommes impatients de collaborer avec vous !\n\nCordialement,\nL'équipe Do IT\n\nPS: N'hésitez pas à nous contacter si vous avez des questions.`)}`}
+                                  href={`mailto:${request.email}?subject=${encodeURIComponent('🎉 Felicitations ! Votre candidature a ete acceptee - Do IT')}&body=${encodeURIComponent(`Bonjour ${request.fullName},\n\nNous avons le plaisir de vous informer que votre candidature pour devenir partenaire de Do IT a ete acceptee !\n\n✅ Votre profil correspond parfaitement a nos attentes et nous sommes ravis de vous compter parmi nos partenaires.\n\nProchaines etapes :\n- Nous allons vous contacter prochainement pour finaliser votre integration\n- Vous recevrez les informations necessaires pour commencer a travailler avec nous\n- Notre equipe sera a votre disposition pour toute question\n\nNous sommes impatients de collaborer avec vous !\n\nCordialement,\nL'equipe Do IT\n\nPS: N'hesitez pas a nous contacter si vous avez des questions.`)}`}
                                   className="w-full px-4 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-lg transition font-medium flex items-center justify-center gap-2"
                                 >
                                   📧 Envoyer l'email d'acceptation
@@ -1424,7 +1424,7 @@ const AdminDashboard = () => {
                             {request.status === 'rejected' && request.rejectionReason && (
                               <div className="mt-4">
                                 <a
-                                  href={`mailto:${request.email}?subject=${encodeURIComponent('Réponse à votre candidature - Do IT')}&body=${encodeURIComponent(`Bonjour ${request.fullName},\n\nNous vous remercions pour l'intérêt que vous portez à notre plateforme Do IT et pour le temps consacré à votre candidature.\n\nAprès étude approfondie de votre profil, nous sommes au regret de vous informer que nous ne pouvons pas donner suite favorable à votre demande de partenariat pour le moment.\n\nRaison :\n${request.rejectionReason}\n\nCependant, nous vous encourageons vivement à postuler de nouveau dans le futur si votre situation évolue. Nous conserverons votre dossier dans notre base de données.\n\nNous vous souhaitons beaucoup de succès dans vos projets professionnels.\n\nCordialement,\nL'équipe Do IT`)}`}
+                                  href={`mailto:${request.email}?subject=${encodeURIComponent('Reponse a votre candidature - Do IT')}&body=${encodeURIComponent(`Bonjour ${request.fullName},\n\nNous vous remercions pour l'interet que vous portez a notre plateforme Do IT et pour le temps consacre a votre candidature.\n\nApres etude approfondie de votre profil, nous sommes au regret de vous informer que nous ne pouvons pas donner suite favorable a votre demande de partenariat pour le moment.\n\nRaison :\n${request.rejectionReason}\n\nCependant, nous vous encourageons vivement a postuler de nouveau dans le futur si votre situation evolue. Nous conserverons votre dossier dans notre base de donnees.\n\nNous vous souhaitons beaucoup de succes dans vos projets professionnels.\n\nCordialement,\nL'equipe Do IT`)}`}
                                   className="w-full px-4 py-3 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white rounded-lg transition font-medium flex items-center justify-center gap-2"
                                 >
                                   📧 Envoyer l'email de refus
@@ -1437,7 +1437,7 @@ const AdminDashboard = () => {
                                 onClick={() => handleDeletePartner(request._id)}
                                 className="w-full mt-2 px-4 py-2 bg-red-800 hover:bg-red-900 text-white rounded-lg transition text-sm"
                               >
-                                🗑️ Supprimer définitivement
+                                🗑️ Supprimer definitivement
                               </button>
                             )}
                           </div>
@@ -1456,20 +1456,20 @@ const AdminDashboard = () => {
                   onClick={() => setShowCategoryForm(!showCategoryForm)}
                   className='mb-6 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition'
                 >
-                  {showCategoryForm ? '✕ Annuler' : '+ Nouvelle Catégorie'}
+                  {showCategoryForm ? '✕ Annuler' : '+ Nouvelle Categorie'}
                 </button>
 
                 {showCategoryForm && (
                   <form onSubmit={editingCategoryId ? handleCategoryUpdate : handleCategorySubmit} className='bg-slate-700 p-6 rounded-lg mb-6 border border-slate-600 space-y-4 max-w-2xl'>
                     <div>
-                      <label className='block text-sm font-semibold mb-2'>Nom de la catégorie</label>
+                      <label className='block text-sm font-semibold mb-2'>Nom de la categorie</label>
                       <input
                         type='text'
                         required
                         value={categoryForm.name}
                         onChange={(e) => setCategoryForm({...categoryForm, name: e.target.value})}
                         className='w-full px-4 py-2 bg-slate-600 border border-slate-500 rounded-lg text-white placeholder-slate-400'
-                        placeholder='Ex: Ménage'
+                        placeholder='Ex: Menage'
                       />
                     </div>
 
@@ -1481,13 +1481,13 @@ const AdminDashboard = () => {
                         onChange={(e) => setCategoryForm({...categoryForm, description: e.target.value})}
                         className='w-full px-4 py-2 bg-slate-600 border border-slate-500 rounded-lg text-white placeholder-slate-400'
                         rows='3'
-                        placeholder='Description détaillée...'
+                        placeholder='Description detaillee...'
                       />
                     </div>
 
                     <div className='grid grid-cols-3 gap-4'>
                       <div>
-                        <label className='block text-sm font-semibold mb-2'>Icône</label>
+                        <label className='block text-sm font-semibold mb-2'>Icone</label>
                         <input
                           type='text'
                           value={categoryForm.icon}
@@ -1515,7 +1515,7 @@ const AdminDashboard = () => {
                             <img src={imagePreview} alt='Preview' className='w-full h-48 object-cover rounded-lg' />
                             <div className='absolute inset-0 bg-green-500/20 rounded-lg flex items-center justify-center'>
                               <div className='text-center'>
-                                <p className='text-white font-semibold text-lg'>✓ Image Sélectionnée</p>
+                                <p className='text-white font-semibold text-lg'>✓ Image Selectionnee</p>
                               </div>
                             </div>
                           </div>
@@ -1542,7 +1542,7 @@ const AdminDashboard = () => {
                         <label className='flex flex-col items-center justify-center cursor-pointer py-6'>
                           <Upload size={40} className='text-slate-400 mb-2' />
                           <p className='text-white font-semibold mb-1'>Cliquez ou glissez une image</p>
-                          <p className='text-slate-400 text-sm'>PNG, JPG, GIF jusqu'à 5MB</p>
+                          <p className='text-slate-400 text-sm'>PNG, JPG, GIF jusqu'a 5MB</p>
                           <input
                             type='file'
                             accept='image/*'
@@ -1555,7 +1555,7 @@ const AdminDashboard = () => {
 
                     <div className='flex gap-3'>
                       <button type='submit' disabled={loading} className='flex-1 px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition disabled:opacity-50'>
-                        {loading ? 'En cours...' : editingCategoryId ? 'Mettre à jour' : 'Créer la Catégorie'}
+                        {loading ? 'En cours...' : editingCategoryId ? 'Mettre a jour' : 'Creer la Categorie'}
                       </button>
                       {editingCategoryId && (
                         <button type='button' onClick={handleCancelEdit} className='px-6 py-3 bg-slate-600 hover:bg-slate-700 text-white rounded-lg font-semibold transition'>
@@ -1631,10 +1631,10 @@ const AdminDashboard = () => {
                       value={superAdminForm.password}
                       onChange={(e) => setSuperAdminForm({...superAdminForm, password: e.target.value})}
                       className='w-full px-4 py-2 bg-slate-600 border border-slate-500 rounded-lg text-white placeholder-slate-400'
-                      placeholder='Mot de passe (min 6 caractères)'
+                      placeholder='Mot de passe (min 6 caracteres)'
                     />
                     <button type='submit' disabled={loading} className='w-full px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition disabled:opacity-50'>
-                      {loading ? 'Création en cours...' : 'Créer Super Admin'}
+                      {loading ? 'Creation en cours...' : 'Creer Super Admin'}
                     </button>
                   </form>
                 )}
@@ -1645,7 +1645,7 @@ const AdminDashboard = () => {
                       <tr className='bg-slate-700 border-b border-slate-600'>
                         <th className='px-6 py-3 text-left'>Nom</th>
                         <th className='px-6 py-3 text-left'>Email</th>
-                        <th className='px-6 py-3 text-left'>Date de création</th>
+                        <th className='px-6 py-3 text-left'>Date de creation</th>
                         <th className='px-6 py-3 text-center'>Actions</th>
                       </tr>
                     </thead>
@@ -1674,8 +1674,8 @@ const AdminDashboard = () => {
             {/* Settings Tab */}
             {activeTab === 'settings' && (
               <div className='bg-slate-700 p-6 rounded-lg border border-slate-600'>
-                <h2 className='text-2xl font-semibold mb-4'>Configuration Générale</h2>
-                <p className='text-slate-400'>Les paramètres seront disponibles prochainement...</p>
+                <h2 className='text-2xl font-semibold mb-4'>Configuration Generale</h2>
+                <p className='text-slate-400'>Les parametres seront disponibles prochainement...</p>
               </div>
             )}
 
@@ -1733,7 +1733,7 @@ const AdminDashboard = () => {
                         <p className='text-slate-400 text-sm mb-1'>En Attente</p>
                         <p className='text-4xl font-bold text-white'>{stats.pendingComments}</p>
                         <div className='mt-3 flex items-center gap-2'>
-                          <span className='text-xs text-yellow-400 font-semibold'>À traiter</span>
+                          <span className='text-xs text-yellow-400 font-semibold'>A traiter</span>
                         </div>
                       </motion.div>
 
@@ -1751,7 +1751,7 @@ const AdminDashboard = () => {
                           </div>
                           <Star className='text-green-400' size={20} />
                         </div>
-                        <p className='text-slate-400 text-sm mb-1'>Approuvés</p>
+                        <p className='text-slate-400 text-sm mb-1'>Approuves</p>
                         <p className='text-4xl font-bold text-white'>{stats.approvedComments}</p>
                         <div className='mt-3 flex items-center gap-2'>
                           <span className='text-xs text-green-400 font-semibold'>
@@ -1775,7 +1775,7 @@ const AdminDashboard = () => {
                             <XCircle className='text-red-400' size={24} />
                           </div>
                         </div>
-                        <p className='text-slate-400 text-sm mb-1'>Rejetés</p>
+                        <p className='text-slate-400 text-sm mb-1'>Rejetes</p>
                         <p className='text-4xl font-bold text-white'>{stats.rejectedComments}</p>
                         <div className='mt-3 flex items-center gap-2'>
                           <span className='text-xs text-red-400 font-semibold'>
@@ -1800,10 +1800,10 @@ const AdminDashboard = () => {
                           </div>
                           <Activity className='text-purple-400' size={20} />
                         </div>
-                        <p className='text-slate-400 text-sm mb-1'>Total Tâches</p>
+                        <p className='text-slate-400 text-sm mb-1'>Total Taches</p>
                         <p className='text-4xl font-bold text-white'>{stats.totalTasks}</p>
                         <div className='mt-3 flex items-center gap-2'>
-                          <span className='text-xs text-purple-400 font-semibold'>Demandes reçues</span>
+                          <span className='text-xs text-purple-400 font-semibold'>Demandes recues</span>
                         </div>
                       </motion.div>
 
@@ -1821,7 +1821,7 @@ const AdminDashboard = () => {
                           </div>
                           <Activity className='text-amber-400' size={20} />
                         </div>
-                        <p className='text-slate-400 text-sm mb-1'>Tâches en Attente</p>
+                        <p className='text-slate-400 text-sm mb-1'>Taches en Attente</p>
                         <p className='text-4xl font-bold text-white'>{stats.pendingTasks}</p>
                         <div className='mt-3 flex items-center gap-2'>
                           <span className='text-xs text-amber-400 font-semibold'>
@@ -1848,7 +1848,7 @@ const AdminDashboard = () => {
                           </div>
                           <div>
                             <p className='text-3xl font-bold text-white'>{categories.length}</p>
-                            <p className='text-slate-400 text-sm'>Catégories</p>
+                            <p className='text-slate-400 text-sm'>Categories</p>
                           </div>
                         </div>
                         <div className='h-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full' />
@@ -1906,7 +1906,7 @@ const AdminDashboard = () => {
                     >
                       <h3 className='text-xl font-bold text-white mb-4 flex items-center gap-2'>
                         <Activity className='text-orange-400' size={24} />
-                        Activité Récente
+                        Activite Recente
                       </h3>
                       {stats.recentActivity.length > 0 ? (
                         <div className='space-y-3'>
@@ -1928,7 +1928,7 @@ const AdminDashboard = () => {
                               <div className='flex items-center gap-2'>
                                 {activity.status === 'approved' && (
                                   <span className='px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded-full border border-green-500/30'>
-                                    Approuvé
+                                    Approuve
                                   </span>
                                 )}
                                 {activity.status === 'pending' && (
@@ -1938,7 +1938,7 @@ const AdminDashboard = () => {
                                 )}
                                 {activity.status === 'rejected' && (
                                   <span className='px-2 py-1 bg-red-500/20 text-red-400 text-xs rounded-full border border-red-500/30'>
-                                    Rejeté
+                                    Rejete
                                   </span>
                                 )}
                                 <div className='flex gap-0.5'>
@@ -1959,7 +1959,7 @@ const AdminDashboard = () => {
                           ))}
                         </div>
                       ) : (
-                        <p className='text-slate-400 text-center py-8'>Aucune activité récente</p>
+                        <p className='text-slate-400 text-center py-8'>Aucune activite recente</p>
                       )}
                     </motion.div>
                   </>

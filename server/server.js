@@ -28,7 +28,7 @@ dotenv.config();
 // Initialiser Express
 const app = express();
 
-// Créer le serveur HTTP
+// Creer le serveur HTTP
 const httpServer = createServer(app);
 
 // Configurer Socket.IO avec CORS flexible
@@ -55,10 +55,10 @@ export const setSocketIO = (ioInstance) => {
   socketIO = ioInstance;
 };
 
-// Connexion à MongoDB et création du super admin
+// Connexion a MongoDB et creation du super admin
 const initializeApp = async () => {
   await connectDB();
-  // Attendre 5 secondes après la connexion avant de créer le super admin
+  // Attendre 5 secondes apres la connexion avant de creer le super admin
   setTimeout(async () => {
     try {
       await createSuperAdmin();
@@ -73,10 +73,10 @@ initializeApp();
 // Configuration CORS plus flexible
 const corsOptions = {
   origin: function (origin, callback) {
-    // Autoriser les requêtes sans origin (mobile apps, curl, postman, etc.)
+    // Autoriser les requetes sans origin (mobile apps, curl, postman, etc.)
     if (!origin) return callback(null, true);
     
-    // Liste des origines autorisées
+    // Liste des origines autorisees
     const allowedOrigins = [
       process.env.CLIENT_URL,
       'http://localhost:5173',
@@ -84,7 +84,7 @@ const corsOptions = {
       'https://freelancing-app-mdgw.onrender.com'
     ].filter(Boolean);
     
-    // En développement, autoriser toutes les origines localhost
+    // En developpement, autoriser toutes les origines localhost
     if (process.env.NODE_ENV !== 'production' || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -160,7 +160,7 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/partner', partnerRoutes);
 app.use('/api/health', healthRoutes);
 
-// Socket.IO - Gestion des connexions en temps réel
+// Socket.IO - Gestion des connexions en temps reel
 const onlineUsers = new Map(); // userId -> socketId
 
 io.on('connection', (socket) => {
@@ -186,13 +186,13 @@ io.on('connection', (socket) => {
   // Quitter une conversation
   socket.on('conversation:leave', (conversationId) => {
     socket.leave(conversationId);
-    console.log(`👋 Socket ${socket.id} a quitté la conversation ${conversationId}`);
+    console.log(`👋 Socket ${socket.id} a quitte la conversation ${conversationId}`);
   });
 
   // Envoyer un message
   socket.on('message:send', (data) => {
-    console.log('📨 Message envoyé:', data);
-    // Émettre le message à tous les membres de la conversation
+    console.log('📨 Message envoye:', data);
+    // Emettre le message a tous les membres de la conversation
     io.to(data.conversationId).emit('message:received', data);
   });
 
@@ -216,9 +216,9 @@ io.on('connection', (socket) => {
     });
   });
 
-  // Déconnexion
+  // Deconnexion
   socket.on('disconnect', () => {
-    console.log('🔌 Déconnexion Socket.IO:', socket.id);
+    console.log('🔌 Deconnexion Socket.IO:', socket.id);
     if (socket.userId) {
       onlineUsers.delete(socket.userId);
       io.emit('user:status', { userId: socket.userId, status: 'offline' });
@@ -230,18 +230,18 @@ io.on('connection', (socket) => {
 app.use(notFound);
 app.use(errorHandler);
 
-// Démarrer le serveur
+// Demarrer le serveur
 const PORT = process.env.PORT || 5000;
 
-// Initialiser l'application (connexion DB + création super admin)
+// Initialiser l'application (connexion DB + creation super admin)
 initializeApp();
 
 httpServer.listen(PORT, () => {
-  console.log(`\n🚀 Serveur démarré sur le port ${PORT}`);
+  console.log(`\n🚀 Serveur demarre sur le port ${PORT}`);
   console.log(`📍 URL: http://localhost:${PORT}`);
   console.log(`🌍 Environnement: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`💬 Socket.IO activé pour le chat en temps réel\n`);
+  console.log(`💬 Socket.IO active pour le chat en temps reel\n`);
   
-  // Définir Socket.IO globalement après le démarrage
+  // Definir Socket.IO globalement apres le demarrage
   setSocketIO(io);
 });

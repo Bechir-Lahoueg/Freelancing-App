@@ -34,7 +34,7 @@ function AppContent() {
           </PrivateRoute>
         } />
 
-        {/* Routes privées */}
+        {/* Routes privees */}
         <Route path="/dashboard" element={
           <PrivateRoute>
             <Dashboard />

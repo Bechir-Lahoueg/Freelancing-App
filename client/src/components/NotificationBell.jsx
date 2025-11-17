@@ -17,7 +17,7 @@ export default function NotificationBell({ scrolled = false }) {
 
   console.log('🔔 NotificationBell rendering, user:', user);
 
-  // Afficher pour tous les utilisateurs authentifiés
+  // Afficher pour tous les utilisateurs authentifies
   if (!user) {
     console.log('❌ No user, hiding bell');
     return null;
@@ -31,13 +31,13 @@ export default function NotificationBell({ scrolled = false }) {
     if (socket && user) {
       console.log('🔔 Setting up socket listeners for notifications');
       
-      // Écouter les nouvelles notifications
+      // Ecouter les nouvelles notifications
       socket.on('notification', (notification) => {
-        console.log('🔔 Nouvelle notification reçue:', notification);
+        console.log('🔔 Nouvelle notification recue:', notification);
         setNotifications(prev => [notification, ...prev]);
         setUnreadCount(prev => prev + 1);
         
-        // Afficher une notification navigateur si autorisé
+        // Afficher une notification navigateur si autorise
         if (Notification.permission === 'granted') {
           new Notification(notification.title, {
             body: notification.message,
@@ -46,10 +46,10 @@ export default function NotificationBell({ scrolled = false }) {
         }
       });
 
-      // Pour les admins, écouter aussi les notifications admin
+      // Pour les admins, ecouter aussi les notifications admin
       if (user.role === 'admin' || user.role === 'superadmin') {
         socket.on('admin-notification', (notification) => {
-          console.log('🔔 Notification admin reçue:', notification);
+          console.log('🔔 Notification admin recue:', notification);
           setNotifications(prev => [notification, ...prev]);
           setUnreadCount(prev => prev + 1);
         });

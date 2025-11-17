@@ -15,8 +15,8 @@ const commentSchema = new mongoose.Schema({
   text: {
     type: String,
     required: [true, 'Le commentaire est requis'],
-    minlength: [10, 'Le commentaire doit contenir au moins 10 caractères'],
-    maxlength: [500, 'Le commentaire ne peut pas dépasser 500 caractères']
+    minlength: [10, 'Le commentaire doit contenir au moins 10 caracteres'],
+    maxlength: [500, 'Le commentaire ne peut pas depasser 500 caracteres']
   },
   rating: {
     type: Number,
@@ -52,7 +52,7 @@ const commentSchema = new mongoose.Schema({
   }
 });
 
-// Index pour les requêtes courantes
+// Index pour les requetes courantes
 commentSchema.index({ status: 1, isPublished: 1 });
 commentSchema.index({ taskId: 1 });
 commentSchema.index({ 'user._id': 1 });

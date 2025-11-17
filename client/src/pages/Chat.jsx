@@ -36,7 +36,7 @@ const Chat = () => {
     loadConversations();
   }, []);
 
-  // Écouter les nouveaux messages via Socket.IO
+  // Ecouter les nouveaux messages via Socket.IO
   useEffect(() => {
     if (socket) {
       socket.on('message:received', ({ message, conversationId }) => {
@@ -47,7 +47,7 @@ const Chat = () => {
           // Marquer comme lu automatiquement
           markAsRead(conversationId);
         } else {
-          // Mettre à jour le badge de notification
+          // Mettre a jour le badge de notification
           setConversations(prev => 
             prev.map(conv => 
               conv._id === conversationId
@@ -139,7 +139,7 @@ const Chat = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
-      // Mettre à jour l'UI
+      // Mettre a jour l'UI
       setConversations(prev =>
         prev.map(conv =>
           conv._id === conversationId
@@ -179,7 +179,7 @@ const Chat = () => {
       
       setNewMessage('');
       
-      // Le message sera ajouté via Socket.IO
+      // Le message sera ajoute via Socket.IO
     } catch (error) {
       console.error('Erreur envoi message:', error);
       alert('Erreur lors de l\'envoi du message');
@@ -192,12 +192,12 @@ const Chat = () => {
     if (selectedConversation && socket) {
       socket.emit('typing:start', { conversationId: selectedConversation._id });
       
-      // Clear le timeout précédent
+      // Clear le timeout precedent
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
       }
       
-      // Arrêter le typing après 2 secondes
+      // Arreter le typing apres 2 secondes
       typingTimeoutRef.current = setTimeout(() => {
         socket.emit('typing:stop', { conversationId: selectedConversation._id });
       }, 2000);
@@ -253,7 +253,7 @@ const Chat = () => {
                 Messages
               </h2>
               {isConnected && (
-                <p className="text-xs text-green-600 mt-1">● Connecté</p>
+                <p className="text-xs text-green-600 mt-1">● Connecte</p>
               )}
             </div>
 
@@ -422,7 +422,7 @@ const Chat = () => {
                         <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
                         <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
                       </div>
-                      <span>En train d'écrire...</span>
+                      <span>En train d'ecrire...</span>
                     </div>
                   )}
                   
@@ -439,7 +439,7 @@ const Chat = () => {
                         setNewMessage(e.target.value);
                         handleTyping();
                       }}
-                      placeholder="Écrire un message..."
+                      placeholder="Ecrire un message..."
                       className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                       disabled={sending}
                     />
@@ -457,9 +457,9 @@ const Chat = () => {
               <div className="flex-1 flex items-center justify-center text-gray-500">
                 <div className="text-center">
                   <MessageCircle className="w-16 h-16 mx-auto mb-4 opacity-30" />
-                  <p className="text-lg">Sélectionnez une conversation</p>
+                  <p className="text-lg">Selectionnez une conversation</p>
                   <p className="text-sm mt-2">
-                    Choisissez une conversation dans la liste pour commencer à discuter
+                    Choisissez une conversation dans la liste pour commencer a discuter
                   </p>
                 </div>
               </div>

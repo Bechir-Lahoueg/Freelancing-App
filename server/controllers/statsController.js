@@ -8,7 +8,7 @@ export const getUserStats = async (req, res) => {
   try {
     const userId = req.user._id;
 
-    // Compter les tâches
+    // Compter les taches
     const totalTasks = await TaskRequest.countDocuments({ userId });
     const pendingTasks = await TaskRequest.countDocuments({ 
       userId, 
@@ -79,7 +79,7 @@ export const getUserHistory = async (req, res) => {
     const userId = req.user._id;
     const { sortBy = 'date', order = 'desc', limit = 50, page = 1 } = req.query;
 
-    // Récupérer les tâches avec pagination
+    // Recuperer les taches avec pagination
     const skip = (page - 1) * limit;
     
     const tasks = await TaskRequest.find({ userId })
@@ -87,7 +87,7 @@ export const getUserHistory = async (req, res) => {
       .limit(parseInt(limit))
       .skip(skip);
 
-    // Récupérer les factures associées
+    // Recuperer les factures associees
     const invoices = await Invoice.find({ userId })
       .populate('requestId', 'title taskType status')
       .sort({ date: -1 })

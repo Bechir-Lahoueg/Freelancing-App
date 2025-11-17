@@ -7,7 +7,7 @@ const SocketContext = createContext();
 export const useSocket = () => {
   const context = useContext(SocketContext);
   if (!context) {
-    throw new Error('useSocket doit être utilisé dans un SocketProvider');
+    throw new Error('useSocket doit etre utilise dans un SocketProvider');
   }
   return context;
 };
@@ -30,14 +30,14 @@ export const SocketProvider = ({ children }) => {
       });
 
       newSocket.on('connect', () => {
-        console.log('✅ Socket.IO connecté');
+        console.log('✅ Socket.IO connecte');
         setIsConnected(true);
         // Notifier le serveur que l'utilisateur est en ligne
         newSocket.emit('user:online', user._id);
       });
 
       newSocket.on('disconnect', () => {
-        console.log('❌ Socket.IO déconnecté');
+        console.log('❌ Socket.IO deconnecte');
         setIsConnected(false);
       });
 
@@ -46,7 +46,7 @@ export const SocketProvider = ({ children }) => {
         setIsConnected(false);
       });
 
-      // Écouter les changements de statut des utilisateurs
+      // Ecouter les changements de statut des utilisateurs
       newSocket.on('user:status', ({ userId, status }) => {
         setOnlineUsers(prev => {
           const newSet = new Set(prev);

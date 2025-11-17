@@ -59,7 +59,7 @@ const CategoriesDropdown = ({ shouldShowWhiteStyle, isMobile = false, onClose })
           }`}
         >
           <Grid size={18} />
-          <span>Toutes les catégories</span>
+          <span>Toutes les categories</span>
         </button>
         {categories.map((category) => (
           <button
@@ -92,7 +92,7 @@ const CategoriesDropdown = ({ shouldShowWhiteStyle, isMobile = false, onClose })
         whileTap={{ scale: 0.95 }}
       >
         <Grid size={20} className="group-hover:rotate-12 transition" />
-        <span>Catégories</span>
+        <span>Categories</span>
         <motion.div
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.3 }}
@@ -122,7 +122,7 @@ const CategoriesDropdown = ({ shouldShowWhiteStyle, isMobile = false, onClose })
               <p className={`text-sm font-bold ${
                 shouldShowWhiteStyle ? 'text-gray-800' : 'text-white'
               }`}>
-                Nos Catégories
+                Nos Categories
               </p>
             </div>
 
@@ -168,7 +168,7 @@ const CategoriesDropdown = ({ shouldShowWhiteStyle, isMobile = false, onClose })
                 onClick={handleViewAll}
                 className="w-full px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg font-semibold hover:shadow-lg transition text-sm"
               >
-                Voir toutes les catégories →
+                Voir toutes les categories →
               </button>
             </div>
           </motion.div>

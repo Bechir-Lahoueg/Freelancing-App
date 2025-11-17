@@ -47,7 +47,7 @@ export default function PartnerForm() {
         }
       });
       
-      // Ajouter le fichier CV si présent
+      // Ajouter le fichier CV si present
       if (cvFile) {
         formData.append('cv', cvFile);
       }
@@ -74,10 +74,10 @@ export default function PartnerForm() {
       });
       setCvFile(null);
       
-      // Réinitialiser le succès après 5 secondes
+      // Reinitialiser le succes apres 5 secondes
       setTimeout(() => setSuccess(false), 5000);
     } catch (err) {
-      setError(err.response?.data?.message || 'Une erreur est survenue. Veuillez réessayer.');
+      setError(err.response?.data?.message || 'Une erreur est survenue. Veuillez reessayer.');
     } finally {
       setLoading(false);
     }
@@ -96,10 +96,10 @@ export default function PartnerForm() {
           >
           <h1 className="text-4xl font-extrabold mb-3 text-center text-blue-700">Devenir Partenaire</h1>
           <p className="text-gray-600 mb-8 text-center text-lg">
-            Rejoignez notre réseau avec un formulaire intelligent et moderne.
+            Rejoignez notre reseau avec un formulaire intelligent et moderne.
           </p>
 
-        {/* Message de succès */}
+        {/* Message de succes */}
         {success && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -108,8 +108,8 @@ export default function PartnerForm() {
           >
             <CheckCircle2 className="w-6 h-6 text-green-600 flex-shrink-0" />
             <div>
-              <p className="text-green-800 font-semibold">Demande envoyée avec succès !</p>
-              <p className="text-green-700 text-sm">Nous examinerons votre candidature et vous contacterons bientôt.</p>
+              <p className="text-green-800 font-semibold">Demande envoyee avec succes !</p>
+              <p className="text-green-700 text-sm">Nous examinerons votre candidature et vous contacterons bientot.</p>
             </div>
           </motion.div>
         )}
@@ -143,7 +143,7 @@ export default function PartnerForm() {
             />
           </div>
 
-          {/* Email & Âge */}
+          {/* Email & Age */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block font-semibold mb-1">Email</label>
@@ -158,7 +158,7 @@ export default function PartnerForm() {
             </div>
 
             <div>
-              <label className="block font-semibold mb-1">Âge</label>
+              <label className="block font-semibold mb-1">Age</label>
               <input
                 type="number"
                 name="age"
@@ -170,9 +170,9 @@ export default function PartnerForm() {
             </div>
           </div>
 
-          {/* Personnalité */}
+          {/* Personnalite */}
           <div>
-            <label className="block font-semibold mb-1">Votre personnalité</label>
+            <label className="block font-semibold mb-1">Votre personnalite</label>
             <select
               name="personality"
               value={form.personality}
@@ -180,18 +180,18 @@ export default function PartnerForm() {
               className="w-full p-4 border rounded-xl bg-white/60 hover:bg-white outline-blue-400"
               required
             >
-              <option value="">-- Sélectionner --</option>
-              <option value="Calme et organisé">Calme et organisé</option>
-              <option value="Créatif et innovateur">Créatif et innovateur</option>
-              <option value="Leader et motivé">Leader et motivé</option>
-              <option value="Sérieux et rigoureux">Sérieux et rigoureux</option>
+              <option value="">-- Selectionner --</option>
+              <option value="Calme et organise">Calme et organise</option>
+              <option value="Creatif et innovateur">Creatif et innovateur</option>
+              <option value="Leader et motive">Leader et motive</option>
+              <option value="Serieux et rigoureux">Serieux et rigoureux</option>
               <option value="Flexible et sociable">Flexible et sociable</option>
             </select>
           </div>
 
           {/* Domaine */}
           <div>
-            <label className="block font-semibold mb-1">Domaine souhaité</label>
+            <label className="block font-semibold mb-1">Domaine souhaite</label>
             <select
               name="domain"
               value={form.domain}
@@ -199,9 +199,9 @@ export default function PartnerForm() {
               className="w-full p-4 border rounded-xl bg-white/60 hover:bg-white outline-blue-400"
               required
             >
-              <option value="">-- Sélectionner --</option>
-              <option value="Développement Web">Développement Web</option>
-              <option value="Développement Mobile">Développement Mobile</option>
+              <option value="">-- Selectionner --</option>
+              <option value="Developpement Web">Developpement Web</option>
+              <option value="Developpement Mobile">Developpement Mobile</option>
               <option value="Encadrant / Enseignant PFE">Encadrant / Enseignant PFE</option>
               <option value="Designer UI/UX">Designer UI/UX</option>
               <option value="Support Technique">Support Technique</option>
@@ -209,23 +209,23 @@ export default function PartnerForm() {
             </select>
           </div>
 
-          {/* Expérience */}
+          {/* Experience */}
           <div>
-            <label className="block font-semibold mb-1">Expérience</label>
+            <label className="block font-semibold mb-1">Experience</label>
             <input
               type="text"
               name="experience"
               value={form.experience}
               onChange={handleChange}
-              placeholder="ex: 2 ans / Senior / Débutant"
+              placeholder="ex: 2 ans / Senior / Debutant"
               className="w-full p-4 border rounded-xl bg-white/60 hover:bg-white outline-blue-400"
               required
             />
           </div>
 
-          {/* Modèle de prix */}
+          {/* Modele de prix */}
           <div>
-            <label className="block font-semibold mb-1">Modèle de prix</label>
+            <label className="block font-semibold mb-1">Modele de prix</label>
             <select
               name="pricingModel"
               value={form.pricingModel}
@@ -233,30 +233,30 @@ export default function PartnerForm() {
               className="w-full p-4 border rounded-xl bg-white/60 hover:bg-white outline-blue-400"
               required
             >
-              <option value="">-- Sélectionner --</option>
+              <option value="">-- Selectionner --</option>
               <option value="Salaire mensuel">Salaire mensuel</option>
               <option value="Prix par projet">Prix par projet</option>
-              <option value="Éducateur (prix par séance)">Éducateur (prix par séance)</option>
+              <option value="Educateur (prix par seance)">Educateur (prix par seance)</option>
             </select>
           </div>
 
-          {/* Prix proposé */}
+          {/* Prix propose */}
           <div>
-            <label className="block font-semibold mb-1">Prix proposé</label>
+            <label className="block font-semibold mb-1">Prix propose</label>
             <input
               type="text"
               name="priceValue"
               value={form.priceValue}
               onChange={handleChange}
-              placeholder="ex: 1200DT / 50DT la séance / 300DT par projet"
+              placeholder="ex: 1200DT / 50DT la seance / 300DT par projet"
               className="w-full p-4 border rounded-xl bg-white/60 hover:bg-white outline-blue-400"
               required
             />
           </div>
 
-          {/* Disponibilité */}
+          {/* Disponibilite */}
           <div>
-            <label className="block font-semibold mb-1">Disponibilité</label>
+            <label className="block font-semibold mb-1">Disponibilite</label>
             <input
               type="text"
               name="availability"
@@ -295,7 +295,7 @@ export default function PartnerForm() {
 
           {/* Message */}
           <div>
-            <label className="block font-semibold mb-1">Message supplémentaire</label>
+            <label className="block font-semibold mb-1">Message supplementaire</label>
             <textarea
               name="message"
               value={form.message}

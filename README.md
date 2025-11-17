@@ -4,43 +4,43 @@
 
 ## 📋 Description
 
-**Do IT** est une plateforme moderne de freelancing qui connecte les clients avec des prestataires de services qualifiés. La plateforme offre une gestion complète des tâches, un système de chat en temps réel avec support multimédia, des notifications instantanées, et un tableau de bord administrateur puissant.
+**Do IT** est une plateforme moderne de freelancing qui connecte les clients avec des prestataires de services qualifies. La plateforme offre une gestion complete des taches, un systeme de chat en temps reel avec support multimedia, des notifications instantanees, et un tableau de bord administrateur puissant.
 
-## ✨ Fonctionnalités Principales
+## ✨ Fonctionnalites Principales
 
 ### Pour les Clients
-- 📝 **Création et gestion de tâches** - Publiez vos besoins et recevez des propositions
-- 💬 **Chat en temps réel** - Communiquez directement avec les prestataires
-- 📎 **Partage multimédia** - Envoyez des images, vidéos, PDF et fichiers audio
+- 📝 **Creation et gestion de taches** - Publiez vos besoins et recevez des propositions
+- 💬 **Chat en temps reel** - Communiquez directement avec les prestataires
+- 📎 **Partage multimedia** - Envoyez des images, videos, PDF et fichiers audio
 - 😊 **Support des emojis** - Rendez vos conversations plus expressives
-- 🔔 **Notifications instantanées** - Restez informé de toutes les activités
+- 🔔 **Notifications instantanees** - Restez informe de toutes les activites
 - 💰 **Gestion des factures** - Suivez vos paiements et transactions
-- ⭐ **Système d'évaluation** - Notez et commentez les prestataires
+- ⭐ **Systeme d'evaluation** - Notez et commentez les prestataires
 
 ### Pour les Prestataires
 - 🤝 **Demandes de partenariat** - Rejoignez la plateforme avec votre CV
-- 📊 **Tableau de bord personnalisé** - Gérez vos tâches et statistiques
-- 💼 **Portfolio de services** - Présentez vos compétences par catégorie
-- 📧 **Communication client** - Échangez avec vos clients en temps réel
+- 📊 **Tableau de bord personnalise** - Gerez vos taches et statistiques
+- 💼 **Portfolio de services** - Presentez vos competences par categorie
+- 📧 **Communication client** - Echangez avec vos clients en temps reel
 
 ### Pour les Administrateurs
-- 👥 **Gestion des utilisateurs** - Administration complète des comptes
-- 📂 **Gestion des catégories** - Organisation des services
-- 🔍 **Modération des commentaires** - Contrôle de la qualité des avis
-- 📈 **Statistiques détaillées** - Analyse des performances de la plateforme
+- 👥 **Gestion des utilisateurs** - Administration complete des comptes
+- 📂 **Gestion des categories** - Organisation des services
+- 🔍 **Moderation des commentaires** - Controle de la qualite des avis
+- 📈 **Statistiques detaillees** - Analyse des performances de la plateforme
 - ✅ **Validation des partenaires** - Approbation des demandes avec CV
 - 💬 **Chat administrateur** - Communication avec tous les utilisateurs
 
-## 🛠️ Technologies Utilisées
+## 🛠️ Technologies Utilisees
 
 ### Backend
 - **Node.js** & **Express.js** - Framework serveur
-- **MongoDB** & **Mongoose** - Base de données NoSQL
-- **Socket.IO** - Communication en temps réel
+- **MongoDB** & **Mongoose** - Base de donnees NoSQL
+- **Socket.IO** - Communication en temps reel
 - **Passport.js** - Authentification (Local & Google OAuth)
-- **Cloudinary** - Stockage et gestion des médias
+- **Cloudinary** - Stockage et gestion des medias
 - **Multer** - Upload de fichiers (limite 50MB pour chat, 10MB pour CV)
-- **JWT** - Tokens de sécurité
+- **JWT** - Tokens de securite
 
 ### Frontend
 - **React 18+** - Framework UI
@@ -48,14 +48,14 @@
 - **Tailwind CSS** - Framework CSS utilitaire
 - **Framer Motion** - Animations fluides
 - **Axios** - Client HTTP
-- **emoji-picker-react** - Sélecteur d'emojis
+- **emoji-picker-react** - Selecteur d'emojis
 - **React Router** - Navigation SPA
 
-### Sécurité & Authentification
+### Securite & Authentification
 - **bcryptjs** - Hashage des mots de passe
 - **JWT** - Authentification par tokens
 - **Google OAuth 2.0** - Connexion via Google
-- **CORS** - Protection des requêtes cross-origin
+- **CORS** - Protection des requetes cross-origin
 
 ## 📁 Structure du Projet
 
@@ -63,7 +63,7 @@
 do-it/
 ├── client/                      # Application React
 │   ├── src/
-│   │   ├── components/          # Composants réutilisables
+│   │   ├── components/          # Composants reutilisables
 │   │   │   ├── Navbar.jsx
 │   │   │   ├── NotificationBell.jsx
 │   │   │   ├── ChatPanel.jsx
@@ -86,13 +86,13 @@ do-it/
 │   │   ├── db.js
 │   │   ├── cloudinary.js
 │   │   └── passport.js
-│   ├── models/                  # Modèles Mongoose
+│   ├── models/                  # Modeles Mongoose
 │   │   ├── User.js
 │   │   ├── TaskRequest.js
 │   │   ├── Message.js
 │   │   ├── Notification.js
 │   │   └── ...
-│   ├── controllers/             # Logique métier
+│   ├── controllers/             # Logique metier
 │   │   ├── userController.js
 │   │   ├── taskController.js
 │   │   ├── chatController.js
@@ -109,17 +109,17 @@ do-it/
 │   ├── utils/                   # Utilitaires
 │   │   ├── notificationHelper.js
 │   │   └── tokenUtils.js
-│   └── server.js                # Point d'entrée
+│   └── server.js                # Point d'entree
 │
 └── README.md
 ```
 
-## 🚀 Installation et Démarrage
+## 🚀 Installation et Demarrage
 
-### Prérequis
-- Node.js (v14 ou supérieur)
+### Prerequis
+- Node.js (v14 ou superieur)
 - MongoDB (local ou Atlas)
-- Compte Cloudinary (pour le stockage des médias)
+- Compte Cloudinary (pour le stockage des medias)
 - Compte Google Cloud (pour OAuth - optionnel)
 
 ### 1. Cloner le repository
@@ -135,7 +135,7 @@ cd server
 npm install
 ```
 
-Créez un fichier `.env` dans le dossier `server/` :
+Creez un fichier `.env` dans le dossier `server/` :
 
 ```env
 # MongoDB
@@ -169,7 +169,7 @@ cd client
 npm install
 ```
 
-Créez un fichier `.env` dans le dossier `client/` :
+Creez un fichier `.env` dans le dossier `client/` :
 
 ```env
 VITE_API_URL=http://localhost:5000/api
@@ -192,16 +192,16 @@ npm run dev
 
 L'application sera accessible sur `http://localhost:5173`
 
-## 🔑 Création du Super Admin
+## 🔑 Creation du Super Admin
 
-Pour créer un compte super administrateur :
+Pour creer un compte super administrateur :
 
 ```bash
 cd server
 node utils/createSuperAdmin.js
 ```
 
-Credentials par défaut :
+Credentials par defaut :
 - Email: `admin@doit.com`
 - Mot de passe: `Admin123!`
 
@@ -213,17 +213,17 @@ Credentials par défaut :
 - `POST /api/auth/register` - Inscription
 - `POST /api/auth/login` - Connexion
 - `GET /api/auth/google` - OAuth Google
-- `POST /api/auth/logout` - Déconnexion
+- `POST /api/auth/logout` - Deconnexion
 
-### Tâches
-- `GET /api/tasks` - Liste des tâches
-- `POST /api/tasks` - Créer une tâche
-- `PUT /api/tasks/:id` - Modifier une tâche
-- `DELETE /api/tasks/:id` - Supprimer une tâche
+### Taches
+- `GET /api/tasks` - Liste des taches
+- `POST /api/tasks` - Creer une tache
+- `PUT /api/tasks/:id` - Modifier une tache
+- `DELETE /api/tasks/:id` - Supprimer une tache
 
 ### Chat
 - `GET /api/chat/conversations` - Liste des conversations
-- `POST /api/chat/conversations` - Créer une conversation
+- `POST /api/chat/conversations` - Creer une conversation
 - `GET /api/chat/conversations/:id/messages` - Messages d'une conversation
 - `POST /api/chat/conversations/:id/messages` - Envoyer un message
 - `POST /api/chat/conversations/:id/upload` - Upload fichier (50MB max)
@@ -233,66 +233,66 @@ Credentials par défaut :
 - `PUT /api/notifications/:id/read` - Marquer comme lu
 - `PUT /api/notifications/read-all` - Tout marquer comme lu
 
-### Catégories
-- `GET /api/categories` - Liste des catégories
-- `POST /api/categories` - Créer une catégorie (Admin)
-- `PUT /api/categories/:id` - Modifier une catégorie (Admin)
-- `DELETE /api/categories/:id` - Supprimer une catégorie (Admin)
+### Categories
+- `GET /api/categories` - Liste des categories
+- `POST /api/categories` - Creer une categorie (Admin)
+- `PUT /api/categories/:id` - Modifier une categorie (Admin)
+- `DELETE /api/categories/:id` - Supprimer une categorie (Admin)
 
-## 🔔 Système de Notifications
+## 🔔 Systeme de Notifications
 
-Les notifications sont automatiquement créées et envoyées en temps réel via Socket.IO pour :
+Les notifications sont automatiquement creees et envoyees en temps reel via Socket.IO pour :
 - ✉️ Nouveaux messages dans le chat
-- 📝 Nouvelles tâches créées
-- ✏️ Modifications de tâches
-- ✅ Tâches complétées
+- 📝 Nouvelles taches creees
+- ✏️ Modifications de taches
+- ✅ Taches completees
 - 🤝 Demandes de partenariat
 - 💼 Approbation/rejet de partenariat
-- 💰 Factures créées/payées
+- 💰 Factures creees/payees
 - 💬 Nouveaux commentaires
 
-**Auto-suppression** : Les notifications sont automatiquement supprimées après 10 minutes grâce à un index TTL MongoDB.
+**Auto-suppression** : Les notifications sont automatiquement supprimees apres 10 minutes grace a un index TTL MongoDB.
 
-## 💬 Système de Chat
+## 💬 Systeme de Chat
 
-### Types de Messages Supportés
+### Types de Messages Supportes
 - 📝 Texte simple
 - 😊 Emojis (via emoji-picker-react)
 - 🖼️ Images (JPG, PNG, GIF, WebP)
-- 🎥 Vidéos (MP4, AVI, MOV)
+- 🎥 Videos (MP4, AVI, MOV)
 - 🎵 Audio (MP3, WAV, M4A)
 - 📄 PDF
 - 📎 Fichiers divers (DOC, DOCX, etc.)
 
 ### Stockage Cloudinary
-Tous les fichiers sont stockés dans le dossier `do-it/chat` avec détection automatique du type :
+Tous les fichiers sont stockes dans le dossier `do-it/chat` avec detection automatique du type :
 - Images → `resource_type: image`
-- Vidéos → `resource_type: video`
+- Videos → `resource_type: video`
 - Autres → `resource_type: raw`
 
-## 🎨 Fonctionnalités Spéciales
+## 🎨 Fonctionnalites Speciales
 
 ### Gestion des Partenaires
 - Upload de CV (PDF uniquement, 10MB max)
 - Stockage dans `do-it/categories` sur Cloudinary
-- Visualisation PDF intégrée dans l'admin
+- Visualisation PDF integree dans l'admin
 - Boutons mailto automatiques pour contact
 
 ### Authentification Intelligente
-- Les boutons "Commencer" et "Se connecter" disparaissent pour les utilisateurs authentifiés
-- Redirection automatique selon le rôle (admin → admin dashboard, user → dashboard)
+- Les boutons "Commencer" et "Se connecter" disparaissent pour les utilisateurs authentifies
+- Redirection automatique selon le role (admin → admin dashboard, user → dashboard)
 
 ### Animations Fluides
 - Transitions page avec Framer Motion
 - Animations de notification (pulse, fade, scale)
 - Effets hover et tap sur les boutons
 
-## 🛡️ Sécurité
+## 🛡️ Securite
 
 - ✅ Hashage des mots de passe (bcrypt)
 - ✅ Tokens JWT avec expiration
-- ✅ Protection CORS configurée
-- ✅ Validation des données côté serveur
+- ✅ Protection CORS configuree
+- ✅ Validation des donnees cote serveur
 - ✅ Middleware d'authentification et d'autorisation
 - ✅ Limitation de taille des fichiers
 - ✅ Validation des types MIME
@@ -301,44 +301,44 @@ Tous les fichiers sont stockés dans le dossier `do-it/chat` avec détection aut
 
 ### Backend
 ```bash
-npm start          # Démarre le serveur (port 5000)
-npm run dev        # Mode développement avec nodemon
+npm start          # Demarre le serveur (port 5000)
+npm run dev        # Mode developpement avec nodemon
 ```
 
 ### Frontend
 ```bash
-npm run dev        # Serveur de développement Vite (port 5173)
+npm run dev        # Serveur de developpement Vite (port 5173)
 npm run build      # Build de production
-npm run preview    # Prévisualisation du build
+npm run preview    # Previsualisation du build
 ```
 
-## 🌐 Déploiement
+## 🌐 Deploiement
 
 ### Backend (Render, Heroku, Railway)
 1. Configurez les variables d'environnement
 2. Assurez-vous que MongoDB est accessible
 3. Configurez Cloudinary
-4. Déployez avec `npm start`
+4. Deployez avec `npm start`
 
 ### Frontend (Vercel, Netlify)
 1. Build avec `npm run build`
 2. Configurez les variables d'environnement
 3. Pointez vers votre API backend
-4. Déployez le dossier `dist/`
+4. Deployez le dossier `dist/`
 
 ## 🤝 Contribution
 
 Les contributions sont les bienvenues ! Pour contribuer :
 
 1. Fork le projet
-2. Créez une branche (`git checkout -b feature/amazing-feature`)
+2. Creez une branche (`git checkout -b feature/amazing-feature`)
 3. Commit vos changements (`git commit -m 'Add amazing feature'`)
 4. Push vers la branche (`git push origin feature/amazing-feature`)
 5. Ouvrez une Pull Request
 
 ## 📄 Licence
 
-Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
+Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de details.
 
 ## 👨‍💻 Auteur
 
@@ -347,18 +347,18 @@ Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 
 ## 📞 Support
 
-Pour toute question ou problème :
+Pour toute question ou probleme :
 - Ouvrez une issue sur GitHub
 - Contactez-nous via la plateforme
 
 ## 🙏 Remerciements
 
-- React & Vite pour l'expérience de développement incroyable
-- Socket.IO pour la communication temps réel
-- Cloudinary pour la gestion des médias
-- MongoDB pour la base de données flexible
-- Tailwind CSS pour le design rapide et élégant
+- React & Vite pour l'experience de developpement incroyable
+- Socket.IO pour la communication temps reel
+- Cloudinary pour la gestion des medias
+- MongoDB pour la base de donnees flexible
+- Tailwind CSS pour le design rapide et elegant
 
 ---
 
-**Do IT** - *Transformez vos idées en réalité* 🚀
+**Do IT** - *Transformez vos idees en realite* 🚀

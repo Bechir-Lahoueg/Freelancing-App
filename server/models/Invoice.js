@@ -49,7 +49,7 @@ const invoiceSchema = new mongoose.Schema({
   }
 });
 
-// Générer un numéro de facture unique
+// Generer un numero de facture unique
 invoiceSchema.pre('save', async function(next) {
   if (this.isNew) {
     const count = await mongoose.model('Invoice').countDocuments();

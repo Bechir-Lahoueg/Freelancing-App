@@ -4,7 +4,7 @@ import TaskRequest from '../models/TaskRequest.js';
 import User from '../models/User.js';
 import { createNotification } from './notificationController.js';
 
-// @desc    Créer un nouveau commentaire
+// @desc    Creer un nouveau commentaire
 // @route   POST /api/comments
 // @access  Private (User)
 export const createComment = async (req, res) => {
@@ -16,7 +16,7 @@ export const createComment = async (req, res) => {
 
     const { text, rating } = req.body;
 
-    // Créer le commentaire
+    // Creer le commentaire
     const comment = await Comment.create({
       user: {
         _id: req.user._id,
@@ -40,7 +40,7 @@ export const createComment = async (req, res) => {
     );
 
     res.status(201).json({
-      message: 'Commentaire créé avec succès! En attente d\'approbation par les administrateurs.',
+      message: 'Commentaire cree avec succes! En attente d\'approbation par les administrateurs.',
       comment
     });
   } catch (error) {
@@ -49,7 +49,7 @@ export const createComment = async (req, res) => {
   }
 };
 
-// @desc    Obtenir tous les commentaires approuvés (publics)
+// @desc    Obtenir tous les commentaires approuves (publics)
 // @route   GET /api/comments/public
 // @access  Public
 export const getPublicComments = async (req, res) => {
@@ -91,7 +91,7 @@ export const approveComment = async (req, res) => {
     const comment = await Comment.findById(req.params.id);
 
     if (!comment) {
-      return res.status(404).json({ message: 'Commentaire non trouvé' });
+      return res.status(404).json({ message: 'Commentaire non trouve' });
     }
 
     comment.status = 'approved';
@@ -104,7 +104,7 @@ export const approveComment = async (req, res) => {
     console.log('✅ Comment approved:', comment._id);
 
     res.json({
-      message: 'Commentaire approuvé et publié!',
+      message: 'Commentaire approuve et publie!',
       comment
     });
   } catch (error) {
@@ -123,12 +123,12 @@ export const rejectComment = async (req, res) => {
     const comment = await Comment.findById(req.params.id);
 
     if (!comment) {
-      return res.status(404).json({ message: 'Commentaire non trouvé' });
+      return res.status(404).json({ message: 'Commentaire non trouve' });
     }
 
     comment.status = 'rejected';
     comment.isPublished = false;
-    comment.rejectionReason = reason || 'Rejeté par l\'administrateur';
+    comment.rejectionReason = reason || 'Rejete par l\'administrateur';
     comment.approvedBy = req.user._id;
 
     await comment.save();
@@ -136,7 +136,7 @@ export const rejectComment = async (req, res) => {
     console.log('❌ Comment rejected:', comment._id);
 
     res.json({
-      message: 'Commentaire rejeté',
+      message: 'Commentaire rejete',
       comment
     });
   } catch (error) {
@@ -153,14 +153,14 @@ export const deleteComment = async (req, res) => {
     const comment = await Comment.findById(req.params.id);
 
     if (!comment) {
-      return res.status(404).json({ message: 'Commentaire non trouvé' });
+      return res.status(404).json({ message: 'Commentaire non trouve' });
     }
 
     await Comment.findByIdAndDelete(req.params.id);
 
     console.log('🗑️ Comment deleted:', req.params.id);
 
-    res.json({ message: 'Commentaire supprimé avec succès' });
+    res.json({ message: 'Commentaire supprime avec succes' });
   } catch (error) {
     console.error('❌ Error deleting comment:', error);
     res.status(500).json({ message: error.message });
@@ -190,10 +190,10 @@ export const deleteOwnComment = async (req, res) => {
     const comment = await Comment.findById(req.params.id);
 
     if (!comment) {
-      return res.status(404).json({ message: 'Commentaire non trouvé' });
+      return res.status(404).json({ message: 'Commentaire non trouve' });
     }
 
-    // Vérifier que c'est le propriétaire du commentaire
+    // Verifier que c'est le proprietaire du commentaire
     if (comment.user._id.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: 'Vous ne pouvez que supprimer vos propres commentaires' });
     }
@@ -202,14 +202,14 @@ export const deleteOwnComment = async (req, res) => {
 
     console.log('🗑️ User deleted their comment:', req.params.id);
 
-    // Notifier les admins que le commentaire a été supprimé
+    // Notifier les admins que le commentaire a ete supprime
     await createNotification(
       'comment_deleted',
-      `Commentaire supprimé par l'utilisateur - ${comment.user.name}`,
+      `Commentaire supprime par l'utilisateur - ${comment.user.name}`,
       comment
     );
 
-    res.json({ message: 'Votre commentaire a été supprimé' });
+    res.json({ message: 'Votre commentaire a ete supprime' });
   } catch (error) {
     console.error('❌ Error deleting own comment:', error);
     res.status(500).json({ message: error.message });

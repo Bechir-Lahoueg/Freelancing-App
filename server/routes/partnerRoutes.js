@@ -35,7 +35,7 @@ const upload = multer({
     if (mimetype && extname) {
       return cb(null, true);
     } else {
-      cb(new Error('Seuls les fichiers PDF, DOC et DOCX sont acceptés'));
+      cb(new Error('Seuls les fichiers PDF, DOC et DOCX sont acceptes'));
     }
   }
 });
@@ -49,12 +49,12 @@ router.post(
   [
     body('fullName').trim().notEmpty().withMessage('Le nom complet est requis'),
     body('email').isEmail().withMessage('Email invalide'),
-    body('age').isInt({ min: 18, max: 100 }).withMessage('L\'âge doit être entre 18 et 100'),
-    body('personality').notEmpty().withMessage('La personnalité est requise'),
+    body('age').isInt({ min: 18, max: 100 }).withMessage('L\'age doit etre entre 18 et 100'),
+    body('personality').notEmpty().withMessage('La personnalite est requise'),
     body('domain').notEmpty().withMessage('Le domaine est requis'),
-    body('experience').notEmpty().withMessage('L\'expérience est requise'),
-    body('pricingModel').notEmpty().withMessage('Le modèle de prix est requis'),
-    body('priceValue').notEmpty().withMessage('Le prix proposé est requis')
+    body('experience').notEmpty().withMessage('L\'experience est requise'),
+    body('pricingModel').notEmpty().withMessage('Le modele de prix est requis'),
+    body('priceValue').notEmpty().withMessage('Le prix propose est requis')
   ],
   async (req, res) => {
     try {
@@ -77,7 +77,7 @@ router.post(
         message
       } = req.body;
 
-      // Vérifier si une demande existe déjà pour cet email
+      // Verifier si une demande existe deja pour cet email
       const existingRequest = await PartnerRequest.findOne({ 
         email, 
         status: 'pending' 
@@ -85,11 +85,11 @@ router.post(
 
       if (existingRequest) {
         return res.status(400).json({ 
-          message: 'Vous avez déjà une demande en attente. Veuillez patienter.' 
+          message: 'Vous avez deja une demande en attente. Veuillez patienter.' 
         });
       }
 
-      // Créer la demande
+      // Creer la demande
       const partnerRequest = await PartnerRequest.create({
         fullName,
         email,
@@ -105,14 +105,14 @@ router.post(
         cvUrl: req.file ? req.file.path : null
       });
 
-      // Émettre notification aux admins via Socket.IO
+      // Emettre notification aux admins via Socket.IO
       const io = req.app.get('io');
       if (io) {
         await notifyPartnerRequest(io, partnerRequest);
       }
 
       res.status(201).json({
-        message: 'Votre demande a été soumise avec succès ! Nous vous contacterons bientôt.',
+        message: 'Votre demande a ete soumise avec succes ! Nous vous contacterons bientot.',
         requestId: partnerRequest._id
       });
     } catch (error) {

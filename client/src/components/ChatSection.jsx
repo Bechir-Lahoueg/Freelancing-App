@@ -141,13 +141,13 @@ const ChatSection = () => {
                       </div>
                       
                       <div>
-                        <p className='text-slate-400 text-sm'>Agent assigné</p>
+                        <p className='text-slate-400 text-sm'>Agent assigne</p>
                         <p className='text-lg font-semibold text-green-400 flex items-center gap-2'>
-                          👤 {searchResult.assignedAgent?.name || 'Non assigné'}
+                          👤 {searchResult.assignedAgent?.name || 'Non assigne'}
                         </p>
                         {searchResult.assignedAgent?.assignedAt && (
                           <p className='text-xs text-slate-500 mt-1'>
-                            Assigné le {new Date(searchResult.assignedAgent.assignedAt).toLocaleString('fr-FR')}
+                            Assigne le {new Date(searchResult.assignedAgent.assignedAt).toLocaleString('fr-FR')}
                           </p>
                         )}
                       </div>
@@ -155,7 +155,7 @@ const ChatSection = () => {
 
                     <div className='grid md:grid-cols-2 gap-4 mb-4'>
                       <div>
-                        <p className='text-slate-400 text-sm'>Tâche associée</p>
+                        <p className='text-slate-400 text-sm'>Tache associee</p>
                         <p className='font-semibold text-white'>{searchResult.conversation.taskRequestId?.title || 'N/A'}</p>
                         <p className='text-xs text-slate-500'>
                           Statut: {searchResult.conversation.taskRequestId?.status || 'N/A'}
@@ -169,7 +169,7 @@ const ChatSection = () => {
                             ? 'bg-green-500/20 text-green-400' 
                             : 'bg-gray-500/20 text-gray-400'
                         }`}>
-                          {searchResult.conversation.status === 'active' ? 'Active' : 'Archivée'}
+                          {searchResult.conversation.status === 'active' ? 'Active' : 'Archivee'}
                         </span>
                       </div>
                     </div>
@@ -214,7 +214,7 @@ const ChatSection = () => {
                                 {new Date(msg.createdAt).toLocaleString('fr-FR')}
                               </p>
                               {msg.messageType === 'system' && (
-                                <span className='text-xs text-blue-400'>Message système</span>
+                                <span className='text-xs text-blue-400'>Message systeme</span>
                               )}
                             </div>
                           </div>

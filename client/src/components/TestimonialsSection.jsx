@@ -130,14 +130,14 @@ export default function TestimonialsSection() {
             className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500/20 backdrop-blur-xl border border-orange-500/30 rounded-full mb-4"
           >
             <Sparkles className="w-4 h-4 text-orange-400" />
-            <span className="text-orange-300 font-semibold text-xs tracking-wide">CE QUE DISENT NOS ÉTUDIANTS</span>
+            <span className="text-orange-300 font-semibold text-xs tracking-wide">CE QUE DISENT NOS ETUDIANTS</span>
           </motion.div>
           
           <h2 className="text-3xl md:text-4xl font-black text-white mb-3 leading-tight">
-            Des milliers d'<span className="bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">étudiants</span> satisfaits
+            Des milliers d'<span className="bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">etudiants</span> satisfaits
           </h2>
           <p className="text-base text-gray-400 max-w-2xl mx-auto">
-            Découvrez les témoignages authentiques de notre communauté
+            Decouvrez les temoignages authentiques de notre communaute
           </p>
         </motion.div>
 

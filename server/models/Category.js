@@ -3,10 +3,10 @@ import mongoose from 'mongoose';
 const categorySchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, 'Le nom de la catégorie est requis'],
+    required: [true, 'Le nom de la categorie est requis'],
     unique: true,
     trim: true,
-    maxlength: [50, 'Le nom ne peut pas dépasser 50 caractères']
+    maxlength: [50, 'Le nom ne peut pas depasser 50 caracteres']
   },
   slug: {
     type: String,
@@ -17,7 +17,7 @@ const categorySchema = new mongoose.Schema({
   description: {
     type: String,
     required: [true, 'La description est requise'],
-    maxlength: [500, 'La description ne peut pas dépasser 500 caractères']
+    maxlength: [500, 'La description ne peut pas depasser 500 caracteres']
   },
   icon: {
     type: String,
@@ -73,7 +73,7 @@ const categorySchema = new mongoose.Schema({
   }
 });
 
-// Générer le slug avant la sauvegarde
+// Generer le slug avant la sauvegarde
 categorySchema.pre('save', function(next) {
   if (!this.slug) {
     this.slug = this.name

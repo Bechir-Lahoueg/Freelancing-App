@@ -24,12 +24,12 @@ const CategoryServices = () => {
     try {
       console.log('🔍 Fetching category and services for categoryId:', categoryId);
       
-      // Récupérer la catégorie (route publique)
+      // Recuperer la categorie (route publique)
       const categoryRes = await publicAxios.get(`/api/admin/categories/${categoryId}`);
       console.log('✅ Category fetched:', categoryRes.data);
       setCategory(categoryRes.data);
 
-      // Récupérer les services de cette catégorie (route publique)
+      // Recuperer les services de cette categorie (route publique)
       const servicesRes = await publicAxios.get(`/api/services?categoryId=${categoryId}`);
       console.log('✅ Services fetched:', servicesRes.data);
       setServices(servicesRes.data);
@@ -73,7 +73,7 @@ const CategoryServices = () => {
               className="flex items-center gap-2 text-slate-400 hover:text-white transition mb-6"
             >
               <ArrowLeft size={20} />
-              Retour aux catégories
+              Retour aux categories
             </button>
 
             <div className="flex items-center gap-4 mb-4">
@@ -98,7 +98,7 @@ const CategoryServices = () => {
                 <span className="text-4xl">📋</span>
               </div>
               <h3 className="text-xl font-bold text-white mb-2">Aucun service disponible</h3>
-              <p className="text-slate-400">Cette catégorie ne contient pas encore de services</p>
+              <p className="text-slate-400">Cette categorie ne contient pas encore de services</p>
             </motion.div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -146,13 +146,13 @@ const CategoryServices = () => {
                       {service.basePrice > 0 && (
                         <div className="flex items-center gap-2 text-sm text-slate-400">
                           <DollarSign size={16} className="text-green-400" />
-                          <span>À partir de <span className="text-green-400 font-semibold">{service.basePrice} DZD</span></span>
+                          <span>A partir de <span className="text-green-400 font-semibold">{service.basePrice} DZD</span></span>
                         </div>
                       )}
                       {service.estimatedDuration && (
                         <div className="flex items-center gap-2 text-sm text-slate-400">
                           <Clock size={16} className="text-blue-400" />
-                          <span>Durée estimée: <span className="text-blue-400 font-semibold">{service.estimatedDuration}</span></span>
+                          <span>Duree estimee: <span className="text-blue-400 font-semibold">{service.estimatedDuration}</span></span>
                         </div>
                       )}
                     </div>

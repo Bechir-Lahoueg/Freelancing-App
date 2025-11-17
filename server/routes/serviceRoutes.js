@@ -16,13 +16,13 @@ const router = express.Router();
 router.get('/', getServices);
 router.get('/:id', getServiceById);
 
-// Routes protégées (Admin/SuperAdmin)
+// Routes protegees (Admin/SuperAdmin)
 router.post(
   '/',
   protect,
   authorize('superadmin', 'admin'),
   [
-    body('categoryId').notEmpty().withMessage('La catégorie est requise'),
+    body('categoryId').notEmpty().withMessage('La categorie est requise'),
     body('name').trim().notEmpty().withMessage('Le nom est requis'),
     body('description').trim().notEmpty().withMessage('La description est requise')
   ],

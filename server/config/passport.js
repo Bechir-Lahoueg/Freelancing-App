@@ -4,12 +4,12 @@ import { Strategy as FacebookStrategy } from 'passport-facebook';
 import { Strategy as MicrosoftStrategy } from 'passport-microsoft';
 import User from '../models/User.js';
 
-// Sérialisation de l'utilisateur
+// Serialisation de l'utilisateur
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-// Désérialisation de l'utilisateur
+// Deserialisation de l'utilisateur
 passport.deserializeUser(async (id, done) => {
   try {
     const user = await User.findById(id);
@@ -19,7 +19,7 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-// Stratégie Google OAuth2
+// Strategie Google OAuth2
 if (process.env.GOOGLE_CLIENT_ID) {
   passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
@@ -28,14 +28,14 @@ if (process.env.GOOGLE_CLIENT_ID) {
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
-      // Vérifier si l'utilisateur existe déjà
+      // Verifier si l'utilisateur existe deja
       let user = await User.findOne({ googleId: profile.id });
       
       if (user) {
         return done(null, user);
       }
 
-      // Créer un nouvel utilisateur
+      // Creer un nouvel utilisateur
       user = await User.create({
         googleId: profile.id,
         name: profile.displayName,
@@ -51,7 +51,7 @@ if (process.env.GOOGLE_CLIENT_ID) {
   }));
 }
 
-// Stratégie Facebook OAuth2
+// Strategie Facebook OAuth2
 if (process.env.FACEBOOK_APP_ID) {
   passport.use(new FacebookStrategy({
     clientID: process.env.FACEBOOK_APP_ID,
@@ -82,7 +82,7 @@ if (process.env.FACEBOOK_APP_ID) {
   }));
 }
 
-// Stratégie Microsoft (Outlook) OAuth2
+// Strategie Microsoft (Outlook) OAuth2
 if (process.env.MICROSOFT_CLIENT_ID) {
   passport.use(new MicrosoftStrategy({
     clientID: process.env.MICROSOFT_CLIENT_ID,

@@ -21,8 +21,8 @@ const router = express.Router();
 router.post('/register', [
   body('name').notEmpty().withMessage('Le nom est requis'),
   body('email').isEmail().withMessage('Email invalide'),
-  body('password').isLength({ min: 6 }).withMessage('Le mot de passe doit contenir au moins 6 caractères'),
-  body('universityYear').notEmpty().withMessage('L\'année universitaire est requise')
+  body('password').isLength({ min: 6 }).withMessage('Le mot de passe doit contenir au moins 6 caracteres'),
+  body('universityYear').notEmpty().withMessage('L\'annee universitaire est requise')
 ], registerUser);
 
 // @route   POST /api/users/login
@@ -39,12 +39,12 @@ router.post('/login', [
 router.get('/profile', protect, getUserProfile);
 
 // @route   PUT /api/users/profile
-// @desc    Mettre à jour le profil
+// @desc    Mettre a jour le profil
 // @access  Private
 router.put('/profile', protect, updateUserProfile);
 
 // @route   POST /api/users/refresh-token
-// @desc    Rafraîchir le token d'accès
+// @desc    Rafraichir le token d'acces
 // @access  Public
 router.post('/refresh-token', refreshAccessToken);
 

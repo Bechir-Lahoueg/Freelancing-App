@@ -6,11 +6,11 @@ import Invoice from '../models/Invoice.js';
 const calculatePrice = (taskType, options) => {
   let basePrice = 50; // Prix de base en DZD
 
-  // Prix selon le type de tâche
+  // Prix selon le type de tache
   const taskPrices = {
-    'rédaction': 50,
+    'redaction': 50,
     'codage': 100,
-    'présentation': 60,
+    'presentation': 60,
     'rapport': 70,
     'recherche': 40,
     'traduction': 45,
@@ -21,9 +21,9 @@ const calculatePrice = (taskType, options) => {
 
   // Multiplicateurs selon les options
   const levelMultiplier = {
-    'débutant': 1,
-    'intermédiaire': 1.3,
-    'avancé': 1.6,
+    'debutant': 1,
+    'intermediaire': 1.3,
+    'avance': 1.6,
     'expert': 2
   };
 
@@ -39,7 +39,7 @@ const calculatePrice = (taskType, options) => {
     'simple': 1,
     'moyen': 1.3,
     'complexe': 1.6,
-    'très complexe': 2
+    'tres complexe': 2
   };
 
   // Calcul final
@@ -52,7 +52,7 @@ const calculatePrice = (taskType, options) => {
   return Math.round(price);
 };
 
-// @desc    Créer une nouvelle demande de tâche
+// @desc    Creer une nouvelle demande de tache
 // @route   POST /api/tasks
 // @access  Private
 export const createTaskRequest = async (req, res) => {
@@ -64,7 +64,7 @@ export const createTaskRequest = async (req, res) => {
 
     const { serviceId, categoryId, title, description, budget, deadline, answers } = req.body;
 
-    // Créer la tâche avec les réponses personnalisées
+    // Creer la tache avec les reponses personnalisees
     const task = await TaskRequest.create({
       userId: req.user._id,
       serviceId,
@@ -77,7 +77,7 @@ export const createTaskRequest = async (req, res) => {
       status: 'pending'
     });
 
-    // Peupler les informations du service et de la catégorie
+    // Peupler les informations du service et de la categorie
     await task.populate([
       { path: 'serviceId', select: 'name icon' },
       { path: 'categoryId', select: 'name icon' }
@@ -85,16 +85,16 @@ export const createTaskRequest = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: 'Demande créée avec succès',
+      message: 'Demande creee avec succes',
       task
     });
   } catch (error) {
-    console.error('Erreur création tâche:', error);
+    console.error('Erreur creation tache:', error);
     res.status(500).json({ message: error.message });
   }
 };
 
-// @desc    Obtenir toutes les tâches de l'utilisateur
+// @desc    Obtenir toutes les taches de l'utilisateur
 // @route   GET /api/tasks
 // @access  Private
 export const getUserTasks = async (req, res) => {
@@ -110,7 +110,7 @@ export const getUserTasks = async (req, res) => {
   }
 };
 
-// @desc    Obtenir une tâche spécifique
+// @desc    Obtenir une tache specifique
 // @route   GET /api/tasks/:id
 // @access  Private
 export const getTaskById = async (req, res) => {
@@ -120,12 +120,12 @@ export const getTaskById = async (req, res) => {
       .populate('categoryId', 'name icon');
 
     if (!task) {
-      return res.status(404).json({ message: 'Tâche non trouvée' });
+      return res.status(404).json({ message: 'Tache non trouvee' });
     }
 
-    // Vérifier que la tâche appartient à l'utilisateur
+    // Verifier que la tache appartient a l'utilisateur
     if (task.userId.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: 'Non autorisé' });
+      return res.status(403).json({ message: 'Non autorise' });
     }
 
     res.json(task);
@@ -134,7 +134,7 @@ export const getTaskById = async (req, res) => {
   }
 };
 
-// @desc    Mettre à jour le statut d'une tâche
+// @desc    Mettre a jour le statut d'une tache
 // @route   PUT /api/tasks/:id
 // @access  Private
 export const updateTaskStatus = async (req, res) => {
@@ -142,12 +142,12 @@ export const updateTaskStatus = async (req, res) => {
     const task = await TaskRequest.findById(req.params.id);
 
     if (!task) {
-      return res.status(404).json({ message: 'Tâche non trouvée' });
+      return res.status(404).json({ message: 'Tache non trouvee' });
     }
 
-    // Vérifier que la tâche appartient à l'utilisateur
+    // Verifier que la tache appartient a l'utilisateur
     if (task.userId.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: 'Non autorisé' });
+      return res.status(403).json({ message: 'Non autorise' });
     }
 
     task.status = req.body.status || task.status;
@@ -159,7 +159,7 @@ export const updateTaskStatus = async (req, res) => {
   }
 };
 
-// @desc    Supprimer une tâche
+// @desc    Supprimer une tache
 // @route   DELETE /api/tasks/:id
 // @access  Private
 export const deleteTask = async (req, res) => {
@@ -167,17 +167,17 @@ export const deleteTask = async (req, res) => {
     const task = await TaskRequest.findById(req.params.id);
 
     if (!task) {
-      return res.status(404).json({ message: 'Tâche non trouvée' });
+      return res.status(404).json({ message: 'Tache non trouvee' });
     }
 
-    // Vérifier que la tâche appartient à l'utilisateur
+    // Verifier que la tache appartient a l'utilisateur
     if (task.userId.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: 'Non autorisé' });
+      return res.status(403).json({ message: 'Non autorise' });
     }
 
     await task.deleteOne();
 
-    res.json({ message: 'Tâche supprimée avec succès' });
+    res.json({ message: 'Tache supprimee avec succes' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

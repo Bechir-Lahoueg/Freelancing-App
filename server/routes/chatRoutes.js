@@ -19,7 +19,7 @@ const router = express.Router();
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: async (req, file) => {
-    // Déterminer le type de ressource et le format
+    // Determiner le type de ressource et le format
     let resourceType = 'auto';
     let folder = 'do-it/chat';
     
@@ -48,7 +48,7 @@ const upload = multer({
     fileSize: 50 * 1024 * 1024 // 50MB max
   },
   fileFilter: (req, file, cb) => {
-    // Accepter images, vidéos, audio, PDF, documents
+    // Accepter images, videos, audio, PDF, documents
     const allowedTypes = /jpeg|jpg|png|gif|pdf|doc|docx|mp4|mp3|wav|avi|mov/;
     const extname = allowedTypes.test(file.originalname.split('.').pop().toLowerCase());
     const mimetype = file.mimetype.match(/(image|video|audio|pdf|msword|vnd\.openxmlformats-officedocument\.wordprocessingml\.document)/);
@@ -56,18 +56,18 @@ const upload = multer({
     if (mimetype && extname) {
       return cb(null, true);
     } else {
-      cb(new Error('Type de fichier non supporté'));
+      cb(new Error('Type de fichier non supporte'));
     }
   }
 });
 
-// Toutes les routes nécessitent une authentification
+// Toutes les routes necessitent une authentification
 router.use(protect);
 
 // Routes pour les conversations
 router.post('/conversations', createConversation);
 router.get('/conversations', getUserConversations);
-router.get('/conversations/search/:code', searchConversationByCode); // Avant :id pour éviter les conflits
+router.get('/conversations/search/:code', searchConversationByCode); // Avant :id pour eviter les conflits
 router.get('/conversations/:id/messages', getConversationMessages);
 router.post('/conversations/:id/messages', sendMessage);
 router.post('/conversations/:id/upload', upload.single('file'), async (req, res) => {
@@ -76,7 +76,7 @@ router.post('/conversations/:id/upload', upload.single('file'), async (req, res)
       return res.status(400).json({ message: 'Aucun fichier fourni' });
     }
 
-    // Déterminer le type de message selon le MIME type
+    // Determiner le type de message selon le MIME type
     let messageType = 'file';
     if (req.file.mimetype.startsWith('image/')) {
       messageType = 'image';

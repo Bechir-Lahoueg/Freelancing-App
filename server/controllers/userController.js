@@ -7,7 +7,7 @@ import { generateToken, generateRefreshToken } from '../utils/tokenUtils.js';
 // @access  Public
 export const registerUser = async (req, res) => {
   try {
-    // Valider les données
+    // Valider les donnees
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -15,13 +15,13 @@ export const registerUser = async (req, res) => {
 
     const { name, email, password, universityYear } = req.body;
 
-    // Vérifier si l'utilisateur existe déjà
+    // Verifier si l'utilisateur existe deja
     const userExists = await User.findOne({ email });
     if (userExists) {
-      return res.status(400).json({ message: 'Cet email est déjà utilisé' });
+      return res.status(400).json({ message: 'Cet email est deja utilise' });
     }
 
-    // Créer l'utilisateur
+    // Creer l'utilisateur
     const user = await User.create({
       name,
       email,
@@ -57,7 +57,7 @@ export const loginUser = async (req, res) => {
   try {
     console.log('🔐 [loginUser] Starting login process');
     
-    // Valider les données
+    // Valider les donnees
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       console.log('❌ [loginUser] Validation errors:', errors.array());
@@ -114,14 +114,14 @@ export const getUserProfile = async (req, res) => {
     if (user) {
       res.json(user);
     } else {
-      res.status(404).json({ message: 'Utilisateur non trouvé' });
+      res.status(404).json({ message: 'Utilisateur non trouve' });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// @desc    Mettre à jour le profil
+// @desc    Mettre a jour le profil
 // @route   PUT /api/users/profile
 // @access  Private
 export const updateUserProfile = async (req, res) => {
@@ -132,7 +132,7 @@ export const updateUserProfile = async (req, res) => {
       user.name = req.body.name || user.name;
       user.universityYear = req.body.universityYear || user.universityYear;
       
-      // Mettre à jour le mot de passe seulement s'il est fourni
+      // Mettre a jour le mot de passe seulement s'il est fourni
       if (req.body.password) {
         user.password = req.body.password;
       }
@@ -149,14 +149,14 @@ export const updateUserProfile = async (req, res) => {
         token: generateToken(updatedUser._id, updatedUser.role)
       });
     } else {
-      res.status(404).json({ message: 'Utilisateur non trouvé' });
+      res.status(404).json({ message: 'Utilisateur non trouve' });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// @desc    Rafraîchir le token d'accès
+// @desc    Rafraichir le token d'acces
 // @route   POST /api/users/refresh-token
 // @access  Public
 export const refreshAccessToken = async (req, res) => {
@@ -173,7 +173,7 @@ export const refreshAccessToken = async (req, res) => {
     const user = await User.findById(decoded.userId);
     
     if (!user) {
-      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+      return res.status(404).json({ message: 'Utilisateur non trouve' });
     }
 
     const newAccessToken = generateToken(user._id, user.role);

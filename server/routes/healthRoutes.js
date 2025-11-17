@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 
 const router = express.Router();
 
-// Route de health check complète
+// Route de health check complete
 router.get('/check', async (req, res) => {
   try {
     const healthStatus = {
@@ -18,13 +18,13 @@ router.get('/check', async (req, res) => {
       uptime: process.uptime(),
       environment: process.env.NODE_ENV || 'development',
       
-      // Vérification MongoDB
+      // Verification MongoDB
       database: {
         status: mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected',
         name: mongoose.connection.name,
       },
       
-      // Vérification des modèles
+      // Verification des modeles
       models: {
         User: !!mongoose.models.User,
         TaskRequest: !!mongoose.models.TaskRequest,
@@ -36,7 +36,7 @@ router.get('/check', async (req, res) => {
         PartnerRequest: !!mongoose.models.PartnerRequest,
       },
       
-      // Vérification des fichiers critiques
+      // Verification des fichiers critiques
       files: {
         controllers: fs.existsSync(path.join(__dirname, '../controllers')),
         models: fs.existsSync(path.join(__dirname, '../models')),
@@ -44,7 +44,7 @@ router.get('/check', async (req, res) => {
         config: fs.existsSync(path.join(__dirname, '../config')),
       },
       
-      // Variables d'environnement critiques (masquées)
+      // Variables d'environnement critiques (masquees)
       config: {
         mongodbConfigured: !!process.env.MONGODB_URI,
         jwtConfigured: !!process.env.JWT_SECRET,
@@ -71,7 +71,7 @@ router.get('/check', async (req, res) => {
   }
 });
 
-// Route simple de ping (ultra-léger pour UptimeRobot)
+// Route simple de ping (ultra-leger pour UptimeRobot)
 router.get('/ping', (req, res) => {
   res.status(200).json({ 
     status: 'OK', 
@@ -80,12 +80,12 @@ router.get('/ping', (req, res) => {
   });
 });
 
-// Route encore plus légère pour UptimeRobot (sans JSON parsing)
+// Route encore plus legere pour UptimeRobot (sans JSON parsing)
 router.get('/alive', (req, res) => {
   res.status(200).send('OK');
 });
 
-// Route avec vérification minimale de la DB
+// Route avec verification minimale de la DB
 router.get('/status', (req, res) => {
   const isDBConnected = mongoose.connection.readyState === 1;
   res.status(isDBConnected ? 200 : 503).json({ 
@@ -95,7 +95,7 @@ router.get('/status', (req, res) => {
   });
 });
 
-// Vérification de la base de données
+// Verification de la base de donnees
 router.get('/db', async (req, res) => {
   try {
     const dbState = mongoose.connection.readyState;

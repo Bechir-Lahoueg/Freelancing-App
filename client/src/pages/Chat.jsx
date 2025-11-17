@@ -103,7 +103,7 @@ const Chat = () => {
   const loadConversations = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5000/api/chat/conversations', {
+      const response = await axios.get('https://freelancing-app-mdgw.onrender.com/api/chat/conversations', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setConversations(response.data);
@@ -118,7 +118,7 @@ const Chat = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.get(
-        `http://localhost:5000/api/chat/conversations/${conversationId}/messages`,
+        `https://freelancing-app-mdgw.onrender.com/api/chat/conversations/${conversationId}/messages`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setMessages(response.data);
@@ -134,7 +134,7 @@ const Chat = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.put(
-        `http://localhost:5000/api/chat/conversations/${conversationId}/read`,
+        `https://freelancing-app-mdgw.onrender.com/api/chat/conversations/${conversationId}/read`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -172,7 +172,7 @@ const Chat = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        `http://localhost:5000/api/chat/conversations/${selectedConversation._id}/messages`,
+        `https://freelancing-app-mdgw.onrender.com/api/chat/conversations/${selectedConversation._id}/messages`,
         { content: newMessage.trim() },
         { headers: { Authorization: `Bearer ${token}` } }
       );

@@ -13,7 +13,7 @@ export default function Tasks() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
 
-  const API_URL = 'http://localhost:5000/api';
+  const API_URL = 'https://freelancing-app-mdgw.onrender.com/api';
   const token = localStorage.getItem('token');
   const headers = { Authorization: 'Bearer ' + token };
 

@@ -1,4 +1,4 @@
-ï»¿import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useEffect, useState, useRef } from 'react';
 import Navbar from '../components/Navbar';
@@ -24,11 +24,11 @@ const Home = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/categories/list`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://freelancing-app-mdgw.onrender.com'}/api/admin/categories/list`);
       const data = await response.json();
       setCategories(data);
     } catch (error) {
-      console.error('Erreur lors du chargement des catÃ©gories:', error);
+      console.error('Erreur lors du chargement des catégories:', error);
     } finally {
       setLoading(false);
     }
@@ -37,53 +37,53 @@ const Home = () => {
   const features = [
     {
       icon: Zap,
-      title: 'RÃ©ponse Ultra-Rapide',
+      title: 'Réponse Ultra-Rapide',
       description: 'Obtenez de l\'aide en quelques heures, pas en jours',
       color: 'from-yellow-400 to-orange-500',
       gradient: 'bg-gradient-to-br from-yellow-500/20 to-orange-500/20'
     },
     {
       icon: Users,
-      title: 'Experts CertifiÃ©s',
-      description: 'Plus de 10 professionnels qualifiÃ©s Ã  votre service',
+      title: 'Experts Certifiés',
+      description: 'Plus de 10 professionnels qualifiés à votre service',
       color: 'from-blue-400 to-cyan-500',
       gradient: 'bg-gradient-to-br from-blue-500/20 to-cyan-500/20'
     },
     {
       icon: Shield,
-      title: 'SÃ©curitÃ© Garantie',
-      description: 'Vos donnÃ©es protÃ©gÃ©es avec cryptage de niveau bancaire',
+      title: 'Sécurité Garantie',
+      description: 'Vos données protégées avec cryptage de niveau bancaire',
       color: 'from-green-400 to-emerald-500',
       gradient: 'bg-gradient-to-br from-green-500/20 to-emerald-500/20'
     },
     {
       icon: DollarSign,
       title: 'Prix Transparents',
-      description: 'Tarifs clairs et compÃ©titifs sans frais cachÃ©s',
+      description: 'Tarifs clairs et compétitifs sans frais cachés',
       color: 'from-purple-400 to-pink-500',
       gradient: 'bg-gradient-to-br from-purple-500/20 to-pink-500/20'
     }
   ];
 
   const stats = [
-    { number: '10K+', label: 'Ã‰tudiants satisfaits', icon: Users, color: 'from-blue-500 to-cyan-500' },
-    { number: '5K+', label: 'Projets rÃ©alisÃ©s', icon: CheckCircle2, color: 'from-green-500 to-emerald-500' },
-    { number: '50+', label: 'Experts qualifiÃ©s', icon: Award, color: 'from-purple-500 to-pink-500' },
-    { number: '99%', label: 'Taux de rÃ©ussite', icon: TrendingUp, color: 'from-yellow-500 to-orange-500' }
+    { number: '10K+', label: 'Étudiants satisfaits', icon: Users, color: 'from-blue-500 to-cyan-500' },
+    { number: '5K+', label: 'Projets réalisés', icon: CheckCircle2, color: 'from-green-500 to-emerald-500' },
+    { number: '50+', label: 'Experts qualifiés', icon: Award, color: 'from-purple-500 to-pink-500' },
+    { number: '99%', label: 'Taux de réussite', icon: TrendingUp, color: 'from-yellow-500 to-orange-500' }
   ];
 
   const steps = [
     {
       number: '01',
       title: 'Inscription Rapide',
-      description: 'CrÃ©ez votre compte en 30 secondes',
+      description: 'Créez votre compte en 30 secondes',
       icon: Target,
       delay: 0.2
     },
     {
       number: '02',
-      title: 'DÃ©crivez Votre Besoin',
-      description: 'Expliquez votre projet en dÃ©tail',
+      title: 'Décrivez Votre Besoin',
+      description: 'Expliquez votre projet en détail',
       icon: Clock,
       delay: 0.4
     },
@@ -97,7 +97,7 @@ const Home = () => {
     {
       number: '04',
       title: 'Recevez Votre Travail',
-      description: 'Obtenez des rÃ©sultats de qualitÃ©',
+      description: 'Obtenez des résultats de qualité',
       icon: CheckCircle2,
       delay: 0.8
     }
@@ -167,20 +167,20 @@ const Home = () => {
             >
               {/* Main Heading */}
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6 leading-tight">
-                RÃ©ussissez
+                Réussissez
                 <br />
                 <span className="bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 bg-clip-text text-transparent">
                   Brillamment
                 </span>
                 <br />
-                vos Ã©tudes
+                vos études
               </h1>
 
               <p className="text-lg md:text-xl text-gray-300 mb-10 leading-relaxed max-w-3xl mx-auto">
-                Connectez-vous avec des <span className="text-orange-400 font-semibold">experts qualifiÃ©s</span> et obtenez l'aide dont vous avez besoin pour exceller dans vos projets acadÃ©miques.
+                Connectez-vous avec des <span className="text-orange-400 font-semibold">experts qualifiés</span> et obtenez l'aide dont vous avez besoin pour exceller dans vos projets académiques.
               </p>
 
-              {/* CTA Buttons - CachÃ©s si utilisateur connectÃ© */}
+              {/* CTA Buttons - Cachés si utilisateur connecté */}
               {!user && (
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <motion.button
@@ -244,10 +244,10 @@ const Home = () => {
             </motion.div>
             
             <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
-              Une expÃ©rience <span className="bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">exceptionnelle</span>
+              Une expérience <span className="bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">exceptionnelle</span>
             </h2>
             <p className="text-base text-gray-400 max-w-3xl mx-auto">
-              Des fonctionnalitÃ©s pensÃ©es pour votre rÃ©ussite acadÃ©mique
+              Des fonctionnalités pensées pour votre réussite académique
             </p>
           </motion.div>
 
@@ -302,10 +302,10 @@ const Home = () => {
             className="text-center mb-12"
           >
             <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
-              Nos CatÃ©gories de <span className="bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">Services</span>
+              Nos Catégories de <span className="bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">Services</span>
             </h2>
             <p className="text-base text-gray-400 max-w-2xl mx-auto">
-              DÃ©couvrez tous les services disponibles que nos experts peuvent vous proposer
+              Découvrez tous les services disponibles que nos experts peuvent vous proposer
             </p>
           </motion.div>
 
@@ -319,8 +319,8 @@ const Home = () => {
             </div>
           ) : categories.length === 0 ? (
             <div className="text-center py-16 bg-gray-100 rounded-2xl">
-              <p className="text-xl text-gray-600">Aucune catÃ©gorie disponible pour le moment</p>
-              <p className="text-sm text-gray-500 mt-2">VÃ©rifiez plus tard pour les nouvelles catÃ©gories</p>
+              <p className="text-xl text-gray-600">Aucune catégorie disponible pour le moment</p>
+              <p className="text-sm text-gray-500 mt-2">Vérifiez plus tard pour les nouvelles catégories</p>
             </div>
           ) : (
             <motion.div
@@ -400,7 +400,7 @@ const Home = () => {
                 onClick={() => navigate('/services')}
                 className="inline-block px-6 py-3 bg-gradient-to-r from-orange-600 to-amber-600 text-white rounded-xl font-bold text-base hover:shadow-xl transition duration-300 transform hover:scale-105"
               >
-                Voir toutes les catÃ©gories â†’
+                Voir toutes les catégories ?
               </button>
             </motion.div>
           )}
@@ -418,10 +418,10 @@ const Home = () => {
             className="text-center mb-12"
           >
             <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
-              Comment Ã§a <span className="bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">marche</span> ?
+              Comment ça <span className="bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">marche</span> ?
             </h2>
             <p className="text-base text-gray-400 max-w-2xl mx-auto">
-              4 Ã©tapes simples pour obtenir l'aide que vous mÃ©ritez
+              4 étapes simples pour obtenir l'aide que vous méritez
             </p>
           </motion.div>
 
@@ -433,10 +433,10 @@ const Home = () => {
             className="grid grid-cols-1 md:grid-cols-4 gap-4"
           >
             {[
-              { number: '01', title: 'Inscrivez-vous', description: 'CrÃ©ez votre compte gratuitement en 30 secondes', icon: 'ðŸ“' },
-              { number: '02', title: 'DÃ©crivez votre besoin', description: 'Expliquez clairement ce que vous avez besoin', icon: 'âœï¸' },
-              { number: '03', title: 'Choisissez votre expert', description: 'SÃ©lectionnez le meilleur expert pour vous', icon: 'ðŸ‘¨â€ðŸ’¼' },
-              { number: '04', title: 'Recevez votre aide', description: 'Obtenez votre travail complÃ©tÃ© Ã  temps', icon: 'âœ…' }
+              { number: '01', title: 'Inscrivez-vous', description: 'Créez votre compte gratuitement en 30 secondes', icon: '??' },
+              { number: '02', title: 'Décrivez votre besoin', description: 'Expliquez clairement ce que vous avez besoin', icon: '??' },
+              { number: '03', title: 'Choisissez votre expert', description: 'Sélectionnez le meilleur expert pour vous', icon: '?????' },
+              { number: '04', title: 'Recevez votre aide', description: 'Obtenez votre travail complété à temps', icon: '?' }
             ].map((step, index) => (
               <motion.div
                 key={index}
@@ -482,12 +482,12 @@ const Home = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
-              PrÃªt Ã  transformer vos Ã©tudes ?
+              Prêt à transformer vos études ?
             </h2>
             <p className="text-base text-white/90 mb-6 max-w-2xl mx-auto">
-              Rejoignez les milliers d'Ã©tudiants qui rÃ©ussissent grÃ¢ce Ã  Do It. Commencez dÃ¨s maintenant !
+              Rejoignez les milliers d'étudiants qui réussissent grâce à Do It. Commencez dès maintenant !
             </p>
-            {/* CTA Buttons - CachÃ©s si utilisateur connectÃ© */}
+            {/* CTA Buttons - Cachés si utilisateur connecté */}
             {!user && (
               <motion.div
                 className="flex flex-col sm:flex-row gap-3 justify-center"
@@ -499,7 +499,7 @@ const Home = () => {
                   whileTap={{ scale: 0.95 }}
                   className="px-6 py-3 bg-white text-orange-600 rounded-xl font-bold text-base hover:shadow-2xl transition duration-300 transform"
                 >
-                  Commencer gratuitement ðŸš€
+                  Commencer gratuitement ??
                 </motion.button>
                 <motion.button
                   onClick={() => navigate('/login')}

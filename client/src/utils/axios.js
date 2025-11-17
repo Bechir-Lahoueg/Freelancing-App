@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // URL de base de l'API
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://freelancing-app-mdgw.onrender.com';
 
 // Créer une instance axios pour les requêtes publiques (sans authentification)
 export const publicAxios = axios.create({

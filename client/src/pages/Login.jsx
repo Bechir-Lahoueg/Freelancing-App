@@ -31,7 +31,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/users/login', formData);
+      const response = await axios.post('https://freelancing-app-mdgw.onrender.com/api/users/login', formData);
       const { token, ...userData } = response.data;
       
       console.log('✅ Login Success:', response.data);
@@ -59,7 +59,7 @@ const Login = () => {
   };
 
   const handleOAuthLogin = (provider) => {
-    window.location.href = `http://localhost:5000/api/auth/${provider}`;
+    window.location.href = `https://freelancing-app-mdgw.onrender.com/api/auth/${provider}`;
   };
 
   return (

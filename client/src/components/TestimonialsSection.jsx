@@ -14,7 +14,7 @@ export default function TestimonialsSection() {
     const fetchComments = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/comments/public`
+          `https://freelancing-app-mdgw.onrender.com/api/comments/public`
         );
         const commentsList = Array.isArray(response.data) ? response.data : [];
         setComments(commentsList);

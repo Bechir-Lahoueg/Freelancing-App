@@ -34,6 +34,8 @@ const ChatPanel = () => {
   const { user } = useAuth();
   const { socket, isConnected, joinConversation, leaveConversation, isUserOnline } = useSocket();
   
+  const API_URL = import.meta.env.VITE_API_URL || 'https://freelancing-app-mdgw.onrender.com';
+  
   const [conversations, setConversations] = useState([]);
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -212,7 +214,7 @@ const ChatPanel = () => {
   const loadConversations = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5000/api/chat/conversations', {
+      const response = await axios.get(`${API_URL}/api/chat/conversations`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setConversations(response.data);
@@ -227,7 +229,7 @@ const ChatPanel = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.get(
-        `http://localhost:5000/api/chat/conversations/${conversationId}/messages`,
+        `${API_URL}/api/chat/conversations/${conversationId}/messages`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setMessages(response.data);
@@ -242,7 +244,7 @@ const ChatPanel = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.put(
-        `http://localhost:5000/api/chat/conversations/${conversationId}/read`,
+        `${API_URL}/api/chat/conversations/${conversationId}/read`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -300,7 +302,7 @@ const ChatPanel = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        `http://localhost:5000/api/chat/conversations/${selectedConversation._id}/messages`,
+        `${API_URL}/api/chat/conversations/${selectedConversation._id}/messages`,
         { content: messageContent },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -369,7 +371,7 @@ const ChatPanel = () => {
       
       // Upload le fichier
       const uploadResponse = await axios.post(
-        `http://localhost:5000/api/chat/conversations/${selectedConversation._id}/upload`,
+        `${API_URL}/api/chat/conversations/${selectedConversation._id}/upload`,
         formData,
         {
           headers: {
@@ -383,7 +385,7 @@ const ChatPanel = () => {
 
       // Envoyer le message avec le fichier
       await axios.post(
-        `http://localhost:5000/api/chat/conversations/${selectedConversation._id}/messages`,
+        `${API_URL}/api/chat/conversations/${selectedConversation._id}/messages`,
         {
           content: newMessage.trim() || `Fichier partagé: ${fileData.fileName}`,
           messageType: fileData.type,
@@ -441,7 +443,7 @@ const ChatPanel = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.post(
-        `http://localhost:5000/api/admin/conversations/${selectedConversation._id}/leave`,
+        `${API_URL}/api/admin/conversations/${selectedConversation._id}/leave`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -475,7 +477,7 @@ const ChatPanel = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.post(
-        `http://localhost:5000/api/admin/conversations/${selectedConversation._id}/complete`,
+        `${API_URL}/api/admin/conversations/${selectedConversation._id}/complete`,
         { action },
         { headers: { Authorization: `Bearer ${token}` } }
       );

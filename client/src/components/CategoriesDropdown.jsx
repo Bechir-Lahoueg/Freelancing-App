@@ -26,7 +26,7 @@ const CategoriesDropdown = ({ shouldShowWhiteStyle, isMobile = false, onClose })
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/categories/list`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://freelancing-app-mdgw.onrender.com'}/api/admin/categories/list`);
       const data = await response.json();
       setCategories(data.slice(0, 6)); // Limit to 6 categories for dropdown
     } catch (error) {

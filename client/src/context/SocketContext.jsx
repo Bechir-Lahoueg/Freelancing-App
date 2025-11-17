@@ -21,7 +21,8 @@ export const SocketProvider = ({ children }) => {
   useEffect(() => {
     if (user && user._id) {
       // Connexion au serveur Socket.IO
-      const newSocket = io('http://localhost:5000', {
+      const API_URL = import.meta.env.VITE_API_URL || 'https://freelancing-app-mdgw.onrender.com';
+      const newSocket = io(API_URL, {
         transports: ['websocket', 'polling'],
         reconnection: true,
         reconnectionDelay: 1000,

@@ -74,7 +74,7 @@ export default function NotificationBell({ scrolled = false }) {
       const token = localStorage.getItem('token');
       console.log('🔔 Fetching notifications...');
       const response = await axios.get(
-        `http://localhost:5000/api/notifications`,
+        `https://freelancing-app-mdgw.onrender.com/api/notifications`,
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
       
@@ -93,7 +93,7 @@ export default function NotificationBell({ scrolled = false }) {
     try {
       const token = localStorage.getItem('token');
       await axios.put(
-        `http://localhost:5000/api/notifications/${notificationId}/read`,
+        `https://freelancing-app-mdgw.onrender.com/api/notifications/${notificationId}/read`,
         {},
         { headers: { 'Authorization': `Bearer ${token}` } }
       );

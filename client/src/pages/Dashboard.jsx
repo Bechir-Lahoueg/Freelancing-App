@@ -1,4 +1,4 @@
-Ôªøimport { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
@@ -23,26 +23,26 @@ const Dashboard = () => {
   const [showConversationNotif, setShowConversationNotif] = useState(false);
   const [unreadMessagesCount, setUnreadMessagesCount] = useState(0);
 
-  const API_URL = 'http://localhost:5000/api';
+  const API_URL = 'https://freelancing-app-mdgw.onrender.com/api';
   const token = localStorage.getItem('token');
   const headers = { Authorization: 'Bearer ' + token };
 
   const menuItems = [
     { id: 'welcome', label: 'Accueil', icon: Home },
-    { id: 'tasks', label: 'Mes T√¢ches', icon: Briefcase },
+    { id: 'tasks', label: 'Mes T‚ches', icon: Briefcase },
     { id: 'messages', label: 'Messages', icon: MessageCircle, badge: unreadMessagesCount },
     { id: 'comments', label: 'Mes Commentaires', icon: MessageSquare },
-    { id: 'settings', label: 'Param√®tres', icon: Settings }
+    { id: 'settings', label: 'ParamËtres', icon: Settings }
   ];
 
   useEffect(() => {
-    // Charger les commentaires au d√©marrage pour les stats
+    // Charger les commentaires au dÈmarrage pour les stats
     fetchMyComments();
     fetchMyTasks();
     fetchUnreadMessagesCount();
   }, []);
 
-  // √âcouter les nouvelles conversations via Socket.IO
+  // …couter les nouvelles conversations via Socket.IO
   useEffect(() => {
     if (socket) {
       socket.on('conversation:created', ({ userId, conversation }) => {
@@ -55,7 +55,7 @@ const Dashboard = () => {
       });
 
       socket.on('message:received', ({ conversationId }) => {
-        // Mettre √† jour le compteur si on n'est pas sur l'onglet messages
+        // Mettre ‡ jour le compteur si on n'est pas sur l'onglet messages
         if (activeTab !== 'messages') {
           fetchUnreadMessagesCount();
         }
@@ -116,7 +116,7 @@ const Dashboard = () => {
 
 
   const handleDeleteComment = async (commentId) => {
-    if (window.confirm('√ätes-vous s√ªr?')) {
+    if (window.confirm(' tes-vous s˚r?')) {
       try {
         await axios.delete(`${API_URL}/comments/${commentId}`, { headers });
         setMyComments(myComments.filter(c => c._id !== commentId));
@@ -132,19 +132,19 @@ const Dashboard = () => {
         bg: 'bg-yellow-500/20', 
         text: 'text-yellow-400', 
         border: 'border-yellow-500/30',
-        label: '‚è≥ En attente' 
+        label: '? En attente' 
       },
       approved: { 
         bg: 'bg-green-500/20', 
         text: 'text-green-400', 
         border: 'border-green-500/30',
-        label: '‚úÖ Approuv√©' 
+        label: '? ApprouvÈ' 
       },
       rejected: { 
         bg: 'bg-red-500/20', 
         text: 'text-red-400', 
         border: 'border-red-500/30',
-        label: '‚ùå Rejet√©' 
+        label: '? RejetÈ' 
       }
     };
     const badge = badges[status];
@@ -176,7 +176,7 @@ const Dashboard = () => {
               <MessageCircle className="w-6 h-6" />
               <div>
                 <p className="font-bold">Nouvelle conversation !</p>
-                <p className="text-sm text-blue-100">Votre demande a √©t√© approuv√©e. Cliquez pour discuter.</p>
+                <p className="text-sm text-blue-100">Votre demande a ÈtÈ approuvÈe. Cliquez pour discuter.</p>
               </div>
             </div>
           </motion.div>
@@ -200,7 +200,7 @@ const Dashboard = () => {
         >
           <div className='p-6 flex-1 overflow-y-auto custom-scrollbar'>
             <h2 className='text-xl font-bold mb-2 text-orange-400'>Do It</h2>
-            <p className='text-xs text-slate-400 mb-8'>Tableau de bord √©tudiant</p>
+            <p className='text-xs text-slate-400 mb-8'>Tableau de bord Ètudiant</p>
             
             <nav className='space-y-2'>
               {menuItems.map(item => {
@@ -243,7 +243,7 @@ const Dashboard = () => {
                 </div>
                 <div className='flex-1 min-w-0'>
                   <p className='text-sm font-semibold text-white truncate'>{user?.name}</p>
-                  <p className='text-xs text-slate-400 truncate'>{user?.universityYear || '√âtudiant'}</p>
+                  <p className='text-xs text-slate-400 truncate'>{user?.universityYear || '…tudiant'}</p>
                 </div>
               </div>
             </div>
@@ -255,7 +255,7 @@ const Dashboard = () => {
               className='w-full flex items-center gap-3 px-4 py-2 rounded-lg text-red-400 hover:bg-red-500/20 transition'
             >
               <LogOut size={20} />
-              <span>D√©connexion</span>
+              <span>DÈconnexion</span>
             </button>
           </div>
         </aside>
@@ -268,7 +268,7 @@ const Dashboard = () => {
               <h1 className='text-4xl font-bold mb-2 bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent'>
                 Bienvenue, {user?.name}!
               </h1>
-              <p className='text-slate-400'>G√©rez votre profil et vos activit√©s</p>
+              <p className='text-slate-400'>GÈrez votre profil et vos activitÈs</p>
             </div>
 
             {/* Welcome Tab */}
@@ -290,7 +290,7 @@ const Dashboard = () => {
                         {myComments.filter(c => c.status === 'approved').length}
                       </span>
                     </div>
-                    <p className='text-sm text-slate-300'>Commentaires approuv√©s</p>
+                    <p className='text-sm text-slate-300'>Commentaires approuvÈs</p>
                   </motion.div>
 
                   <motion.div
@@ -316,7 +316,7 @@ const Dashboard = () => {
                         {user?.universityYear || 'N/A'}
                       </span>
                     </div>
-                    <p className='text-sm text-slate-300'>Niveau d'√©tudes</p>
+                    <p className='text-sm text-slate-300'>Niveau d'Ètudes</p>
                   </motion.div>
                 </div>
 
@@ -333,7 +333,7 @@ const Dashboard = () => {
                     </div>
                     <div className='flex-1'>
                       <h2 className='text-2xl font-bold mb-1'>{user?.name}</h2>
-                      <p className='text-orange-400 font-medium mb-2 capitalize'>{user?.role || '√âtudiant'}</p>
+                      <p className='text-orange-400 font-medium mb-2 capitalize'>{user?.role || '…tudiant'}</p>
                       <p className='text-slate-400 text-sm'>Membre depuis {new Date(user?.createdAt || Date.now()).toLocaleDateString('fr-FR')}</p>
                     </div>
                   </div>
@@ -342,7 +342,7 @@ const Dashboard = () => {
                     <div className='space-y-4'>
                       <div className='flex items-center gap-3 p-4 bg-slate-700/50 rounded-lg'>
                         <div className='w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center'>
-                          <span className='text-orange-400'>üìß</span>
+                          <span className='text-orange-400'>??</span>
                         </div>
                         <div>
                           <p className='text-xs text-slate-400'>Email</p>
@@ -352,11 +352,11 @@ const Dashboard = () => {
 
                       <div className='flex items-center gap-3 p-4 bg-slate-700/50 rounded-lg'>
                         <div className='w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center'>
-                          <span className='text-blue-400'>üéì</span>
+                          <span className='text-blue-400'>??</span>
                         </div>
                         <div>
-                          <p className='text-xs text-slate-400'>Ann√©e universitaire</p>
-                          <p className='font-semibold text-white'>{user?.universityYear || 'Non sp√©cifi√©e'}</p>
+                          <p className='text-xs text-slate-400'>AnnÈe universitaire</p>
+                          <p className='font-semibold text-white'>{user?.universityYear || 'Non spÈcifiÈe'}</p>
                         </div>
                       </div>
                     </div>
@@ -368,7 +368,7 @@ const Dashboard = () => {
                             ? (myComments.reduce((acc, c) => acc + c.rating, 0) / myComments.length).toFixed(1)
                             : '0.0'}
                         </p>
-                        <p className='text-sm text-slate-400'>Note moyenne donn√©e</p>
+                        <p className='text-sm text-slate-400'>Note moyenne donnÈe</p>
                         <div className='flex gap-1 justify-center mt-2'>
                           {[...Array(5)].map((_, i) => (
                             <Star
@@ -397,7 +397,7 @@ const Dashboard = () => {
                     <MessageSquare className='text-orange-400 group-hover:scale-110 transition' size={32} />
                     <div className='text-left'>
                       <p className='font-bold text-white'>Mes Commentaires</p>
-                      <p className='text-sm text-slate-400'>G√©rer vos avis</p>
+                      <p className='text-sm text-slate-400'>GÈrer vos avis</p>
                     </div>
                   </button>
 
@@ -407,7 +407,7 @@ const Dashboard = () => {
                   >
                     <Settings className='text-blue-400 group-hover:scale-110 transition' size={32} />
                     <div className='text-left'>
-                      <p className='font-bold text-white'>Param√®tres</p>
+                      <p className='font-bold text-white'>ParamËtres</p>
                       <p className='text-sm text-slate-400'>Configurer votre compte</p>
                     </div>
                   </button>
@@ -424,9 +424,9 @@ const Dashboard = () => {
                 <div className='flex justify-between items-center mb-6'>
                   <div>
                     <h2 className='text-3xl font-bold bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent'>
-                      Mes T√¢ches
+                      Mes T‚ches
                     </h2>
-                    <p className='text-slate-400 mt-1'>Suivez l'√©tat de vos demandes de services</p>
+                    <p className='text-slate-400 mt-1'>Suivez l'Ètat de vos demandes de services</p>
                   </div>
                   <motion.button
                     whileHover={{ scale: 1.05 }}
@@ -452,14 +452,14 @@ const Dashboard = () => {
                     <div className='w-20 h-20 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-4'>
                       <Briefcase size={40} className='text-orange-400' />
                     </div>
-                    <h3 className='text-xl font-bold text-white mb-2'>Aucune t√¢che</h3>
+                    <h3 className='text-xl font-bold text-white mb-2'>Aucune t‚che</h3>
                     <p className='text-slate-400 mb-6'>Vous n'avez pas encore soumis de demande</p>
                     <button
                       onClick={() => navigate('/categories')}
                       className='inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-6 py-3 rounded-lg hover:shadow-xl transition'
                     >
                       <Plus size={20} />
-                      Cr√©er ma premi√®re demande
+                      CrÈer ma premiËre demande
                     </button>
                   </motion.div>
                 ) : (
@@ -478,14 +478,14 @@ const Dashboard = () => {
                           color: 'text-green-400', 
                           bg: 'bg-green-500/20', 
                           border: 'border-green-500/30',
-                          label: 'Approuv√©e' 
+                          label: 'ApprouvÈe' 
                         },
                         rejected: { 
                           icon: XCircle, 
                           color: 'text-red-400', 
                           bg: 'bg-red-500/20', 
                           border: 'border-red-500/30',
-                          label: 'Rejet√©e' 
+                          label: 'RejetÈe' 
                         }
                       };
 
@@ -503,12 +503,12 @@ const Dashboard = () => {
                           <div className='flex justify-between items-start mb-4'>
                             <div className='flex items-center gap-3'>
                               <div className='w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-2xl'>
-                                {task.serviceId?.icon || task.categoryId?.icon || 'üìã'}
+                                {task.serviceId?.icon || task.categoryId?.icon || '??'}
                               </div>
                               <div>
                                 <h3 className='text-xl font-bold text-white'>{task.title}</h3>
                                 <p className='text-sm text-slate-400'>
-                                  {task.serviceId?.name || 'Service'} ¬∑ {task.categoryId?.name || 'Cat√©gorie'}
+                                  {task.serviceId?.name || 'Service'} ∑ {task.categoryId?.name || 'CatÈgorie'}
                                 </p>
                               </div>
                             </div>
@@ -536,7 +536,7 @@ const Dashboard = () => {
 
                           {task.responses && task.responses.length > 0 && (
                             <div className='mt-4 pt-4 border-t border-slate-700'>
-                              <h4 className='text-sm font-semibold text-slate-300 mb-3'>R√©ponses:</h4>
+                              <h4 className='text-sm font-semibold text-slate-300 mb-3'>RÈponses:</h4>
                               <div className='space-y-2'>
                                 {task.responses.map((response, idx) => (
                                   <div key={idx} className='text-sm'>
@@ -553,7 +553,7 @@ const Dashboard = () => {
                           )}
 
                           <div className='flex items-center gap-4 mt-4 text-xs text-slate-500'>
-                            <span>Cr√©√© le {new Date(task.createdAt).toLocaleDateString('fr-FR')}</span>
+                            <span>CrÈÈ le {new Date(task.createdAt).toLocaleDateString('fr-FR')}</span>
                           </div>
                         </motion.div>
                       );
@@ -586,7 +586,7 @@ const Dashboard = () => {
                     <h2 className='text-3xl font-bold bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent'>
                       Mes Commentaires
                     </h2>
-                    <p className='text-slate-400 mt-1'>G√©rez vos avis et t√©moignages</p>
+                    <p className='text-slate-400 mt-1'>GÈrez vos avis et tÈmoignages</p>
                   </div>
                   {!showCommentForm && (
                     <motion.button
@@ -629,13 +629,13 @@ const Dashboard = () => {
                       <MessageSquare size={40} className='text-orange-400' />
                     </div>
                     <h3 className='text-xl font-bold text-white mb-2'>Aucun commentaire</h3>
-                    <p className='text-slate-400 mb-6'>Vous n'avez pas encore √©crit d'avis</p>
+                    <p className='text-slate-400 mb-6'>Vous n'avez pas encore Ècrit d'avis</p>
                     <button
                       onClick={() => setShowCommentForm(true)}
                       className='inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-6 py-3 rounded-lg hover:shadow-xl transition'
                     >
                       <Plus size={20} />
-                      √âcrire mon premier avis
+                      …crire mon premier avis
                     </button>
                   </motion.div>
                 ) : (
@@ -684,13 +684,13 @@ const Dashboard = () => {
                             )}
 
                             <div className='flex items-center gap-4 mt-4 text-xs text-slate-500'>
-                              <span>üìÖ {new Date(comment.createdAt).toLocaleDateString('fr-FR', {
+                              <span>?? {new Date(comment.createdAt).toLocaleDateString('fr-FR', {
                                 day: 'numeric',
                                 month: 'long',
                                 year: 'numeric'
                               })}</span>
                               {comment.approvedAt && (
-                                <span>‚úÖ Approuv√© le {new Date(comment.approvedAt).toLocaleDateString('fr-FR')}</span>
+                                <span>? ApprouvÈ le {new Date(comment.approvedAt).toLocaleDateString('fr-FR')}</span>
                               )}
                             </div>
                           </div>
@@ -719,9 +719,9 @@ const Dashboard = () => {
                 animate={{ opacity: 1, y: 0 }}
                 className='bg-slate-800 border border-slate-700 rounded-lg p-8'
               >
-                <h2 className='text-2xl font-bold mb-6'>Param√®tres</h2>
+                <h2 className='text-2xl font-bold mb-6'>ParamËtres</h2>
                 <div className='p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg'>
-                  <p className='text-blue-300'>‚ÑπÔ∏è La modification du profil sera disponible prochainement.</p>
+                  <p className='text-blue-300'>?? La modification du profil sera disponible prochainement.</p>
                 </div>
               </motion.div>
             )}

@@ -45,7 +45,7 @@ const Register = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/users/register', {
+      const response = await axios.post('https://freelancing-app-mdgw.onrender.com/api/users/register', {
         name: formData.name,
         email: formData.email,
         password: formData.password,
@@ -64,7 +64,7 @@ const Register = () => {
   };
 
   const handleOAuthLogin = (provider) => {
-    window.location.href = `http://localhost:5000/api/auth/${provider}`;
+    window.location.href = `https://freelancing-app-mdgw.onrender.com/api/auth/${provider}`;
   };
 
   return (

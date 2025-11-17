@@ -35,7 +35,8 @@ export const AuthProvider = ({ children }) => {
       console.log('🔍 Fetching user profile...');
       console.log('📝 Token in headers:', axios.defaults.headers.common['Authorization']);
       
-      const { data } = await axios.get('http://localhost:5000/api/users/profile');
+      const API_URL = import.meta.env.VITE_API_URL || 'https://freelancing-app-mdgw.onrender.com';
+      const { data } = await axios.get(`${API_URL}/api/users/profile`);
       console.log('✅ User profile fetched:', data);
       setUser(data);
     } catch (error) {

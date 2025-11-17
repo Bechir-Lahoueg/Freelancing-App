@@ -28,7 +28,7 @@ export default function CommentForm({ onCommentSubmitted, onClose }) {
     try {
       const token = localStorage.getItem('token');
       await axios.post(
-        `http://localhost:5000/api/comments`,
+        `https://freelancing-app-mdgw.onrender.com/api/comments`,
         { rating, text },
         {
           headers: {

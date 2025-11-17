@@ -52,7 +52,7 @@ export default function PartnerForm() {
         formData.append('cv', cvFile);
       }
       
-      const response = await axios.post('http://localhost:5000/api/partner/submit', formData, {
+      const response = await axios.post('https://freelancing-app-mdgw.onrender.com/api/partner/submit', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

@@ -30,7 +30,7 @@ export default function CommentsModeration() {
       
       // Fetch pending
       const pendingRes = await axios.get(
-        `http://localhost:5000/api/comments/admin/pending`,
+        `https://freelancing-app-mdgw.onrender.com/api/comments/admin/pending`,
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
       
@@ -57,7 +57,7 @@ export default function CommentsModeration() {
     try {
       const token = localStorage.getItem('token');
       await axios.put(
-        `http://localhost:5000/api/comments/${commentId}/approve`,
+        `https://freelancing-app-mdgw.onrender.com/api/comments/${commentId}/approve`,
         {},
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
@@ -74,7 +74,7 @@ export default function CommentsModeration() {
     try {
       const token = localStorage.getItem('token');
       await axios.put(
-        `http://localhost:5000/api/comments/${rejectionModal.commentId}/reject`,
+        `https://freelancing-app-mdgw.onrender.com/api/comments/${rejectionModal.commentId}/reject`,
         { reason: rejectionReason },
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
@@ -94,7 +94,7 @@ export default function CommentsModeration() {
       try {
         const token = localStorage.getItem('token');
         await axios.delete(
-          `http://localhost:5000/api/comments/admin/${commentId}`,
+          `https://freelancing-app-mdgw.onrender.com/api/comments/admin/${commentId}`,
           { headers: { 'Authorization': `Bearer ${token}` } }
         );
         

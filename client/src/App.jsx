@@ -9,6 +9,7 @@ import Categories from './pages/Categories'
 import CategoryServices from './pages/CategoryServices'
 import Services from './pages/Services'
 import ServiceRequest from './pages/ServiceRequest'
+import AuthSuccess from './pages/AuthSuccess'
 import PrivateRoute from './components/PrivateRoute'
 import { usePageLoading } from './hooks/usePageLoading'
 import Partner from './pages/Partner'
@@ -24,6 +25,7 @@ function AppContent() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/auth/success" element={<AuthSuccess />} />
         <Route path="/partner" element={<Partner />} />
         <Route path="/categories" element={<Categories />} />
         <Route path="/category-services" element={<CategoryServices />} />

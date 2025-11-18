@@ -12,7 +12,8 @@ const Register = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    universityYear: 'L1'
+    institution: '',
+    universityYear: ''
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -49,13 +50,17 @@ const Register = () => {
         name: formData.name,
         email: formData.email,
         password: formData.password,
+        institution: formData.institution,
         universityYear: formData.universityYear
       });
-      const { token, ...userData } = response.data;
       
       console.log('✅ Register Success:', response.data);
-      registerUser(userData, token);
-      navigate('/dashboard');
+      
+      // Afficher un message de succes
+      alert('Inscription reussie ! Vous allez etre redirige vers la page de connexion.');
+      
+      // Rediriger vers la page de login
+      navigate('/login');
     } catch (err) {
       setError(err.response?.data?.message || 'Erreur lors de l\'inscription');
     } finally {
@@ -96,7 +101,7 @@ const Register = () => {
                   onChange={handleChange}
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 bg-white placeholder:text-gray-400"
-                  placeholder="Ahmed Benali"
+                  placeholder="Ecrire votre Nom"
                 />
               </div>
 
@@ -117,22 +122,32 @@ const Register = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Annee universitaire
+                  Faculte / Lycee / Etablissement
                 </label>
-                <select
+                <input
+                  type="text"
+                  name="institution"
+                  value={formData.institution}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 bg-white placeholder:text-gray-400"
+                  placeholder="Ex: Faculte des Sciences, Lycee Ibn Khaldoun, etc."
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Annee universitaire actuelle
+                </label>
+                <input
+                  type="text"
                   name="universityYear"
                   value={formData.universityYear}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 bg-white"
-                >
-                  <option value="L1">L1 (Licence 1)</option>
-                  <option value="L2">L2 (Licence 2)</option>
-                  <option value="L3">L3 (Licence 3)</option>
-                  <option value="M1">M1 (Master 1)</option>
-                  <option value="M2">M2 (Master 2)</option>
-                  <option value="Doctorat">Doctorat</option>
-                  <option value="Autre">Autre</option>
-                </select>
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 bg-white placeholder:text-gray-400"
+                  placeholder="Ex: L1, L2, L3, M1, M2, Terminale, etc."
+                />
               </div>
 
               <div>

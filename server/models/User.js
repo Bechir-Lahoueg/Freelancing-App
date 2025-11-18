@@ -22,10 +22,13 @@ const userSchema = new mongoose.Schema({
     },
     minlength: 6
   },
+  institution: {
+    type: String,
+    trim: true
+  },
   universityYear: {
     type: String,
-    enum: ['L1', 'L2', 'L3', 'M1', 'M2', 'Doctorat', 'Autre'],
-    default: 'L1'
+    trim: true
   },
   authType: {
     type: String,

@@ -13,7 +13,7 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, email, password, universityYear } = req.body;
+    const { name, email, password, universityYear, institution } = req.body;
 
     // Verifier si l'utilisateur existe deja
     const userExists = await User.findOne({ email });
@@ -27,6 +27,7 @@ export const registerUser = async (req, res) => {
       email,
       password,
       universityYear,
+      institution,
       authType: 'local'
     });
 
@@ -39,6 +40,7 @@ export const registerUser = async (req, res) => {
         name: user.name,
         email: user.email,
         universityYear: user.universityYear,
+        institution: user.institution,
         authType: user.authType,
         role: user.role,
         token,

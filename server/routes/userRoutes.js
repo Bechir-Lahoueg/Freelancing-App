@@ -22,6 +22,7 @@ router.post('/register', [
   body('name').notEmpty().withMessage('Le nom est requis'),
   body('email').isEmail().withMessage('Email invalide'),
   body('password').isLength({ min: 6 }).withMessage('Le mot de passe doit contenir au moins 6 caracteres'),
+  body('institution').notEmpty().withMessage('L\'etablissement est requis'),
   body('universityYear').notEmpty().withMessage('L\'annee universitaire est requise')
 ], registerUser);
 

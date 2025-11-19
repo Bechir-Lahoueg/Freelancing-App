@@ -72,16 +72,37 @@ const ChatPanel = () => {
     if (socket) {
       socket.on('message:received', ({ message, conversationId }) => {
         if (selectedConversation?._id === conversationId) {
-          // Eviter les doublons (ne pas ajouter si le message existe deja)
           setMessages(prev => {
-            const exists = prev.some(msg => 
-              msg._id === message._id || 
-              (msg.content === message.content && 
-               msg.senderId._id === message.senderId._id &&
-               Math.abs(new Date(msg.createdAt) - new Date(message.createdAt)) < 1000)
+            // 1. Vérifier si le message existe déjà par son ID réel
+            const existsById = prev.some(msg => 
+              msg._id === message._id && !msg._id.toString().startsWith('temp-')
             );
-            if (exists) return prev;
-            return [...prev, message];
+            if (existsById) {
+              return prev; // Message déjà présent, ne rien faire
+            }
+            
+            // 2. Si c'est NOTRE message (on l'a déjà ajouté via optimistic update)
+            //    Remplacer le temporaire par le message réel
+            const tempIndex = prev.findIndex(msg => 
+              msg._id.toString().startsWith('temp-') &&
+              msg.content === message.content && 
+              msg.senderId._id === message.senderId._id
+            );
+            
+            if (tempIndex !== -1) {
+              // Remplacer le message temporaire
+              const newMessages = [...prev];
+              newMessages[tempIndex] = message;
+              return newMessages;
+            }
+            
+            // 3. Si c'est un nouveau message d'un autre utilisateur, l'ajouter
+            if (message.senderId._id !== user._id) {
+              return [...prev, message];
+            }
+            
+            // 4. Sinon ne rien faire (sécurité pour éviter les doublons)
+            return prev;
           });
           scrollToBottom();
           
@@ -281,8 +302,9 @@ const ChatPanel = () => {
     setSending(true);
     
     // Optimistic update - Afficher le message immediatement
+    const tempId = `temp-${Date.now()}`;
     const tempMessage = {
-      _id: `temp-${Date.now()}`,
+      _id: tempId,
       content: messageContent,
       senderId: {
         _id: user._id,
@@ -309,17 +331,19 @@ const ChatPanel = () => {
       
       // Remplacer le message temporaire par le vrai message du serveur
       setMessages(prev => prev.map(msg => 
-        msg._id === tempMessage._id ? response.data : msg
+        msg._id === tempId ? response.data : msg
       ));
+      
+      // NE PAS écouter le socket pour ce message car on l'a déjà ajouté
+      // Le socket sera utilisé uniquement pour les messages des autres utilisateurs
       
       // Mettre a jour la liste des conversations
       loadConversations();
       
       inputRef.current?.focus();
     } catch (error) {
-      console.error('Erreur envoi message:', error);
       // Retirer le message temporaire en cas d'erreur
-      setMessages(prev => prev.filter(msg => msg._id !== tempMessage._id));
+      setMessages(prev => prev.filter(msg => msg._id !== tempId));
       setNewMessage(messageContent); // Restaurer le message
       alert('Erreur lors de l\'envoi du message');
     } finally {

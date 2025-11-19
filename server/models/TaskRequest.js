@@ -29,6 +29,22 @@ const taskRequestSchema = new mongoose.Schema({
     questionLabel: String,
     answer: mongoose.Schema.Types.Mixed // String, Number, Array, etc.
   }],
+  selectedOptions: [{
+    optionId: String,
+    optionName: String,
+    choiceId: String,
+    choiceLabel: String,
+    price: Number,
+    customValue: String // Si l'utilisateur choisit "Autre"
+  }],
+  basePrice: {
+    type: Number,
+    default: 0
+  },
+  totalPrice: {
+    type: Number,
+    default: 0
+  },
   budget: {
     type: Number,
     min: 0

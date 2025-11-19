@@ -233,12 +233,13 @@ const AdminDashboard = () => {
       resetServiceForm();
       fetchServicesByCategory(selectedCategoryForServices);
     } catch (error) {
-      console.error('Erreur:', error);
+      console.error('❌ Erreur:', error);
       alert(error.response?.data?.message || 'Erreur lors de la sauvegarde');
     }
   };
 
   const handleEditService = (service) => {
+    console.log('📝 Chargement du service pour edition:', service);
     setServiceForm({
       name: service.name,
       description: service.description,
@@ -286,7 +287,8 @@ const AdminDashboard = () => {
       options: [],
       placeholder: '',
       required: false,
-      order: serviceForm.questions.length
+      order: serviceForm.questions.length,
+      fields: [] // ✨ NOUVEAU : Sous-champs personnalisés
     };
     setServiceForm({
       ...serviceForm,
@@ -308,6 +310,49 @@ const AdminDashboard = () => {
 
   const removeQuestion = (index) => {
     const updatedQuestions = serviceForm.questions.filter((_, i) => i !== index);
+    setServiceForm({
+      ...serviceForm,
+      questions: updatedQuestions
+    });
+  };
+
+  // ✨ NOUVEAU : Gestion des sous-champs (fields) dans les questions
+  const addField = (questionIndex) => {
+    const updatedQuestions = [...serviceForm.questions];
+    const newField = {
+      id: Date.now().toString(),
+      label: '',
+      type: 'text',
+      placeholder: '',
+      required: false
+    };
+    updatedQuestions[questionIndex].fields = [
+      ...(updatedQuestions[questionIndex].fields || []),
+      newField
+    ];
+    setServiceForm({
+      ...serviceForm,
+      questions: updatedQuestions
+    });
+  };
+
+  const updateField = (questionIndex, fieldIndex, key, value) => {
+    const updatedQuestions = [...serviceForm.questions];
+    updatedQuestions[questionIndex].fields[fieldIndex] = {
+      ...updatedQuestions[questionIndex].fields[fieldIndex],
+      [key]: value
+    };
+    setServiceForm({
+      ...serviceForm,
+      questions: updatedQuestions
+    });
+  };
+
+  const removeField = (questionIndex, fieldIndex) => {
+    const updatedQuestions = [...serviceForm.questions];
+    updatedQuestions[questionIndex].fields = updatedQuestions[questionIndex].fields.filter(
+      (_, i) => i !== fieldIndex
+    );
     setServiceForm({
       ...serviceForm,
       questions: updatedQuestions
@@ -808,7 +853,7 @@ const AdminDashboard = () => {
                             {task.budget && (
                               <div className='text-sm'>
                                 <span className='text-slate-400'>Budget:</span>{' '}
-                                <span className='text-orange-400 font-semibold'>{task.budget} DZD</span>
+                                <span className='text-orange-400 font-semibold'>{task.budget} TND</span>
                               </div>
                             )}
                             {task.deadline && (
@@ -945,73 +990,232 @@ const AdminDashboard = () => {
                           {editingServiceId ? 'Modifier le service' : 'Nouveau service'}
                         </h3>
                         <form onSubmit={handleServiceSubmit} className='space-y-4'>
-                          <div className='grid grid-cols-2 gap-4'>
-                            <div>
-                              <label className='block text-sm font-medium text-slate-300 mb-2'>Nom du service *</label>
-                              <input
-                                type='text'
-                                value={serviceForm.name}
-                                onChange={(e) => setServiceForm({...serviceForm, name: e.target.value})}
-                                required
-                                className='w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white'
-                                placeholder='Ex: Application Mobile'
-                              />
-                            </div>
-                            <div>
-                              <label className='block text-sm font-medium text-slate-300 mb-2'>Icone</label>
-                              <input
-                                type='text'
-                                value={serviceForm.icon}
-                                onChange={(e) => setServiceForm({...serviceForm, icon: e.target.value})}
-                                className='w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white'
-                                placeholder='📱'
-                              />
-                            </div>
+                          {/* Nom du service */}
+                          <div>
+                            <label className='block text-sm font-medium text-slate-300 mb-2'>Nom du service *</label>
+                            <input
+                              type='text'
+                              value={serviceForm.name}
+                              onChange={(e) => setServiceForm({...serviceForm, name: e.target.value})}
+                              required
+                              className='w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white'
+                              placeholder='Ex: Rapport de génie civil'
+                            />
                           </div>
 
+                          {/* Description */}
                           <div>
                             <label className='block text-sm font-medium text-slate-300 mb-2'>Description *</label>
                             <textarea
                               value={serviceForm.description}
                               onChange={(e) => setServiceForm({...serviceForm, description: e.target.value})}
                               required
-                              rows={3}
+                              rows={4}
                               className='w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white'
-                              placeholder='Description detaillee du service'
+                              placeholder='Description détaillée du service'
                             />
                           </div>
 
-                          <div className='grid grid-cols-3 gap-4'>
+                          {/* Prix et Période */}
+                          <div className='grid grid-cols-2 gap-4'>
                             <div>
-                              <label className='block text-sm font-medium text-slate-300 mb-2'>Prix de base (DZD)</label>
+                              <label className='block text-sm font-medium text-slate-300 mb-2'>Prix de base (TND) *</label>
                               <input
                                 type='number'
                                 value={serviceForm.basePrice}
                                 onChange={(e) => setServiceForm({...serviceForm, basePrice: parseFloat(e.target.value)})}
+                                required
+                                min='0'
+                                step='0.01'
                                 className='w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white'
-                                placeholder='0'
+                                placeholder='À partir de 50 TND'
                               />
                             </div>
                             <div>
-                              <label className='block text-sm font-medium text-slate-300 mb-2'>Duree estimee</label>
+                              <label className='block text-sm font-medium text-slate-300 mb-2'>Période estimée *</label>
                               <input
                                 type='text'
                                 value={serviceForm.estimatedDuration}
                                 onChange={(e) => setServiceForm({...serviceForm, estimatedDuration: e.target.value})}
+                                required
                                 className='w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white'
-                                placeholder='2-3 jours'
+                                placeholder='Ex: 2-3 jours, 1 semaine'
                               />
                             </div>
-                            <div>
-                              <label className='block text-sm font-medium text-slate-300 mb-2'>Image URL</label>
+                          </div>
+
+                          {/* Upload Image */}
+                          <div>
+                            <label className='block text-sm font-medium text-slate-300 mb-2'>Image du service</label>
+                            <input
+                              type='file'
+                              accept='image/*'
+                              onChange={(e) => {
+                                const file = e.target.files[0];
+                                if (file) {
+                                  // TODO: Upload vers Cloudinary ou serveur
+                                  const reader = new FileReader();
+                                  reader.onloadend = () => {
+                                    setServiceForm({...serviceForm, image: reader.result});
+                                  };
+                                  reader.readAsDataURL(file);
+                                }
+                              }}
+                              className='w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:bg-purple-600 file:text-white file:cursor-pointer hover:file:bg-purple-700'
+                            />
+                            {serviceForm.image && (
+                              <img src={serviceForm.image} alt='Preview' className='mt-2 h-32 rounded-lg object-cover' />
+                            )}
+                          </div>                          {/* Service Special Section - DESACTIVE */}
+                          <div className='border-t border-slate-700 pt-4 mt-4' style={{display: 'none'}}>
+                            <label className='flex items-center gap-3 mb-4'>
                               <input
-                                type='text'
-                                value={serviceForm.image}
-                                onChange={(e) => setServiceForm({...serviceForm, image: e.target.value})}
-                                className='w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white'
-                                placeholder='https://...'
+                                type='checkbox'
+                                checked={false}
+                                disabled
+                                className='w-5 h-5 rounded'
                               />
-                            </div>
+                              <span className='text-lg font-bold text-white'>
+                                Service special avec options personnalisables
+                              </span>
+                            </label>
+
+                            {serviceForm.isSpecial && (
+                              <div className='bg-slate-700/30 p-4 rounded-lg border border-slate-600'>
+                                <div className='flex items-center justify-between mb-4'>
+                                  <p className='text-sm text-slate-300'>
+                                    Les options permettent aux clients de personnaliser le service. Le prix final = Prix de base + Options choisies
+                                  </p>
+                                  <button
+                                    type='button'
+                                    onClick={addSpecialOption}
+                                    className='px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-semibold transition whitespace-nowrap'
+                                  >
+                                    + Ajouter une option
+                                  </button>
+                                </div>
+
+                                {serviceForm.specialOptions.length === 0 ? (
+                                  <p className='text-slate-400 text-center py-4'>
+                                    Aucune option. Cliquez sur "Ajouter une option" pour creer des options personnalisables
+                                  </p>
+                                ) : (
+                                  <div className='space-y-4'>
+                                    {serviceForm.specialOptions.map((option, optIndex) => (
+                                      <div key={option.id} className='bg-slate-800 p-4 rounded-lg border border-slate-600'>
+                                        <div className='flex items-center justify-between mb-3'>
+                                          <span className='text-sm font-semibold text-green-400'>Option {optIndex + 1}</span>
+                                          <button
+                                            type='button'
+                                            onClick={() => removeSpecialOption(optIndex)}
+                                            className='text-red-400 hover:text-red-300'
+                                          >
+                                            ✕ Supprimer
+                                          </button>
+                                        </div>
+
+                                        {/* Nom de l'option */}
+                                        <div className='mb-3'>
+                                          <label className='block text-xs text-slate-400 mb-1'>Nom de l'option * (Ex: Type d'editeur)</label>
+                                          <input
+                                            type='text'
+                                            value={option.name}
+                                            onChange={(e) => updateSpecialOption(optIndex, 'name', e.target.value)}
+                                            className='w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white text-sm'
+                                            placeholder='Ex: Type d editeur'
+                                          />
+                                        </div>
+
+                                        {/* Options type et obligatoire */}
+                                        <div className='grid grid-cols-2 gap-3 mb-3'>
+                                          <div>
+                                            <label className='block text-xs text-slate-400 mb-1'>Type de champ</label>
+                                            <select
+                                              value={option.type}
+                                              onChange={(e) => updateSpecialOption(optIndex, 'type', e.target.value)}
+                                              className='w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white text-sm'
+                                            >
+                                              <option value='radio'>Bouton radio (un seul choix)</option>
+                                              <option value='select'>Menu deroulant</option>
+                                            </select>
+                                          </div>
+                                          <div className='flex items-center gap-4'>
+                                            <label className='flex items-center gap-2 text-sm text-slate-300'>
+                                              <input
+                                                type='checkbox'
+                                                checked={option.required}
+                                                onChange={(e) => updateSpecialOption(optIndex, 'required', e.target.checked)}
+                                                className='rounded'
+                                              />
+                                              Obligatoire
+                                            </label>
+                                            <label className='flex items-center gap-2 text-sm text-slate-300'>
+                                              <input
+                                                type='checkbox'
+                                                checked={option.allowOther}
+                                                onChange={(e) => updateSpecialOption(optIndex, 'allowOther', e.target.checked)}
+                                                className='rounded'
+                                              />
+                                              Permettre "Autre"
+                                            </label>
+                                          </div>
+                                        </div>
+
+                                        {/* Choix disponibles */}
+                                        <div className='bg-slate-700/50 p-3 rounded-lg border border-slate-600'>
+                                          <div className='flex items-center justify-between mb-2'>
+                                            <label className='text-xs font-semibold text-slate-300'>Choix disponibles</label>
+                                            <button
+                                              type='button'
+                                              onClick={() => addChoice(optIndex)}
+                                              className='px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-semibold transition'
+                                            >
+                                              + Ajouter un choix
+                                            </button>
+                                          </div>
+
+                                          {option.choices?.length === 0 ? (
+                                            <p className='text-xs text-slate-400 text-center py-2'>
+                                              Aucun choix. Ajoutez des choix (Ex: LaTeX - 10 TND, Word - 5 TND)
+                                            </p>
+                                          ) : (
+                                            <div className='space-y-2'>
+                                              {option.choices?.map((choice, choiceIndex) => (
+                                                <div key={choice.id} className='flex items-center gap-2 bg-slate-800 p-2 rounded'>
+                                                  <input
+                                                    type='text'
+                                                    value={choice.label}
+                                                    onChange={(e) => updateChoice(optIndex, choiceIndex, 'label', e.target.value)}
+                                                    className='flex-1 px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs'
+                                                    placeholder='Ex: LaTeX'
+                                                  />
+                                                  <input
+                                                    type='number'
+                                                    value={choice.price}
+                                                    onChange={(e) => updateChoice(optIndex, choiceIndex, 'price', parseFloat(e.target.value))}
+                                                    className='w-24 px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs'
+                                                    placeholder='Prix'
+                                                    min='0'
+                                                  />
+                                                  <span className='text-xs text-slate-400'>TND</span>
+                                                  <button
+                                                    type='button'
+                                                    onClick={() => removeChoice(optIndex, choiceIndex)}
+                                                    className='text-red-400 hover:text-red-300 text-xs'
+                                                  >
+                                                    ✕
+                                                  </button>
+                                                </div>
+                                              ))}
+                                            </div>
+                                          )}
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            )}
                           </div>
 
                           {/* Questions Section */}
@@ -1088,7 +1292,7 @@ const AdminDashboard = () => {
                                       </div>
                                     )}
 
-                                    <div className='flex items-center gap-4'>
+                                    <div className='flex items-center gap-4 mb-3'>
                                       <label className='flex items-center gap-2 text-sm text-slate-300'>
                                         <input
                                           type='checkbox'
@@ -1098,6 +1302,75 @@ const AdminDashboard = () => {
                                         />
                                         Obligatoire
                                       </label>
+                                    </div>
+
+                                    {/* ✨ NOUVEAU : Sous-champs personnalisés */}
+                                    <div className='bg-slate-800/50 p-3 rounded-lg border border-slate-600 mt-3'>
+                                      <div className='flex items-center justify-between mb-2'>
+                                        <label className='text-xs font-semibold text-slate-300'>
+                                          Champs supplémentaires (optionnel)
+                                        </label>
+                                        <button
+                                          type='button'
+                                          onClick={() => addField(index)}
+                                          className='px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-xs font-semibold transition'
+                                        >
+                                          + Ajouter un champ
+                                        </button>
+                                      </div>
+
+                                      {(!question.fields || question.fields.length === 0) ? (
+                                        <p className='text-xs text-slate-400 text-center py-2'>
+                                          Aucun champ supplémentaire
+                                        </p>
+                                      ) : (
+                                        <div className='space-y-2'>
+                                          {question.fields.map((field, fieldIndex) => (
+                                            <div key={field.id} className='bg-slate-700/50 p-2 rounded border border-slate-600'>
+                                              <div className='flex items-center justify-between mb-2'>
+                                                <span className='text-xs text-slate-400'>Champ {fieldIndex + 1}</span>
+                                                <button
+                                                  type='button'
+                                                  onClick={() => removeField(index, fieldIndex)}
+                                                  className='text-red-400 hover:text-red-300 text-xs'
+                                                >
+                                                  ✕
+                                                </button>
+                                              </div>
+                                              <div className='grid grid-cols-3 gap-2'>
+                                                <input
+                                                  type='text'
+                                                  value={field.label}
+                                                  onChange={(e) => updateField(index, fieldIndex, 'label', e.target.value)}
+                                                  className='px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs'
+                                                  placeholder='Nom du champ'
+                                                />
+                                                <select
+                                                  value={field.type}
+                                                  onChange={(e) => updateField(index, fieldIndex, 'type', e.target.value)}
+                                                  className='px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs'
+                                                >
+                                                  <option value='text'>Texte</option>
+                                                  <option value='textarea'>Texte long</option>
+                                                  <option value='number'>Nombre</option>
+                                                  <option value='date'>Date</option>
+                                                  <option value='email'>Email</option>
+                                                  <option value='tel'>Téléphone</option>
+                                                </select>
+                                                <label className='flex items-center gap-1 text-xs text-slate-300'>
+                                                  <input
+                                                    type='checkbox'
+                                                    checked={field.required}
+                                                    onChange={(e) => updateField(index, fieldIndex, 'required', e.target.checked)}
+                                                    className='rounded'
+                                                  />
+                                                  Requis
+                                                </label>
+                                              </div>
+                                            </div>
+                                          ))}
+                                        </div>
+                                      )}
                                     </div>
                                   </div>
                                 ))}
@@ -1156,7 +1429,7 @@ const AdminDashboard = () => {
                               <div className='flex-1'>
                                 <h3 className='text-lg font-bold text-white'>{service.name}</h3>
                                 {service.basePrice > 0 && (
-                                  <p className='text-sm text-green-400'>{service.basePrice} DZD</p>
+                                  <p className='text-sm text-green-400'>{service.basePrice} TND</p>
                                 )}
                               </div>
                             </div>

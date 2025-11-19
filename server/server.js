@@ -148,15 +148,16 @@ app.get('/', (req, res) => {
   });
 });
 
-// Add request logging middleware for debugging
+// Add request logging middleware (sécurisé pour production)
 app.use((req, res, next) => {
-  try {
-    console.log(`\n[${new Date().toISOString()}] ${req.method} ${req.path}`);
-    if (req.body && Object.keys(req.body).length > 0) {
-      console.log('Body:', req.body);
+  // En développement seulement
+  if (process.env.NODE_ENV === 'development') {
+    try {
+      console.log(`\n[${new Date().toISOString()}] ${req.method} ${req.path}`);
+      // Ne jamais logger le body qui peut contenir des mots de passe
+    } catch (e) {
+      // Ignore silencieusement les erreurs de logging
     }
-  } catch (e) {
-    console.error('Logging error:', e.message);
   }
   next();
 });
@@ -178,11 +179,8 @@ app.use('/api/health', healthRoutes);
 const onlineUsers = new Map(); // userId -> socketId
 
 io.on('connection', (socket) => {
-  console.log('🔌 Nouvelle connexion Socket.IO:', socket.id);
-
   // Quand un utilisateur se connecte
   socket.on('user:online', (userId) => {
-    console.log('👤 Utilisateur en ligne:', userId);
     onlineUsers.set(userId, socket.id);
     socket.userId = userId;
     // Rejoindre une room avec son userId pour les notifications
@@ -194,18 +192,15 @@ io.on('connection', (socket) => {
   // Rejoindre une conversation
   socket.on('conversation:join', (conversationId) => {
     socket.join(conversationId);
-    console.log(`💬 Socket ${socket.id} a rejoint la conversation ${conversationId}`);
   });
 
   // Quitter une conversation
   socket.on('conversation:leave', (conversationId) => {
     socket.leave(conversationId);
-    console.log(`👋 Socket ${socket.id} a quitte la conversation ${conversationId}`);
   });
 
   // Envoyer un message
   socket.on('message:send', (data) => {
-    console.log('📨 Message envoye:', data);
     // Emettre le message a tous les membres de la conversation
     io.to(data.conversationId).emit('message:received', data);
   });
@@ -232,7 +227,6 @@ io.on('connection', (socket) => {
 
   // Deconnexion
   socket.on('disconnect', () => {
-    console.log('🔌 Deconnexion Socket.IO:', socket.id);
     if (socket.userId) {
       onlineUsers.delete(socket.userId);
       io.emit('user:status', { userId: socket.userId, status: 'offline' });

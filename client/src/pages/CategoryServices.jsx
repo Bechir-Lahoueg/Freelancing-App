@@ -45,7 +45,7 @@ const CategoryServices = () => {
   };
 
   const handleServiceClick = (serviceId) => {
-    navigate(`/service-request?service=${serviceId}`);
+    navigate(`/service-request-wizard?service=${serviceId}`);
   };
 
   if (loading) {
@@ -60,29 +60,29 @@ const CategoryServices = () => {
     <div className="min-h-screen bg-slate-950">
       <Navbar />
       
-      <div className="pt-24 pb-12 px-4">
+      <div className="pt-20 sm:pt-24 pb-8 sm:pb-12 px-3 sm:px-4">
         <div className="max-w-7xl mx-auto">
           {/* Breadcrumb & Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8"
+            className="mb-6 sm:mb-8"
           >
             <button
               onClick={() => navigate('/categories')}
-              className="flex items-center gap-2 text-slate-400 hover:text-white transition mb-6"
+              className="flex items-center gap-1.5 sm:gap-2 text-slate-400 hover:text-white transition mb-4 sm:mb-6 text-sm sm:text-base"
             >
-              <ArrowLeft size={20} />
+              <ArrowLeft size={18} className="sm:w-5 sm:h-5" />
               Retour aux categories
             </button>
 
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-20 h-20 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-4xl shadow-lg">
+            <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-lg sm:rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-2xl sm:text-3xl md:text-4xl shadow-lg flex-shrink-0">
                 {category?.icon}
               </div>
-              <div>
-                <h1 className="text-5xl font-bold text-white mb-2">{category?.name}</h1>
-                <p className="text-slate-400 text-lg">{category?.description}</p>
+              <div className="min-w-0">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-1 sm:mb-2 truncate">{category?.name}</h1>
+                <p className="text-slate-400 text-xs sm:text-sm md:text-base lg:text-lg line-clamp-2">{category?.description}</p>
               </div>
             </div>
           </motion.div>
@@ -92,16 +92,16 @@ const CategoryServices = () => {
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-xl p-12 text-center"
+              className="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-xl p-8 sm:p-12 text-center"
             >
-              <div className="w-20 h-20 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-4xl">📋</span>
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <span className="text-3xl sm:text-4xl">📋</span>
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">Aucun service disponible</h3>
+              <h3 className="text-lg sm:text-xl font-bold text-white mb-2">Aucun service disponible</h3>
               <p className="text-slate-400">Cette categorie ne contient pas encore de services</p>
             </motion.div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {services.map((service, index) => (
                 <motion.div
                   key={service._id}
@@ -144,9 +144,9 @@ const CategoryServices = () => {
                     {/* Info badges */}
                     <div className="space-y-2 mb-6">
                       {service.basePrice > 0 && (
-                        <div className="flex items-center gap-2 text-sm text-slate-400">
-                          <DollarSign size={16} className="text-green-400" />
-                          <span>A partir de <span className="text-green-400 font-semibold">{service.basePrice} DZD</span></span>
+                        <div className="flex items-center gap-2 text-gray-400">
+                          <DollarSign size={16} className="text-green-500" />
+                          <span>A partir de <span className="text-green-400 font-semibold">{service.basePrice} TND</span></span>
                         </div>
                       )}
                       {service.estimatedDuration && (

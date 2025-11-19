@@ -57,33 +57,23 @@ export const registerUser = async (req, res) => {
 // @access  Public
 export const loginUser = async (req, res) => {
   try {
-    console.log('🔐 [loginUser] Starting login process');
-    
     // Valider les donnees
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      console.log('❌ [loginUser] Validation errors:', errors.array());
       return res.status(400).json({ errors: errors.array() });
     }
 
     const { email, password } = req.body;
-    console.log('📧 [loginUser] Login attempt for email:', email);
 
     // Trouver l'utilisateur
-    console.log('🔍 [loginUser] Searching for user...');
     const user = await User.findOne({ email });
-    console.log('✅ [loginUser] User search completed:', user ? 'User found' : 'User not found');
 
     if (user && user.authType === 'local') {
-      console.log('🔐 [loginUser] Comparing passwords...');
       const passwordMatch = await user.comparePassword(password);
-      console.log('✅ [loginUser] Password comparison completed:', passwordMatch ? 'Match' : 'No match');
       
       if (passwordMatch) {
-        console.log('🔑 [loginUser] Generating tokens...');
         const token = generateToken(user._id, user.role);
         const refreshToken = generateRefreshToken(user._id);
-        console.log('✅ [loginUser] Tokens generated');
 
         return res.json({
           _id: user._id,
@@ -98,11 +88,9 @@ export const loginUser = async (req, res) => {
       }
     }
     
-    console.log('❌ [loginUser] Invalid credentials');
     res.status(401).json({ message: 'Email ou mot de passe incorrect' });
   } catch (error) {
-    console.error('❌ [loginUser] Error:', error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: 'Erreur serveur' });
   }
 };
 

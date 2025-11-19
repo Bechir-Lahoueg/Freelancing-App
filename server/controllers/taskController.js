@@ -1,6 +1,7 @@
 import { validationResult } from 'express-validator';
 import TaskRequest from '../models/TaskRequest.js';
 import Invoice from '../models/Invoice.js';
+import { notifyTaskCreated, notifyTaskUpdated } from '../utils/notificationHelper.js';
 
 // Fonction pour calculer le prix en fonction des options
 const calculatePrice = (taskType, options) => {
@@ -62,9 +63,20 @@ export const createTaskRequest = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { serviceId, categoryId, title, description, budget, deadline, answers } = req.body;
+    const { 
+      serviceId, 
+      categoryId, 
+      title, 
+      description, 
+      budget, 
+      deadline, 
+      answers,
+      selectedOptions,
+      basePrice,
+      totalPrice
+    } = req.body;
 
-    // Creer la tache avec les reponses personnalisees
+    // Creer la tache avec les reponses personnalisees et les options speciales
     const task = await TaskRequest.create({
       userId: req.user._id,
       serviceId,
@@ -74,6 +86,9 @@ export const createTaskRequest = async (req, res) => {
       budget: budget || null,
       deadline: deadline || null,
       responses: answers || [],
+      selectedOptions: selectedOptions || [],
+      basePrice: basePrice || 0,
+      totalPrice: totalPrice || basePrice || 0,
       status: 'pending'
     });
 
@@ -83,13 +98,18 @@ export const createTaskRequest = async (req, res) => {
       { path: 'categoryId', select: 'name icon' }
     ]);
 
+    // Envoyer notification aux admins
+    const io = req.app.get('io');
+    if (io) {
+      await notifyTaskCreated(io, task, req.user._id);
+    }
+
     res.status(201).json({
       success: true,
       message: 'Demande creee avec succes',
       task
     });
   } catch (error) {
-    console.error('Erreur creation tache:', error);
     res.status(500).json({ message: error.message });
   }
 };

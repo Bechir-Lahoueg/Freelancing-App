@@ -65,7 +65,6 @@ export const createConversation = async (req, res) => {
 
     res.status(201).json(conversation);
   } catch (error) {
-    console.error('❌ Erreur creation conversation:', error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -86,7 +85,6 @@ export const getUserConversations = async (req, res) => {
 
     res.json(conversations);
   } catch (error) {
-    console.error('❌ Erreur recuperation conversations:', error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -136,7 +134,6 @@ export const getConversationMessages = async (req, res) => {
 
     res.json(messages.reverse());
   } catch (error) {
-    console.error('❌ Erreur recuperation messages:', error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -206,7 +203,6 @@ export const sendMessage = async (req, res) => {
 
     res.status(201).json(message);
   } catch (error) {
-    console.error('❌ Erreur envoi message:', error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -255,7 +251,6 @@ export const markMessagesAsRead = async (req, res) => {
 
     res.json({ message: 'Messages marques comme lus' });
   } catch (error) {
-    console.error('❌ Erreur marquage messages lus:', error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -308,7 +303,6 @@ export const searchConversationByCode = async (req, res) => {
       assignedAgent: conversation.assignedAgent
     });
   } catch (error) {
-    console.error('❌ Erreur recherche conversation:', error);
     res.status(500).json({ message: error.message });
   }
 };

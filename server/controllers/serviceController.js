@@ -51,7 +51,19 @@ export const createService = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { categoryId, name, description, icon, image, questions, basePrice, estimatedDuration, order } = req.body;
+    const { 
+      categoryId, 
+      name, 
+      description, 
+      icon, 
+      image, 
+      questions, 
+      basePrice, 
+      estimatedDuration, 
+      order,
+      isSpecial,
+      specialOptions
+    } = req.body;
 
     const service = await Service.create({
       categoryId,
@@ -63,6 +75,8 @@ export const createService = async (req, res) => {
       basePrice: basePrice || 0,
       estimatedDuration,
       order: order || 0,
+      isSpecial: isSpecial || false,
+      specialOptions: specialOptions || [],
       createdBy: req.user._id,
       isActive: true
     });
@@ -80,7 +94,19 @@ export const createService = async (req, res) => {
 // @access  Private (Admin/SuperAdmin)
 export const updateService = async (req, res) => {
   try {
-    const { name, description, icon, image, questions, basePrice, estimatedDuration, order, isActive } = req.body;
+    const { 
+      name, 
+      description, 
+      icon, 
+      image, 
+      questions, 
+      basePrice, 
+      estimatedDuration, 
+      order, 
+      isActive,
+      isSpecial,
+      specialOptions
+    } = req.body;
 
     const service = await Service.findByIdAndUpdate(
       req.params.id,
@@ -94,6 +120,8 @@ export const updateService = async (req, res) => {
         estimatedDuration,
         order,
         isActive,
+        isSpecial,
+        specialOptions,
         updatedAt: Date.now()
       },
       { new: true, runValidators: true }

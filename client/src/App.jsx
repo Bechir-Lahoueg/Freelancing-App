@@ -9,6 +9,7 @@ import Categories from './pages/Categories'
 import CategoryServices from './pages/CategoryServices'
 import Services from './pages/Services'
 import ServiceRequest from './pages/ServiceRequest'
+import ServiceRequestWizard from './pages/ServiceRequestWizard'
 import AuthSuccess from './pages/AuthSuccess'
 import PrivateRoute from './components/PrivateRoute'
 import { usePageLoading } from './hooks/usePageLoading'
@@ -33,6 +34,11 @@ function AppContent() {
         <Route path="/service-request" element={
           <PrivateRoute>
             <ServiceRequest />
+          </PrivateRoute>
+        } />
+        <Route path="/service-request-wizard" element={
+          <PrivateRoute>
+            <ServiceRequestWizard />
           </PrivateRoute>
         } />
 

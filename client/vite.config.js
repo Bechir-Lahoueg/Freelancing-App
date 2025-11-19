@@ -24,6 +24,15 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: false,
     charset: 'utf8',
+    // Supprimer tous les console.log en production
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true, // Retire tous les console.log/warn/error
+        drop_debugger: true, // Retire tous les debugger
+        pure_funcs: ['console.log', 'console.info', 'console.debug'] // Liste spécifique
+      }
+    },
     rollupOptions: {
       output: {
         manualChunks: {

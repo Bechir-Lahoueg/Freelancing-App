@@ -32,19 +32,12 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      console.log('🔍 Fetching user profile...');
-      console.log('📝 Token in headers:', axios.defaults.headers.common['Authorization']);
-      
       const API_URL = import.meta.env.VITE_API_URL || 'https://freelancing-app-mdgw.onrender.com';
       const { data } = await axios.get(`${API_URL}/api/users/profile`);
-      console.log('✅ User profile fetched:', data);
       setUser(data);
     } catch (error) {
-      console.error('Erreur lors de la recuperation du profil:', error.response?.status, error.message);
-      
-      // Si erreur 401, c'est que le token n'est pas valide
+      // Token invalide ou expiré
       if (error.response?.status === 401) {
-        console.log('🔄 Token invalid or expired, logging out...');
         logout();
       }
     } finally {

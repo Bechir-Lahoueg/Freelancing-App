@@ -45,14 +45,37 @@ const serviceSchema = new mongoose.Schema({
     order: {
       type: Number,
       default: 0
-    }
+    },
+    // ✨ NOUVEAU : Sous-champs personnalisés
+    fields: [{
+      id: {
+        type: String,
+        required: true
+      },
+      label: {
+        type: String,
+        required: true
+      },
+      type: {
+        type: String,
+        enum: ['text', 'textarea', 'number', 'date', 'email', 'tel'],
+        default: 'text'
+      },
+      placeholder: String,
+      required: {
+        type: Boolean,
+        default: false
+      }
+    }]
   }],
   basePrice: {
     type: Number,
+    required: [true, 'Le prix de base est requis'],
     default: 0
   },
   estimatedDuration: {
-    type: String // Ex: "2-3 jours", "1 semaine"
+    type: String,
+    required: [true, 'La duree estimee est requise']
   },
   isActive: {
     type: Boolean,

@@ -523,7 +523,7 @@ const Dashboard = () => {
                           {task.budget && (
                             <div className='flex items-center gap-2 text-sm text-slate-400 mb-2'>
                               <span className='font-semibold'>Budget:</span>
-                              <span className='text-orange-400'>{task.budget} DZD</span>
+                              <span className='text-orange-400'>{task.budget} TND</span>
                             </div>
                           )}
 

@@ -3,8 +3,17 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import NotificationBell from './NotificationBell';
-import CategoriesDropdown from './CategoriesDropdown';
-import { LogIn, UserPlus, Handshake, Briefcase, Menu, X, LogOut, LayoutDashboard, MessageCircle } from 'lucide-react';
+import { 
+  LogIn, 
+  UserPlus, 
+  Handshake, 
+  Briefcase, 
+  Menu, 
+  X, 
+  LogOut, 
+  LayoutDashboard,
+  LayoutGrid
+} from 'lucide-react';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -13,18 +22,20 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  // Detecter les pages avec fond blanc (login, register, dashboard, etc.)
-  const isWhiteBackgroundPage = ['/login', '/register', '/dashboard', '/admin/dashboard', '/partner'].includes(location.pathname) || 
-                                 location.pathname.startsWith('/dashboard') || 
-                                 location.pathname.startsWith('/admin');
-
+  // Detecter scroll
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Detecter pages avec fond blanc
+  const isWhiteBackgroundPage = 
+    ['/login', '/register', '/dashboard', '/admin/dashboard', '/partner'].includes(location.pathname) || 
+    location.pathname.startsWith('/dashboard') || 
+    location.pathname.startsWith('/admin');
+
+  const shouldShowWhiteStyle = isWhiteBackgroundPage || scrolled;
 
   const handleLogout = () => {
     logout();
@@ -32,13 +43,33 @@ const Navbar = () => {
     setMobileMenuOpen(false);
   };
 
+  // Navigation items (Catégories -> Services -> Devenir Partner)
   const navItems = [
-    { label: 'Devenir Partenaire', icon: Handshake, onClick: () => { navigate('/partner'); setMobileMenuOpen(false); } },
-    { label: 'Services', icon: Briefcase, onClick: () => { navigate('/services'); setMobileMenuOpen(false); } },
+    { 
+      label: 'Catégories', 
+      icon: LayoutGrid, 
+      onClick: () => { 
+        navigate('/categories'); 
+        setMobileMenuOpen(false); 
+      } 
+    },
+    { 
+      label: 'Services', 
+      icon: Briefcase, 
+      onClick: () => { 
+        navigate('/services'); 
+        setMobileMenuOpen(false); 
+      } 
+    },
+    { 
+      label: 'Devenir Partenaire', 
+      icon: Handshake, 
+      onClick: () => { 
+        navigate('/partner'); 
+        setMobileMenuOpen(false); 
+      } 
+    }
   ];
-
-  // Determiner les classes selon l'etat
-  const shouldShowWhiteStyle = isWhiteBackgroundPage || scrolled;
 
   return (
     <motion.nav 
@@ -55,30 +86,32 @@ const Navbar = () => {
           {/* Logo */}
           <motion.button
             onClick={() => navigate('/')}
-            className="flex items-center hover:opacity-90 transition relative group"
+            className="flex items-center hover:opacity-90 transition"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <img src="/logo.png" alt="Do It" className="h-32 w-32 object-contain" />
+            <img 
+              src="/logo.png" 
+              alt="Do It" 
+              className="h-20 w-20 sm:h-28 sm:w-28 md:h-32 md:w-32 object-contain" 
+            />
           </motion.button>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8">
-            {/* Categories Dropdown */}
-            <CategoriesDropdown shouldShowWhiteStyle={shouldShowWhiteStyle} />
-            
-            {/* Navigation Items */}
             {navItems.map((item) => (
               <motion.button
                 key={item.label}
                 onClick={item.onClick}
-                className={`flex items-center gap-2 font-semibold transition duration-300 group ${
-                  shouldShowWhiteStyle ? 'text-gray-800 hover:text-orange-600' : 'text-white hover:text-orange-300'
+                className={`flex items-center gap-2 font-semibold transition duration-300 ${
+                  shouldShowWhiteStyle 
+                    ? 'text-gray-800 hover:text-orange-600' 
+                    : 'text-white hover:text-orange-300'
                 }`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <item.icon size={20} className="group-hover:rotate-12 transition" />
+                <item.icon size={20} />
                 <span>{item.label}</span>
               </motion.button>
             ))}
@@ -101,10 +134,11 @@ const Navbar = () => {
                   <LogIn size={18} />
                   Connexion
                 </motion.button>
+                
                 <motion.button
                   onClick={() => navigate('/register')}
                   className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold rounded-full hover:shadow-xl transition duration-300"
-                  whileHover={{ scale: 1.05, boxShadow: '0 20px 25px -5px rgba(251, 146, 60, 0.4)' }}
+                  whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
                   <UserPlus size={18} />
@@ -114,6 +148,7 @@ const Navbar = () => {
             ) : (
               <>
                 <NotificationBell scrolled={shouldShowWhiteStyle} />
+                
                 <motion.button
                   onClick={() => navigate(user.role === 'superadmin' ? '/admin/dashboard' : '/dashboard')}
                   className={`flex items-center gap-2 px-5 py-2.5 rounded-full transition duration-300 backdrop-blur-sm border font-semibold ${
@@ -127,6 +162,7 @@ const Navbar = () => {
                   <LayoutDashboard size={18} />
                   Dashboard
                 </motion.button>
+                
                 <motion.button
                   onClick={handleLogout}
                   className="flex items-center gap-2 px-5 py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-full transition duration-300 font-semibold"
@@ -134,7 +170,7 @@ const Navbar = () => {
                   whileTap={{ scale: 0.95 }}
                 >
                   <LogOut size={18} />
-                  Deconnexion
+                  Déconnexion
                 </motion.button>
               </>
             )}
@@ -170,16 +206,7 @@ const Navbar = () => {
                   ? 'bg-white border-gray-200' 
                   : 'bg-white/10 backdrop-blur-xl border-white/20'
               }`}>
-                {/* Categories Dropdown for Mobile */}
-                <CategoriesDropdown 
-                  shouldShowWhiteStyle={shouldShowWhiteStyle} 
-                  isMobile={true}
-                  onClose={() => setMobileMenuOpen(false)}
-                />
-
-                <div className={`border-t my-2 ${shouldShowWhiteStyle ? 'border-gray-200' : 'border-white/20'}`}></div>
-                
-                {/* Navigation Items for Mobile */}
+                {/* Navigation Items */}
                 {navItems.map((item) => (
                   <motion.button
                     key={item.label}
@@ -197,8 +224,9 @@ const Navbar = () => {
                   </motion.button>
                 ))}
 
-                <div className={`border-t my-2 pt-2 ${shouldShowWhiteStyle ? 'border-gray-200' : 'border-white/20'}`}></div>
+                <div className={`border-t my-2 ${shouldShowWhiteStyle ? 'border-gray-200' : 'border-white/20'}`} />
 
+                {/* Auth Buttons Mobile */}
                 {!user ? (
                   <>
                     <motion.button
@@ -217,6 +245,7 @@ const Navbar = () => {
                       <LogIn size={18} />
                       Connexion
                     </motion.button>
+                    
                     <motion.button
                       onClick={() => {
                         navigate('/register');
@@ -248,6 +277,7 @@ const Navbar = () => {
                       <LayoutDashboard size={18} />
                       Dashboard
                     </motion.button>
+                    
                     <motion.button
                       onClick={handleLogout}
                       className="w-full px-4 py-3 flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition font-semibold"
@@ -255,7 +285,7 @@ const Navbar = () => {
                       whileTap={{ scale: 0.95 }}
                     >
                       <LogOut size={18} />
-                      Deconnexion
+                      Déconnexion
                     </motion.button>
                   </>
                 )}

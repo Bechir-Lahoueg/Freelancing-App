@@ -572,7 +572,16 @@ router.get('/services/by-category/:categoryId', protectAdmin, async (req, res) =
 router.post('/services', protectAdmin, async (req, res) => {
   try {
     const Service = (await import('../models/Service.js')).default;
-    const { categoryId, name, description, icon, image, questions, basePrice, estimatedDuration } = req.body;
+    const { 
+      categoryId, 
+      name, 
+      description, 
+      icon, 
+      image, 
+      questions, 
+      basePrice, 
+      estimatedDuration
+    } = req.body;
 
     const service = await Service.create({
       categoryId,
@@ -601,17 +610,37 @@ router.post('/services', protectAdmin, async (req, res) => {
 router.put('/services/:id', protectAdmin, async (req, res) => {
   try {
     const Service = (await import('../models/Service.js')).default;
-    const { name, description, icon, image, questions, basePrice, estimatedDuration, isActive } = req.body;
+    const { 
+      name, 
+      description, 
+      icon, 
+      image, 
+      questions, 
+      basePrice, 
+      estimatedDuration, 
+      isActive
+    } = req.body;
 
     const service = await Service.findByIdAndUpdate(
       req.params.id,
-      { name, description, icon, image, questions, basePrice, estimatedDuration, isActive },
+      { 
+        name, 
+        description, 
+        icon, 
+        image, 
+        questions, 
+        basePrice, 
+        estimatedDuration, 
+        isActive
+      },
       { new: true, runValidators: true }
-    ).populate('categoryId', 'name icon');
+    );
 
     if (!service) {
       return res.status(404).json({ message: 'Service non trouve' });
     }
+
+    await service.populate('categoryId', 'name icon');
 
     res.json(service);
   } catch (error) {

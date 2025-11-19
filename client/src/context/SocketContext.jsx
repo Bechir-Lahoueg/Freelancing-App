@@ -30,19 +30,16 @@ export const SocketProvider = ({ children }) => {
       });
 
       newSocket.on('connect', () => {
-        console.log('✅ Socket.IO connecte');
         setIsConnected(true);
         // Notifier le serveur que l'utilisateur est en ligne
         newSocket.emit('user:online', user._id);
       });
 
       newSocket.on('disconnect', () => {
-        console.log('❌ Socket.IO deconnecte');
         setIsConnected(false);
       });
 
       newSocket.on('connect_error', (error) => {
-        console.error('❌ Erreur connexion Socket.IO:', error);
         setIsConnected(false);
       });
 

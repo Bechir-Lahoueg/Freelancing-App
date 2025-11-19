@@ -22,52 +22,51 @@ export const createAndEmitNotification = async (io, notificationData) => {
     // Emettre via Socket.IO a l'utilisateur specifique
     io.to(userId.toString()).emit('notification', populatedNotification);
 
-    // Si c'est pour un admin, emettre aussi a tous les admins
-    if (type.includes('task') || type.includes('partner') || type.includes('message')) {
-      io.emit('admin-notification', populatedNotification);
-    }
-
     return populatedNotification;
   } catch (error) {
-    console.error('Erreur creation notification:', error);
     return null;
+  }
+};
+
+// Fonction pour envoyer une notification a tous les admins
+export const notifyAllAdmins = async (io, notificationData) => {
+  try {
+    const User = (await import('../models/User.js')).default;
+    const admins = await User.find({ role: { $in: ['admin', 'superadmin'] } });
+
+    for (const admin of admins) {
+      await createAndEmitNotification(io, {
+        userId: admin._id,
+        ...notificationData
+      });
+    }
+  } catch (error) {
+    // Ignorer silencieusement les erreurs
   }
 };
 
 // Notifications pour les demandes de partenariat
 export const notifyPartnerRequest = async (io, partnerRequest) => {
   // Notifier tous les admins
-  const User = (await import('../models/User.js')).default;
-  const admins = await User.find({ role: { $in: ['admin', 'superadmin'] } });
-
-  for (const admin of admins) {
-    await createAndEmitNotification(io, {
-      userId: admin._id,
-      type: 'partner_request',
-      title: '🤝 Nouvelle demande de partenariat',
-      message: `${partnerRequest.fullName} a soumis une demande de partenariat`,
-      relatedId: partnerRequest._id,
-      relatedModel: 'PartnerRequest'
-    });
-  }
+  await notifyAllAdmins(io, {
+    type: 'partner_request',
+    title: '🤝 Nouvelle demande de partenariat',
+    message: `${partnerRequest.fullName} a soumis une demande de partenariat`,
+    relatedId: partnerRequest._id,
+    relatedModel: 'PartnerRequest'
+  });
 };
 
 // Notifications pour les taches
 export const notifyTaskCreated = async (io, task, clientId) => {
   // Notifier tous les admins
-  const User = (await import('../models/User.js')).default;
-  const admins = await User.find({ role: { $in: ['admin', 'superadmin'] } });
-
-  for (const admin of admins) {
-    await createAndEmitNotification(io, {
-      userId: admin._id,
-      type: 'task_created',
-      title: '💼 Nouvelle tache creee',
-      message: `Une nouvelle tache a ete creee: ${task.title}`,
-      relatedId: task._id,
-      relatedModel: 'TaskRequest'
-    });
-  }
+  await notifyAllAdmins(io, {
+    type: 'task_created',
+    title: '💼 Nouvelle tache creee',
+    message: `Une nouvelle tache a ete creee: ${task.title}`,
+    relatedId: task._id,
+    relatedModel: 'TaskRequest'
+  });
 };
 
 export const notifyTaskUpdated = async (io, task, clientId) => {
@@ -108,13 +107,11 @@ export const notifyNewMessage = async (io, conversation, senderId, receiverId) =
 export const notifyPartnerApproved = async (io, partnerRequest) => {
   // Note: Le candidat n'a pas de compte, donc on ne cree pas de notification
   // L'admin doit envoyer l'email manuellement
-  console.log(`Demande de partenariat approuvee pour ${partnerRequest.email}`);
 };
 
 export const notifyPartnerRejected = async (io, partnerRequest) => {
   // Note: Le candidat n'a pas de compte, donc on ne cree pas de notification
   // L'admin doit envoyer l'email manuellement
-  console.log(`Demande de partenariat rejetee pour ${partnerRequest.email}`);
 };
 
 // Notifications pour les factures

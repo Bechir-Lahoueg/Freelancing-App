@@ -15,11 +15,8 @@ export default function NotificationBell({ scrolled = false }) {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  console.log('🔔 NotificationBell rendering, user:', user);
-
   // Afficher pour tous les utilisateurs authentifies
   if (!user) {
-    console.log('❌ No user, hiding bell');
     return null;
   }
 
@@ -29,11 +26,8 @@ export default function NotificationBell({ scrolled = false }) {
 
   useEffect(() => {
     if (socket && user) {
-      console.log('🔔 Setting up socket listeners for notifications');
-      
       // Ecouter les nouvelles notifications
       socket.on('notification', (notification) => {
-        console.log('🔔 Nouvelle notification recue:', notification);
         setNotifications(prev => [notification, ...prev]);
         setUnreadCount(prev => prev + 1);
         
@@ -41,23 +35,14 @@ export default function NotificationBell({ scrolled = false }) {
         if (Notification.permission === 'granted') {
           new Notification(notification.title, {
             body: notification.message,
-            icon: '/logo.png'
+            icon: '/logo.png',
+            badge: '/logo.png'
           });
         }
       });
 
-      // Pour les admins, ecouter aussi les notifications admin
-      if (user.role === 'admin' || user.role === 'superadmin') {
-        socket.on('admin-notification', (notification) => {
-          console.log('🔔 Notification admin recue:', notification);
-          setNotifications(prev => [notification, ...prev]);
-          setUnreadCount(prev => prev + 1);
-        });
-      }
-
       return () => {
         socket.off('notification');
-        socket.off('admin-notification');
       };
     }
   }, [socket, user]);
@@ -72,17 +57,14 @@ export default function NotificationBell({ scrolled = false }) {
   const fetchNotifications = async () => {
     try {
       const token = localStorage.getItem('token');
-      console.log('🔔 Fetching notifications...');
       const response = await axios.get(
         `https://freelancing-app-mdgw.onrender.com/api/notifications`,
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
       
-      console.log('✅ Notifications fetched:', response.data);
       setNotifications(response.data.notifications || []);
       setUnreadCount(response.data.unreadCount || 0);
     } catch (error) {
-      console.error('❌ Erreur chargement notifications:', error.response?.status, error.response?.data || error.message);
       // Continuer avec un array vide au lieu de crash
       setNotifications([]);
       setUnreadCount(0);
